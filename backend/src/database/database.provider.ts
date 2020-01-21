@@ -10,7 +10,7 @@ export const databaseProviders = [
 					type: "postgres",
 					host: "localhost",
 					username: "heroes",
-					password: "",
+					password: "ReactHeroes",
 					database: "heroes",
 					synchronize: true,
 					entities: [

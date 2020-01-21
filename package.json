@@ -13,6 +13,7 @@
 		"api:dev": "yarn --cwd backend start:dev",
 		"api:start": "yarn --cwd backend start",
 		"api:build": "yarn --cwd backend prebuilt && yarn --cwd backend build",
+		"api:prod": "yarn --cwd backend start:prod",
 		"app:start": "yarn --cwd frontend start",
 		"app:build": "yarn --cwd frontend build",
 		"app:prod": "yarn --cwd frontend prod"

@@ -2,7 +2,10 @@
 	"name": "heroes-api",
 	"version": "0.1.0",
 	"description": "",
-	"author": "",
+	"author": "Daniel Grondin <king@numsgil.co> (https://numsgil.co/)",
+	"contributors": [
+		"Alexis Lepine <exerapidoXthorn@gmail.com>"
+	],
 	"license": "MIT",
 	"private": true,
 	"scripts": {

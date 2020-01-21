@@ -3,9 +3,20 @@
 	"version": "0.1.0",
 	"description": "Production version of the ReactHeroes Game",
 	"repository": "https://github.com/FinalHeroes/Game.git",
-	"author": "Daniel Grondin <king@numsgil.co>",
+	"author": "Daniel Grondin <king@numsgil.co> (https://numsgil.co/)",
+	"contributors": [
+		"Alexis Lepine <exerapidoXthorn@gmail.com>"
+	],
 	"license": "MIT",
 	"private": true,
+	"scripts": {
+		"api:dev": "yarn --cwd backend start:dev",
+		"api:start": "yarn --cwd backend start",
+		"api:build": "yarn --cwd backend prebuilt && yarn --cwd backend build",
+		"app:start": "yarn --cwd frontend start",
+		"app:build": "yarn --cwd frontend build",
+		"app:prod": "yarn --cwd frontend prod"
+	},
 	"workspaces": [
 		"common",
 		"backend",

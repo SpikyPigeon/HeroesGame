@@ -1,7 +1,11 @@
 {
 	"name": "heroes-app",
 	"version": "0.1.0",
-	"main": "index.js",
+	"main": "src",
+	"author": "Daniel Grondin <king@numsgil.co> (https://numsgil.co/)",
+	"contributors": [
+		"Alexis Lepine <exerapidoXthorn@gmail.com>"
+	],
 	"license": "MIT",
 	"private": true,
 	"scripts": {

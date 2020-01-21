@@ -12,6 +12,7 @@ export const databaseProviders = [
 					username: "heroes",
 					password: "ReactHeroes",
 					database: "heroes",
+					uuidExtension: "pgcrypto",
 					synchronize: true,
 					entities: [
 						__dirname + "/../**/*.entity{.ts,.js}",

@@ -1,7 +1,7 @@
 import {ServeStaticModule} from '@nestjs/serve-static';
 import {Module} from "@nestjs/common";
 import {join} from "path";
-import {UserModule} from "./user/user.module";
+import {UserModule} from "./user";
 
 @Module({
 	imports: [

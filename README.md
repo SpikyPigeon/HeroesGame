@@ -1,2 +1,2 @@
 # Game
-Production version of the ReactHeraoes Game
+Production version of the ReactHeroes Game

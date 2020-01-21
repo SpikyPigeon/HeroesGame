@@ -1,0 +1,17 @@
+{
+	"name": "heroes-game",
+	"version": "0.1.0",
+	"description": "Production version of the ReactHeroes Game",
+	"repository": "https://github.com/FinalHeroes/Game.git",
+	"author": "Daniel Grondin <king@numsgil.co>",
+	"license": "MIT",
+	"private": true,
+	"workspaces": [
+		"common",
+		"backend",
+		"frontend"
+	],
+	"devDependencies": {
+		"typescript": "^3.7.5"
+	}
+}

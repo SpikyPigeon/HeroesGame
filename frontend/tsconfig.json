@@ -1,0 +1,15 @@
+{
+	"extends": "../tsconfig",
+	"include": [
+		"src/**/*"
+	],
+	"compilerOptions": {
+		"outDir": "../dist",
+		"lib": [
+			"dom",
+			"dom.iterable",
+			"es6",
+			"scripthost"
+		]
+	}
+}

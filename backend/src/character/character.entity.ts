@@ -1,5 +1,6 @@
-import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
+import {Column, CreateDateColumn, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
 import {PlayerCharacter} from "heroes-common";
+import {EquipmentEntity} from "./equipment.entity";
 import {UserEntity} from "../user";
 import {SquareEntity} from "../world";
 
@@ -64,4 +65,7 @@ export class CharacterEntity implements PlayerCharacter {
 
 	@UpdateDateColumn()
 	updatedAt!: Date;
+
+	@OneToOne(type => EquipmentEntity, equipment => equipment.player)
+	equipment!: EquipmentEntity;
 }

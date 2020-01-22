@@ -9,7 +9,7 @@ export class ItemService {
 		@Inject("CATEGORY_REPOSITORY")
 		private readonly categories: Repository<CategoryEntity>,
 		@Inject("ITEM_REPOSITORY")
-		private readonly items: Repository<ItemEntity>
+		private readonly items: Repository<ItemEntity>,
 	) {
 	}
 }

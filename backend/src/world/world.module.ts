@@ -4,6 +4,7 @@ import {WorldService} from "./world.service";
 import {worldProviders} from "./world.provider";
 import {DatabaseModule} from "../database";
 import {SquareService} from "./square.service";
+import {SquareController} from "./square.controller";
 
 @Module({
 	exports: [
@@ -13,7 +14,10 @@ import {SquareService} from "./square.service";
 	imports: [
 		DatabaseModule,
 	],
-	controllers: [WorldController],
+	controllers: [
+		SquareController,
+		WorldController,
+	],
 	providers: [
 		...worldProviders,
 		SquareService,

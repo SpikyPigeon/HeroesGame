@@ -1,5 +1,6 @@
 import {Bank, User} from "heroes-common";
-import {Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
+import {Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
+import {CharacterEntity} from "../character";
 
 @Entity("User")
 export class UserEntity implements User {
@@ -35,4 +36,7 @@ export class UserEntity implements User {
 		name: "password"
 	})
 	password_hash!: string;
+
+	@OneToMany(type => CharacterEntity, character => character.owner)
+	characters!: CharacterEntity[];
 }

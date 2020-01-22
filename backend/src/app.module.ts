@@ -6,6 +6,7 @@ import {routes} from "./app.routing";
 import {CharacterModule} from "./character";
 import {WorldModule} from "./world";
 import {UserModule} from "./user";
+import {ItemModule} from "./item";
 
 @Module({
 	imports: [
@@ -13,6 +14,7 @@ import {UserModule} from "./user";
 		UserModule,
 		CharacterModule,
 		WorldModule,
+		ItemModule,
 	],
 })
 export class AppModule {

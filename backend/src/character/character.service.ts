@@ -6,7 +6,7 @@ import {CharacterEntity} from "./character.entity";
 export class CharacterService {
 	constructor(
 		@Inject("CHARACTER_REPOSITORY")
-		private readonly squares: Repository<CharacterEntity>
+		private readonly characters: Repository<CharacterEntity>
 	) {
 	}
 }

@@ -4,3 +4,6 @@ export * from "./player-character";
 export * from "./square";
 export * from "./user";
 export * from "./world";
+export * from "./item-category";
+export * from "./item-roll";
+export * from "./item";

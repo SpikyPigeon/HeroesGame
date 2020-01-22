@@ -93,7 +93,7 @@ export class RollEntity implements ItemRoll {
         nullable: true,
         default: null
     })
-    special!: Object | null;
+    special!: Object;
 
     @CreateDateColumn()
     createdAt!: Date;

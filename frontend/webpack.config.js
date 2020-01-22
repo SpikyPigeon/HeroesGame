@@ -2,9 +2,10 @@ const HtmlWebPackPlugin = require("html-webpack-plugin");
 const TerserJSPlugin = require('terser-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const webpack = require("webpack");
 
-const path = require("path");
-const output = path.resolve(__dirname, "dist");
+const {resolve} = require("path");
+const output = resolve(__dirname, "dist");
 
 module.exports = {
 	optimization: {
@@ -45,6 +46,10 @@ module.exports = {
 			},
 		},
 	},
+	entry: [
+		"webpack-hot-middleware/client",
+		resolve(__dirname, "./src"),
+	],
 	devServer: {
 		contentBase: output,
 		historyApiFallback: true,
@@ -52,11 +57,14 @@ module.exports = {
 	devtool: "inline-source-map",
 	resolve: {
 		extensions: [".ts", ".tsx", ".js"],
+		alias: {
+			"react-dom": "@hot-loader/react-dom",
+		},
 	},
 	output: {
 		path: output,
-		filename: "[name].[contenthash:8].js",
-		chunkFilename: "[name].[contenthash:8].chunk.js",
+		filename: "[name].[hash:8].js",
+		chunkFilename: "[name].[hash:8].chunk.js",
 		publicPath: "/",
 	},
 	module: {
@@ -82,12 +90,13 @@ module.exports = {
 	},
 	plugins: [
 		new CleanWebpackPlugin(),
+		new webpack.HotModuleReplacementPlugin(),
 		new HtmlWebPackPlugin({
-			template: "./src/index.html",
+			template: resolve(__dirname, "./src/index.html"),
 			filename: "./index.html"
 		}),
 		new CopyPlugin([
-			{context: './src/assets/', from: '**/*', to: 'assets/'}
+			{context: resolve(__dirname, `./src/assets/`), from: "**/*", to: "assets/"}
 		])
 	]
 };

@@ -2,6 +2,7 @@ import {createMuiTheme, createStyles, CssBaseline, makeStyles, Theme, ThemeProvi
 import {createElement, FunctionComponent, Suspense} from "react";
 import {HelmetProvider} from "react-navi-helmet-async";
 import {purple, teal} from "@material-ui/core/colors";
+import {hot} from "react-hot-loader/root";
 import {Router, View} from "react-navi";
 
 import Routes from "./routes";
@@ -31,7 +32,7 @@ const RootLayout: FunctionComponent = props => {
 	</div>;
 };
 
-export const Site: FunctionComponent = props => {
+const Site: FunctionComponent = props => {
 	return <HelmetProvider>
 		<Router routes={Routes}>
 			<ThemeProvider theme={theme}>
@@ -44,3 +45,5 @@ export const Site: FunctionComponent = props => {
 		</Router>
 	</HelmetProvider>;
 };
+
+export default hot(Site);

@@ -14,9 +14,9 @@
 		"api:start": "yarn --cwd backend start",
 		"api:build": "yarn --cwd backend build",
 		"api:prod": "yarn --cwd backend run --prod start:prod",
-		"app:start": "yarn --cwd frontend start",
 		"app:build": "yarn --cwd frontend build",
-		"app:prod": "yarn --cwd frontend run --prod prod"
+		"app:prod": "yarn --cwd frontend run --prod prod",
+		"start": "yarn api:dev"
 	},
 	"workspaces": [
 		"common",

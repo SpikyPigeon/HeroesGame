@@ -1,5 +1,6 @@
 import {RouterModule} from "nest-router";
 import {Module} from "@nestjs/common";
+
 import {routes} from "./app.routing";
 
 import {CharacterModule} from "./character";

@@ -1,5 +1,5 @@
 import {Controller} from "@nestjs/common";
 
-@Controller('character')
+@Controller()
 export class CharacterController {
 }

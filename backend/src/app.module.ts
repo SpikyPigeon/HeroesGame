@@ -1,13 +1,13 @@
+import {RouterModule} from "nest-router";
 import {Module} from "@nestjs/common";
-import {resolve} from "path";
+import {routes} from "./app.routing";
 import {UserModule} from "./user";
 
 @Module({
 	imports: [
+		RouterModule.forRoutes(routes),
 		UserModule,
 	],
-	controllers: [],
-	providers: [],
 })
 export class AppModule {
 }

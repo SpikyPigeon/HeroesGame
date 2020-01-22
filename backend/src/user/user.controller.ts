@@ -1,5 +1,5 @@
 import {Controller} from "@nestjs/common";
 
-@Controller("api/user")
+@Controller()
 export class UserController {
 }

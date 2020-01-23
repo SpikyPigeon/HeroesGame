@@ -1,6 +1,16 @@
-import {Column, CreateDateColumn, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
+import {
+	Column,
+	CreateDateColumn,
+	Entity,
+	ManyToOne,
+	OneToMany,
+	OneToOne,
+	PrimaryGeneratedColumn,
+	UpdateDateColumn
+} from "typeorm";
 import {PlayerCharacter} from "heroes-common";
 import {EquipmentEntity} from "./equipment.entity";
+import {InventoryEntity} from "./inventory.entity";
 import {AvatarEntity} from "./avatar.entity";
 import {SquareEntity} from "../world";
 import {UserEntity} from "../user";
@@ -69,4 +79,7 @@ export class CharacterEntity implements PlayerCharacter {
 
 	@OneToOne(type => EquipmentEntity, equipment => equipment.player)
 	equipment!: EquipmentEntity;
+
+	@OneToMany(type => InventoryEntity, inventory => inventory.owner)
+	inventory!: InventoryEntity[];
 }

@@ -7,23 +7,23 @@ import {MonsterEntity} from "../../monster";
 @Check(`"minGold" > 0 AND "maxGold" > "minGold"`)
 export class EncounterEntity implements Encounter {
 	@PrimaryGeneratedColumn()
-    id!: number;
+	id!: number;
 
 	@ManyToOne(type => SquareEntity)
-    square!: SquareEntity;
+	square!: SquareEntity;
 
 	@ManyToOne(type => MonsterEntity)
-    monster!: MonsterEntity;
+	monster!: MonsterEntity;
 
 	@Column({
 		type: "real",
 		default: 0.5,
 	})
-    spawnChance!: number;
+	spawnChance!: number;
 
 	@Column({default: 1})
-    minGold!: number;
+	minGold!: number;
 
 	@Column({default: 2})
-    maxGold!: number;
+	maxGold!: number;
 }

@@ -11,23 +11,23 @@ export class EncounterDropEntity implements EncounterDrop {
 	itemId!: number;
 
 	@ManyToOne(type => ItemEntity)
-    item!: ItemEntity;
+	item!: ItemEntity;
 
 	@PrimaryColumn()
 	encounterId!: number;
 
 	@ManyToOne(type => EncounterEntity)
-    encounter!: EncounterEntity;
+	encounter!: EncounterEntity;
 
 	@Column({
 		type: "real",
 		default: 0.5,
 	})
-    dropChance!: number;
+	dropChance!: number;
 
 	@Column({default: 1})
-    minQuantity!: number;
+	minQuantity!: number;
 
 	@Column({default: 1})
-    maxQuantity!: number;
+	maxQuantity!: number;
 }

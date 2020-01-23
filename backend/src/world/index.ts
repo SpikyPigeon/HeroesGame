@@ -9,3 +9,4 @@ export * from "./world.entity";
 export * from "./encounter";
 export * from "./structure";
 export * from "./shop";
+export * from "./npc";

@@ -1,8 +1,9 @@
 import {Column, CreateDateColumn, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
 import {PlayerCharacter} from "heroes-common";
 import {EquipmentEntity} from "./equipment.entity";
-import {UserEntity} from "../user";
+import {AvatarEntity} from "./avatar.entity";
 import {SquareEntity} from "../world";
+import {UserEntity} from "../user";
 
 @Entity("PlayerCharacter")
 export class CharacterEntity implements PlayerCharacter {
@@ -15,8 +16,8 @@ export class CharacterEntity implements PlayerCharacter {
 	@Column({length: 30})
 	name!: string;
 
-	@Column()
-	avatarId!: number;
+	@ManyToOne(type => AvatarEntity)
+	avatar!: AvatarEntity;
 
 	@ManyToOne(type => SquareEntity)
 	square!: SquareEntity;

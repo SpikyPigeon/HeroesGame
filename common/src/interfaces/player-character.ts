@@ -1,11 +1,12 @@
-import {User} from "./user";
 import {Square} from "./square";
+import {Avatar} from "./avatar";
+import {User} from "./user";
 
 export interface PlayerCharacter {
 	id: string;
 	owner: User;
 	name: string;
-	avatarId: number;
+	avatar: Avatar;
 	square: Square;
 	experience: number;
 	level: number;

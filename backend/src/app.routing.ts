@@ -4,6 +4,7 @@ import {CharacterModule} from "./character";
 import {WorldModule} from "./world";
 import {UserModule} from "./user";
 import {ItemModule} from "./item";
+import {BankModule} from "./bank";
 
 export const routes: Routes = [
 	{
@@ -24,6 +25,10 @@ export const routes: Routes = [
 			{
 				path: "/item",
 				module: ItemModule,
+			},
+			{
+				path: "/bank",
+				module: BankModule,
 			},
 		],
 	}

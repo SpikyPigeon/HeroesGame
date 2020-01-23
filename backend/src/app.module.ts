@@ -7,6 +7,7 @@ import {CharacterModule} from "./character";
 import {WorldModule} from "./world";
 import {UserModule} from "./user";
 import {ItemModule} from "./item";
+import {BankModule} from './bank/bank.module';
 
 @Module({
 	imports: [
@@ -15,6 +16,7 @@ import {ItemModule} from "./item";
 		CharacterModule,
 		WorldModule,
 		ItemModule,
+		BankModule,
 	],
 })
 export class AppModule {

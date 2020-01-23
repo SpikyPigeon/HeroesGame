@@ -1,6 +1,15 @@
-import {Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
-import {Bank, User} from "heroes-common";
+import {
+	Column,
+	CreateDateColumn,
+	Entity,
+	ManyToOne,
+	OneToMany,
+	PrimaryGeneratedColumn,
+	UpdateDateColumn
+} from "typeorm";
+import {User} from "heroes-common";
 import {CharacterEntity} from "../character";
+import {BankEntity} from "../bank";
 
 @Entity("User")
 export class UserEntity implements User {
@@ -16,7 +25,8 @@ export class UserEntity implements User {
 	@Column({unique: true, length: 60})
 	email!: string;
 
-	bank!: Bank;
+	@ManyToOne(type => BankEntity)
+	bank!: BankEntity;
 
 	@CreateDateColumn()
 	createdAt!: Date;

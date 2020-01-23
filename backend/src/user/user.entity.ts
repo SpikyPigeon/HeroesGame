@@ -1,5 +1,5 @@
-import {Bank, User} from "heroes-common";
 import {Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
+import {Bank, User} from "heroes-common";
 import {CharacterEntity} from "../character";
 
 @Entity("User")

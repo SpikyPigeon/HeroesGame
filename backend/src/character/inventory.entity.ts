@@ -6,14 +6,14 @@ import {CharacterEntity} from "./character.entity";
 @Entity("CharacterInventory")
 export class InventoryEntity implements CharacterInventory {
 	@PrimaryGeneratedColumn("uuid")
-    id!: string;
+	id!: string;
 
 	@ManyToOne(type => RollEntity)
-    roll!: RollEntity;
+	roll!: RollEntity;
 
 	@ManyToOne(type => CharacterEntity, character => character.inventory)
-    owner!: CharacterEntity;
+	owner!: CharacterEntity;
 
 	@Column({default: 1})
-    quantity!: number;
+	quantity!: number;
 }

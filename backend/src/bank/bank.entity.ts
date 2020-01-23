@@ -4,11 +4,11 @@ import {Bank} from "heroes-common";
 @Entity("Bank")
 export class BankEntity implements Bank {
 	@PrimaryGeneratedColumn("uuid")
-    id!: string;
+	id!: string;
 
 	@Column()
-    goldAmount!: number;
+	goldAmount!: number;
 
 	@UpdateDateColumn()
-    updatedAt!: Date;
+	updatedAt!: Date;
 }

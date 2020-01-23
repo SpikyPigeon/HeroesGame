@@ -3,10 +3,12 @@ import {Module} from "@nestjs/common";
 
 import {routes} from "./app.routing";
 
+import {EncounterModule, NpcModule, ShopModule, StructureModule, WorldModule} from "./world";
 import {CharacterModule} from "./character";
-import {WorldModule} from "./world";
+import {MonsterModule} from "./monster";
 import {UserModule} from "./user";
 import {ItemModule} from "./item";
+import {BankModule} from "./bank";
 
 @Module({
 	imports: [
@@ -15,6 +17,12 @@ import {ItemModule} from "./item";
 		CharacterModule,
 		WorldModule,
 		ItemModule,
+		BankModule,
+		MonsterModule,
+		EncounterModule,
+		StructureModule,
+		ShopModule,
+		NpcModule,
 	],
 })
 export class AppModule {

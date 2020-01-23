@@ -12,3 +12,5 @@ export * from "./item";
 export * from "./avatar";
 export * from "./monster-type";
 export * from "./monster";
+export * from "./encounter-drop";
+export * from "./encounter";

@@ -3,9 +3,9 @@ import {Module} from "@nestjs/common";
 
 import {routes} from "./app.routing";
 
+import {EncounterModule, WorldModule} from "./world";
 import {CharacterModule} from "./character";
 import {MonsterModule} from "./monster";
-import {WorldModule} from "./world";
 import {UserModule} from "./user";
 import {ItemModule} from "./item";
 import {BankModule} from "./bank";
@@ -19,6 +19,7 @@ import {BankModule} from "./bank";
 		ItemModule,
 		BankModule,
 		MonsterModule,
+		EncounterModule,
 	],
 })
 export class AppModule {

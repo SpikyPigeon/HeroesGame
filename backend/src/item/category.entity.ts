@@ -5,27 +5,27 @@ import {ItemEntity} from "./item.entity";
 @Entity("ItemCategory")
 export class CategoryEntity implements ItemCategory {
 	@PrimaryGeneratedColumn()
-    id!: number;
+	id!: number;
 
 	@ManyToOne(type => CategoryEntity, category => category.children, {
 		eager: true,
 	})
-    parent!: CategoryEntity;
+	parent!: CategoryEntity;
 
 	@Column({
 		length: 30,
 		unique: true,
 	})
-    name!: string;
+	name!: string;
 
 	@Column({type: "text"})
-    description!: string;
+	description!: string;
 
 	@CreateDateColumn()
-    createdAt!: Date;
+	createdAt!: Date;
 
 	@OneToMany(type => CategoryEntity, category => category.parent)
-    children!: CategoryEntity[];
+	children!: CategoryEntity[];
 
 	@OneToMany(type => ItemEntity, item => item.category)
 	items!: ItemEntity[];

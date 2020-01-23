@@ -2,11 +2,11 @@ import {Module} from "@nestjs/common";
 import {DatabaseModule} from "../../database";
 import {structureProviders} from "./structure.provider";
 import {StructureController} from "./structure.controller";
-import {StructureEntity} from "./structure.entity";
+import {StructureService} from "./structure.service";
 
 @Module({
 	exports: [
-		StructureEntity,
+		StructureService,
 	],
 	imports: [
 		DatabaseModule,
@@ -16,7 +16,7 @@ import {StructureEntity} from "./structure.entity";
 	],
 	providers: [
 		...structureProviders,
-		StructureEntity,
+		StructureService,
 	],
 })
 export class StructureModule {

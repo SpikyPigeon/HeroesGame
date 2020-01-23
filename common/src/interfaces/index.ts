@@ -10,3 +10,5 @@ export * from "./item-category";
 export * from "./item-roll";
 export * from "./item";
 export * from "./avatar";
+export * from "./monster-type";
+export * from "./monster";

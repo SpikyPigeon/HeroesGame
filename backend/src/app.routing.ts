@@ -1,6 +1,7 @@
 import {Routes} from "nest-router";
 
 import {CharacterModule} from "./character";
+import {MonsterModule} from "./monster";
 import {WorldModule} from "./world";
 import {UserModule} from "./user";
 import {ItemModule} from "./item";
@@ -29,6 +30,10 @@ export const routes: Routes = [
 			{
 				path: "/bank",
 				module: BankModule,
+			},
+			{
+				path: "/monster",
+				module: MonsterModule,
 			},
 		],
 	}

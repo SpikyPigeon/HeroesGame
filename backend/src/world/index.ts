@@ -7,4 +7,5 @@ export * from "./square.entity";
 export * from "./world.entity";
 
 export * from "./encounter";
+export * from "./structure";
 export * from "./shop";

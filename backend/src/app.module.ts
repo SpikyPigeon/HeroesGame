@@ -3,7 +3,7 @@ import {Module} from "@nestjs/common";
 
 import {routes} from "./app.routing";
 
-import {EncounterModule, ShopModule, WorldModule} from "./world";
+import {EncounterModule, ShopModule, StructureModule, WorldModule} from "./world";
 import {CharacterModule} from "./character";
 import {MonsterModule} from "./monster";
 import {UserModule} from "./user";
@@ -20,6 +20,7 @@ import {BankModule} from "./bank";
 		BankModule,
 		MonsterModule,
 		EncounterModule,
+		StructureModule,
 		ShopModule,
 	],
 })

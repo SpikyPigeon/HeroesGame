@@ -8,3 +8,4 @@ export * from "./world";
 export * from "./item-category";
 export * from "./item-roll";
 export * from "./item";
+export * from "./avatar";

@@ -14,3 +14,7 @@ export * from "./monster-type";
 export * from "./monster";
 export * from "./encounter-drop";
 export * from "./encounter";
+export * from "./non-player-character";
+export * from "./structure";
+export * from "./shop-sells";
+export * from "./shop";

@@ -1,10 +1,14 @@
 import {ItemCategory} from "./item-category";
 
+export type ItemRarity = "common" | "uncommon" | "rare" | "legendary" | "unique";
+
 export interface Item {
 	id: number;
 	name: string;
 	description: string;
 	category: ItemCategory;
+	rarity: ItemRarity;
+	heal: number;
 	strengthMod: number;
 	dexterityMod: number;
 	vitalityMod: number;

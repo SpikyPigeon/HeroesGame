@@ -1,5 +1,5 @@
 import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
-import {Item} from "heroes-common";
+import {Item, ItemRarity} from "heroes-common";
 import {CategoryEntity} from "./category.entity";
 
 @Entity("Item")
@@ -18,6 +18,16 @@ export class ItemEntity implements Item {
 
     @ManyToOne(type => CategoryEntity, category => category.items)
     category!: CategoryEntity;
+
+    @Column({
+        type: "enum",
+        enum: ["common", "uncommon", "rare", "legendary", "unique"],
+        default: "common",
+    })
+    rarity!: ItemRarity;
+
+    @Column({default: 0})
+    heal!: number;
 
     @Column({default: 0})
     strengthMod!: number;

@@ -1,7 +1,7 @@
 import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {CharacterInventory} from "heroes-common";
-import {RollEntity} from "../item";
-import {CharacterEntity} from "./character.entity";
+import {CharacterEntity} from "../character.entity";
+import {RollEntity} from "../../item";
 
 @Entity("CharacterInventory")
 export class InventoryEntity implements CharacterInventory {

@@ -5,8 +5,8 @@ import {routes} from "./app.routing";
 
 import {EncounterModule, NpcModule, ShopModule, StructureModule, WorldModule} from "./world";
 import {CharacterModule, InventoryModule} from "./character";
+import {MessageModule, UserModule} from "./user";
 import {MonsterModule} from "./monster";
-import {UserModule} from "./user";
 import {ItemModule} from "./item";
 import {BankModule} from "./bank";
 
@@ -14,6 +14,7 @@ import {BankModule} from "./bank";
 	imports: [
 		RouterModule.forRoutes(routes),
 		UserModule,
+		MessageModule,
 		CharacterModule,
 		InventoryModule,
 		WorldModule,

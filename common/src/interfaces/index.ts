@@ -5,6 +5,7 @@ export * from "./character-equipment";
 export * from "./character-inventory";
 export * from "./square";
 export * from "./user";
+export * from "./user-message";
 export * from "./world";
 export * from "./item-category";
 export * from "./item-roll";

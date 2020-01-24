@@ -14,4 +14,13 @@ export class CharacterService {
 		private readonly avatars: AvatarService,
 	) {
 	}
+
+	async findAll(): Promise<Array<CharacterEntity>> {
+		return await this.characters.find();
+	}
+
+	async findOne(id: string): Promise<CharacterEntity>{
+		return await this.characters.findOneOrFail(id);
+	}
+
 }

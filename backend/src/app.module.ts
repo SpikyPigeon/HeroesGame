@@ -4,9 +4,9 @@ import {Module} from "@nestjs/common";
 import {routes} from "./app.routing";
 
 import {EncounterModule, NpcModule, ShopModule, StructureModule, WorldModule} from "./world";
-import {CharacterModule} from "./character";
+import {CharacterModule, InventoryModule, SlapModule} from "./character";
+import {MessageModule, UserModule} from "./user";
 import {MonsterModule} from "./monster";
-import {UserModule} from "./user";
 import {ItemModule} from "./item";
 import {BankModule} from "./bank";
 
@@ -14,7 +14,10 @@ import {BankModule} from "./bank";
 	imports: [
 		RouterModule.forRoutes(routes),
 		UserModule,
+		MessageModule,
 		CharacterModule,
+		SlapModule,
+		InventoryModule,
 		WorldModule,
 		ItemModule,
 		BankModule,

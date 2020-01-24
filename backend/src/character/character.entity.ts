@@ -10,10 +10,10 @@ import {
 } from "typeorm";
 import {PlayerCharacter} from "heroes-common";
 import {EquipmentEntity} from "./equipment.entity";
-import {InventoryEntity} from "./inventory.entity";
 import {AvatarEntity} from "./avatar.entity";
 import {SquareEntity} from "../world";
 import {UserEntity} from "../user";
+import {InventoryEntity} from "./inventory";
 
 @Entity("PlayerCharacter")
 export class CharacterEntity implements PlayerCharacter {

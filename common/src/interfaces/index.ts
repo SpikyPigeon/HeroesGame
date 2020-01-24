@@ -1,6 +1,7 @@
 export * from "./bank";
 export * from "./password-request";
 export * from "./player-character";
+export * from "./character-slap";
 export * from "./character-equipment";
 export * from "./character-inventory";
 export * from "./square";

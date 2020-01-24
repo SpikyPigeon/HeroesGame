@@ -7,3 +7,4 @@ export * from "./avatar.service";
 export * from "./avatar.entity";
 
 export * from "./inventory";
+export * from "./slap";

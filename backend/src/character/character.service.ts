@@ -3,6 +3,9 @@ import {Repository} from "typeorm";
 import {CharacterEntity} from "./character.entity";
 import {EquipmentEntity} from "./equipment.entity";
 import {AvatarService} from "./avatar.service";
+import {UserEntity} from "../user";
+import {AvatarEntity} from "./avatar.entity";
+import {WorldService} from "../world";
 
 @Injectable()
 export class CharacterService {
@@ -12,6 +15,7 @@ export class CharacterService {
 		@Inject("EQUIPMENT_REPOSITORY")
 		private readonly equipments: Repository<EquipmentEntity>,
 		private readonly avatars: AvatarService,
+		private readonly worlds: WorldService,
 	) {
 	}
 
@@ -23,4 +27,32 @@ export class CharacterService {
 		return await this.characters.findOneOrFail(id);
 	}
 
+	private async createEquipment(character: CharacterEntity): Promise<EquipmentEntity> {
+		const equip = this.equipments.create({
+			player: character,
+		});
+		return await this.equipments.save(equip);
+	}
+
+	async create(owner: UserEntity, name: string, avatar: AvatarEntity): Promise<CharacterEntity> {
+		const char = this.characters.create({
+			owner,
+			name,
+			avatar,
+		});
+
+		char.equipment = await this.createEquipment(char);
+		char.currentHealth = 0;
+		char.currentMana = 0;
+		return await this.characters.save(char);
+	}
+
+	async updateStats(id: string, strength: number, dexterity: number, vitality: number, intellect: number): Promise<CharacterEntity> {
+		const char = await this.findOne(id);
+		char.strength = strength;
+		char.dexterity = dexterity;
+		char.vitality = vitality;
+		char.intellect = intellect;
+		return await this.characters.save(char);
+	}
 }

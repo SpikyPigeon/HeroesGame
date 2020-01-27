@@ -9,4 +9,12 @@ export class SquareService {
 		private readonly squares: Repository<SquareEntity>
 	) {
 	}
+
+	async create(worldId: number, x: number, y: number): Promise<SquareEntity> {
+		const square = new SquareEntity();
+		square.worldId = worldId;
+		square.x = x;
+		square.y = y;
+		return await this.squares.save(square);
+	}
 }

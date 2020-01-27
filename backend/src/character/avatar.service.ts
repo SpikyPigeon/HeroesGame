@@ -9,4 +9,17 @@ export class AvatarService {
 		private readonly avatars: Repository<AvatarEntity>,
 	) {
 	}
+
+	async findAll(): Promise<Array<AvatarEntity>> {
+		return await this.avatars.find();
+	}
+
+	async findOne(id: number): Promise<AvatarEntity> {
+		return await this.avatars.findOneOrFail(id);
+	}
+
+	async create(filename: string): Promise<AvatarEntity> {
+		const avatar = this.avatars.create({filename});
+		return await this.avatars.save(avatar);
+	}
 }

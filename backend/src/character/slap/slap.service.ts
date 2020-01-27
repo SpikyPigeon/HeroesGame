@@ -62,5 +62,4 @@ export class SlapService {
 		});
 		return count < 3;
 	}
-
 }

@@ -5,8 +5,6 @@ import {WorldEntity} from "./world.entity";
 
 @Injectable()
 export class WorldService {
-	private readonly logger: Logger = new Logger(WorldService.name);
-
 	constructor(
 		@Inject("WORLD_REPOSITORY")
 		private readonly worlds: Repository<WorldEntity>,
@@ -15,8 +13,6 @@ export class WorldService {
 	}
 
 	async create(name: string, limitX: number, limitY: number, color: string, bgImage: string): Promise<WorldEntity> {
-		this.logger.log("WorldService.create");
-
 		const world = await this.worlds.save(this.worlds.create({
 			name,
 			color,

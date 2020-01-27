@@ -12,14 +12,11 @@ interface CreateWorldInfo{
 
 @Controller()
 export class WorldController {
-	private readonly logger: Logger = new Logger(WorldController.name);
-
 	constructor(private readonly worlds: WorldService) {
 	}
 
 	@Post()
 	async create(@Body() data: CreateWorldInfo):Promise<WorldEntity>{
-		this.logger.log("WorldController.create");
 		return await this.worlds.create(data.name, data.limitX, data.limitY, data.color, data.bgImage);
 	}
 }

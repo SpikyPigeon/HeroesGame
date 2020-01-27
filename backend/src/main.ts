@@ -9,14 +9,14 @@ import {join} from "path";
 
 import {AppModule} from "./app.module";
 
-const webpackConfig = require("../../frontend/webpack.config.js");
+//const webpackConfig = require("../../frontend/webpack.config.js");
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
 	const instance = app.getHttpAdapter().getInstance() as Express;
 	app.enableCors();
 
-	if (process.env.NODE_ENV === "production") {
+	/*if (process.env.NODE_ENV === "production") {
 		const path = join(__dirname, "../../frontend/dist");
 		instance.use(serve(path));
 		instance.get("*", (req, res) => res.sendFile(join(path, "index.html")));
@@ -42,7 +42,7 @@ async function bootstrap() {
 				next();
 			}
 		});
-	}
+	}*/
 
 	await app.listen(3000);
 }

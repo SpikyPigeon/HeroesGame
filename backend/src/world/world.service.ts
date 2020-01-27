@@ -24,12 +24,13 @@ export class WorldService {
 			bgImage,
 			limitX,
 			limitY,
-			squares: [],
 		}));
+
+		const squares = new Array<SquareEntity>();
 
 		for (let i = 0; i <= limitX; i++) {
 			for (let j = 0; j <= limitY; j++) {
-				world.squares.push(this.squares.create({
+				squares.push(this.squares.create({
 					image: "",
 					world,
 					x: i,
@@ -38,7 +39,7 @@ export class WorldService {
 			}
 		}
 
-		await this.squares.save(world.squares);
-		return await this.worlds.save(world);
+		await this.squares.save(squares);
+		return world;
 	}
 }

@@ -36,7 +36,7 @@ async function bootstrap() {
 			const reqPath = req.url;
 			const file = last(reqPath.split("/"));
 
-			if (file?.indexOf(".") === -1) {
+			if (file?.indexOf(".") === -1 && !reqPath.startsWith("/api")) {
 				res.end(dev.fileSystem.readFileSync(join(webpackConfig.output.path, "index.html")));
 			} else {
 				next();

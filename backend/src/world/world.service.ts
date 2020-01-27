@@ -1,7 +1,7 @@
 import {Inject, Injectable, Logger} from "@nestjs/common";
 import {Repository} from "typeorm";
+import {SquareService} from "./square.service";
 import {WorldEntity} from "./world.entity";
-import {SquareEntity} from "./square.entity";
 
 @Injectable()
 export class WorldService {
@@ -10,8 +10,7 @@ export class WorldService {
 	constructor(
 		@Inject("WORLD_REPOSITORY")
 		private readonly worlds: Repository<WorldEntity>,
-		@Inject("SQUARE_REPOSITORY")
-		private readonly squares: Repository<SquareEntity>
+		private readonly squares: SquareService,
 	) {
 	}
 
@@ -26,20 +25,7 @@ export class WorldService {
 			limitY,
 		}));
 
-		const squares = new Array<SquareEntity>();
-
-		for (let i = 0; i <= limitX; i++) {
-			for (let j = 0; j <= limitY; j++) {
-				squares.push(this.squares.create({
-					image: "",
-					world,
-					x: i,
-					y: j,
-				}));
-			}
-		}
-
-		await this.squares.save(squares);
+		await this.squares.create(world);
 		return world;
 	}
 }

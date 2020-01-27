@@ -12,4 +12,25 @@ export class ItemService {
 		private readonly items: Repository<ItemEntity>,
 	) {
 	}
+
+	async findAllCategories(): Promise<Array<CategoryEntity>> {
+		return await this.categories.find();
+	}
+
+	async findOneCategory(id: number): Promise<CategoryEntity> {
+		return await this.categories.findOneOrFail(id);
+	}
+
+	async createCategory(name: string, description: string, parentId?: number): Promise<CategoryEntity> {
+		const cat = this.categories.create({
+			name,
+			description,
+		});
+
+		if (parentId) {
+			cat.parent = await this.findOneCategory(parentId);
+		}
+
+		return await this.categories.save(cat);
+	}
 }

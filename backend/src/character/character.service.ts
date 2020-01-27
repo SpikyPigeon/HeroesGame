@@ -46,4 +46,13 @@ export class CharacterService {
 		char.currentMana = 0;
 		return await this.characters.save(char);
 	}
+
+	async updateStats(id: string, strength: number, dexterity: number, vitality: number, intellect: number): Promise<CharacterEntity> {
+		const char = await this.findOne(id);
+		char.strength = strength;
+		char.dexterity = dexterity;
+		char.vitality = vitality;
+		char.intellect = intellect;
+		return await this.characters.save(char);
+	}
 }

@@ -32,7 +32,7 @@ export class BankService {
 	async takeMoney(id: string, amount: number): Promise<BankEntity> {
 		const bank = await this.findOne(id);
 		if (amount > bank.goldAmount) {
-			throw new Error('Not enough savings.');
+			throw new Error("Not enough savings.");
 		} else {
 			bank.goldAmount -= amount;
 			return await this.banks.save(bank);

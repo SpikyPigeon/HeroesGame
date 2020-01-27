@@ -19,7 +19,7 @@ export class CharacterService {
 		return await this.characters.find();
 	}
 
-	async findOne(id: string): Promise<CharacterEntity>{
+	async findOne(id: string): Promise<CharacterEntity> {
 		return await this.characters.findOneOrFail(id);
 	}
 

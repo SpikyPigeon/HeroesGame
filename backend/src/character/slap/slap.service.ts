@@ -2,7 +2,6 @@ import {Inject, Injectable} from "@nestjs/common";
 import {MoreThanOrEqual, Repository} from "typeorm";
 import {CharacterService} from "../character.service";
 import {SlapEntity} from "./slap.entity";
-import {characterProviders} from "../character.provider";
 
 @Injectable()
 export class SlapService {

@@ -5,6 +5,7 @@ import {characterProviders} from "./character.provider";
 import {DatabaseModule} from "../database";
 import {AvatarService} from "./avatar.service";
 import {InventoryModule} from "./inventory";
+import {WorldModule} from "../world";
 
 @Module({
 	exports: [
@@ -14,6 +15,7 @@ import {InventoryModule} from "./inventory";
 	imports: [
 		DatabaseModule,
 		forwardRef(() => InventoryModule),
+		forwardRef(() => WorldModule),
 	],
 	controllers: [
 		CharacterController,

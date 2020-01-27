@@ -1,30 +1,43 @@
-import {Inject, Injectable} from "@nestjs/common";
+import {Inject, Injectable, Logger} from "@nestjs/common";
 import {Repository} from "typeorm";
 import {WorldEntity} from "./world.entity";
 import {SquareService} from "./square.service";
+import {SquareEntity} from "./square.entity";
 
 @Injectable()
 export class WorldService {
+	private readonly logger: Logger = new Logger(WorldService.name);
+
 	constructor(
 		@Inject("SQUARE_REPOSITORY")
 		private readonly worlds: Repository<WorldEntity>,
-		private readonly squares: SquareService
+		@Inject("SQUARE_REPOSITORY")
+		private readonly squares: Repository<SquareEntity>,
 	) {
 	}
 
-	async create(name: string, X: number, Y: number, color: string, bgImage: string): Promise<WorldEntity> {
-		const world = new WorldEntity();
-		world.name = name;
-		world.limitX = X;
-		world.limitY = Y;
-		world.color = color;
-		world.bgImage = bgImage;
-		let protoWorld = await this.worlds.save(world);
-		for (let i = 0; i <= world.limitX; i++) {
-			for (let j = 0; j <= world.limitY; i++) {
-				await this.squares.create(protoWorld.id, i, j);
+	async create(name: string, limitX: number, limitY: number, color: string, bgImage: string): Promise<WorldEntity> {
+		this.logger.log("WorldService.create");
+		const world = await this.worlds.save(this.worlds.create({
+			name,
+			color,
+			bgImage,
+			limitX,
+			limitY,
+			squares: [],
+		}));
+
+		for (let i = 0; i <= limitX; i++) {
+			for (let j = 0; j <= limitY; i++) {
+				world.squares.push(await this.squares.save(this.squares.create({
+					image: "",
+					world,
+					x: i,
+					y: j,
+				})));
 			}
 		}
-		return protoWorld;
+
+		return await this.worlds.save(world);
 	}
 }

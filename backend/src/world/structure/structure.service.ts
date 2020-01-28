@@ -5,7 +5,7 @@ import {SquareService} from "../square.service";
 import {StructureType} from "heroes-common";
 import {ShopEntity} from "../shop";
 
-interface UpdateStructureInfo{
+export interface UpdateStructureInfo{
 	worldId: number,
 	x: number,
 	y: number,
@@ -62,5 +62,5 @@ export class StructureService {
 		}
 		return await this.structures.save(structure);
 	}
-	
+
 }

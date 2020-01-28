@@ -1,0 +1,9 @@
+{
+	"type": "postgres",
+	"host": "localhost",
+	"username": "heroes",
+	"password": "ReactHeroes",
+	"database": "heroes",
+	"uuidExtension": "pgcrypto",
+	"synchronize": true
+}

@@ -16,7 +16,8 @@
 		"api:prod": "yarn --cwd backend run --prod start:prod",
 		"app:build": "yarn --cwd frontend build",
 		"app:prod": "yarn --cwd frontend run --prod prod",
-		"start": "yarn api:dev"
+		"start": "yarn api:dev",
+		"typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js"
 	},
 	"workspaces": [
 		"common",

@@ -1,0 +1,13 @@
+{
+	"type": "postgres",
+	"host": "localhost",
+	"username": "heroes",
+	"password": "ReactHeroes",
+	"database": "heroes",
+	"uuidExtension": "pgcrypto",
+	"synchronize": true,
+	"migrations": ["backend/migrations/*{.js,.ts}"],
+	"cli": {
+		"migrationsDir": "backend/migrations"
+	}
+}

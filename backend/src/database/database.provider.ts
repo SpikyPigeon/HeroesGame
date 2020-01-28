@@ -1,19 +1,16 @@
-import {createConnection} from "typeorm";
+import {createConnection, getConnectionOptions} from "typeorm";
 
 export const databaseProviders = [
 	{
 		provide: "DATABASE_CONNECTION",
-		useFactory: async () => await createConnection({
-			type: "postgres",
-			host: "localhost",
-			username: "heroes",
-			password: "ReactHeroes",
-			database: "heroes",
-			uuidExtension: "pgcrypto",
-			synchronize: true,
-			entities: [
-				__dirname + "/../**/*.entity{.ts,.js}",
-			],
-		})
+		useFactory: async () => {
+			const options = await getConnectionOptions();
+			Object.assign(options, {
+				entities: [
+					__dirname + "/../**/*.entity{.ts,.js}",
+				],
+			});
+			return await createConnection(options);
+		}
 	}
 ];

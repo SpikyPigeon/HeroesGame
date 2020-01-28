@@ -7,7 +7,9 @@ export class RollEntity implements ItemRoll {
 	@PrimaryGeneratedColumn("uuid")
 	id!: string;
 
-	@ManyToOne(type => ItemEntity)
+	@ManyToOne(type => ItemEntity, {
+		eager: true,
+	})
 	item!: ItemEntity;
 
 	@Column({

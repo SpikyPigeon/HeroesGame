@@ -28,13 +28,15 @@ export class SquareService {
 		return await this.squares.save(squares);
 	}
 
-	async findOne(worldId: number, x: number, y: number): Promise<SquareEntity>{
-		return await this.squares.findOneOrFail({where: {
-			worldId, x, y
-			}});
+	async findOne(worldId: number, x: number, y: number): Promise<SquareEntity> {
+		return await this.squares.findOneOrFail({
+			where: {
+				worldId, x, y
+			}
+		});
 	}
 
-	async findAll(worldId: number): Promise<SquareEntity[]>{
+	async findAll(worldId: number): Promise<SquareEntity[]> {
 		return await this.squares.find({where: {worldId}});
 	}
 

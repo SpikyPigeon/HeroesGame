@@ -27,13 +27,6 @@ export class CharacterService {
 		return await this.characters.findOneOrFail(id);
 	}
 
-	private async createEquipment(character: CharacterEntity): Promise<EquipmentEntity> {
-		const equip = this.equipments.create({
-			player: character,
-		});
-		return await this.equipments.save(equip);
-	}
-
 	async create(owner: UserEntity, name: string, avatar: AvatarEntity): Promise<CharacterEntity> {
 		const char = this.characters.create({
 			owner,
@@ -54,5 +47,12 @@ export class CharacterService {
 		char.vitality = vitality;
 		char.intellect = intellect;
 		return await this.characters.save(char);
+	}
+
+	private async createEquipment(character: CharacterEntity): Promise<EquipmentEntity> {
+		const equip = this.equipments.create({
+			player: character,
+		});
+		return await this.equipments.save(equip);
 	}
 }

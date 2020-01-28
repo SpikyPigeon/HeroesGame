@@ -5,7 +5,7 @@ import {SquareService} from "../square.service";
 import {StructureType} from "heroes-common";
 import {ShopEntity} from "../shop";
 
-export interface UpdateStructureInfo{
+export interface UpdateStructureInfo {
 	worldId: number,
 	x: number,
 	y: number,
@@ -43,21 +43,21 @@ export class StructureService {
 		return await this.structures.findOneOrFail({where: {structureId}});
 	}
 
-	async update(id: number, newStructure: Partial<UpdateStructureInfo>): Promise<StructureEntity>{
+	async update(id: number, newStructure: Partial<UpdateStructureInfo>): Promise<StructureEntity> {
 		const structure = await this.findOne(id);
-		if(newStructure.worldId && newStructure.x && newStructure.y){
+		if (newStructure.worldId && newStructure.x && newStructure.y) {
 			structure.square = await this.squares.findOne(newStructure.worldId, newStructure.x, newStructure.y);
 		}
-		if(newStructure.name){
+		if (newStructure.name) {
 			structure.name = newStructure.name;
 		}
-		if(newStructure.description){
+		if (newStructure.description) {
 			structure.description = newStructure.description;
 		}
-		if(newStructure.type){
+		if (newStructure.type) {
 			structure.type = newStructure.type;
 		}
-		if(newStructure.shop){
+		if (newStructure.shop) {
 			structure.shop = newStructure.shop;
 		}
 		return await this.structures.save(structure);

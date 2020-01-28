@@ -7,9 +7,7 @@ export class CategoryEntity implements ItemCategory {
 	@PrimaryGeneratedColumn()
 	id!: number;
 
-	@ManyToOne(type => CategoryEntity, category => category.children, {
-		eager: true,
-	})
+	@ManyToOne(type => CategoryEntity, category => category.children)
 	parent!: CategoryEntity;
 
 	@Column({

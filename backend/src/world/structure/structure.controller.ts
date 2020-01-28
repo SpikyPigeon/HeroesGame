@@ -1,7 +1,6 @@
 import {Body, Controller, Param, Get, Post, Put} from "@nestjs/common";
 import {StructureService, UpdateStructureInfo} from "./structure.service";
 import {StructureEntity} from "./structure.entity";
-import {SquareService} from "../square.service";
 import {StructureType} from "heroes-common";
 import {ShopEntity} from "../shop";
 import {SquareEntity} from "../square.entity";

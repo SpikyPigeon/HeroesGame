@@ -1,11 +1,11 @@
-import {Body, Controller, Param, Get, Post, Put} from "@nestjs/common";
+import {Body, Controller, Get, Param, Post, Put} from "@nestjs/common";
 import {StructureService, UpdateStructureInfo} from "./structure.service";
 import {StructureEntity} from "./structure.entity";
 import {StructureType} from "heroes-common";
 import {ShopEntity} from "../shop";
 import {SquareEntity} from "../square.entity";
 
-interface CreateStructureInfo{
+interface CreateStructureInfo {
 	square: SquareEntity,
 	name: string,
 	description: string,
@@ -19,22 +19,22 @@ export class StructureController {
 	}
 
 	@Post()
-	async create(@Body() data: CreateStructureInfo): Promise<StructureEntity>{
+	async create(@Body() data: CreateStructureInfo): Promise<StructureEntity> {
 		return await this.structures.create(data.square.worldId, data.square.x, data.square.y, data.name, data.description, data.type);
 	}
 
 	@Get()
-	async findAll(): Promise<StructureEntity[]>{
+	async findAll(): Promise<StructureEntity[]> {
 		return await this.structures.findAll();
 	}
 
 	@Get(":id")
-	async findOne(@Param("id") id:number): Promise<StructureEntity>{
+	async findOne(@Param("id") id: number): Promise<StructureEntity> {
 		return await this.structures.findOne(id);
 	}
 
 	@Put(":id")
-	async update(@Param("id") id: number, @Body() data: Partial<UpdateStructureInfo>): Promise<StructureEntity>{
+	async update(@Param("id") id: number, @Body() data: Partial<UpdateStructureInfo>): Promise<StructureEntity> {
 		return await this.structures.update(id, data);
 	}
 

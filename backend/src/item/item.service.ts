@@ -37,10 +37,10 @@ export class ItemService {
 	async updateCategory(id: number, name?: string, description?: string, parentId?: number): Promise<CategoryEntity> {
 		const cat = await this.findOneCategory(id);
 
-		if(name) {
+		if (name) {
 			cat.name = name;
 		}
-		if(description) {
+		if (description) {
 			cat.description = description;
 		}
 		if (parentId) {

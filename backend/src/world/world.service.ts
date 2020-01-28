@@ -1,4 +1,4 @@
-import {Inject, Injectable, Logger} from "@nestjs/common";
+import {Inject, Injectable} from "@nestjs/common";
 import {Repository} from "typeorm";
 import {SquareService} from "./square.service";
 import {WorldEntity} from "./world.entity";
@@ -39,11 +39,11 @@ export class WorldService {
 		return await this.worlds.save(world);
 	}
 
-	async findAll(): Promise<WorldEntity[]>{
+	async findAll(): Promise<WorldEntity[]> {
 		return await this.worlds.find();
 	}
 
-	async findOne(id: number): Promise<WorldEntity>{
+	async findOne(id: number): Promise<WorldEntity> {
 		return await this.worlds.findOneOrFail({where: {id}});
 	}
 

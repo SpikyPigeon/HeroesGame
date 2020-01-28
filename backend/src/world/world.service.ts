@@ -1,23 +1,18 @@
 import {Inject, Injectable, Logger} from "@nestjs/common";
 import {Repository} from "typeorm";
+import {SquareService} from "./square.service";
 import {WorldEntity} from "./world.entity";
-import {SquareEntity} from "./square.entity";
 
 @Injectable()
 export class WorldService {
-	private readonly logger: Logger = new Logger(WorldService.name);
-
 	constructor(
 		@Inject("WORLD_REPOSITORY")
 		private readonly worlds: Repository<WorldEntity>,
-		@Inject("SQUARE_REPOSITORY")
-		private readonly squares: Repository<SquareEntity>
+		private readonly squares: SquareService,
 	) {
 	}
 
 	async create(name: string, limitX: number, limitY: number, color: string, bgImage: string): Promise<WorldEntity> {
-		this.logger.log("WorldService.create");
-
 		const world = await this.worlds.save(this.worlds.create({
 			name,
 			color,
@@ -26,20 +21,7 @@ export class WorldService {
 			limitY,
 		}));
 
-		const squares = new Array<SquareEntity>();
-
-		for (let i = 0; i <= limitX; i++) {
-			for (let j = 0; j <= limitY; j++) {
-				squares.push(this.squares.create({
-					image: "",
-					world,
-					x: i,
-					y: j,
-				}));
-			}
-		}
-
-		await this.squares.save(squares);
+		await this.squares.create(world);
 		return world;
 	}
 }

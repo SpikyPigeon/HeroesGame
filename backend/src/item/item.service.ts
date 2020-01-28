@@ -33,4 +33,16 @@ export class ItemService {
 
 		return await this.categories.save(cat);
 	}
+
+	async updateCategory(id: number, name: string, description: string, parentId?: number): Promise<CategoryEntity> {
+		const cat = await this.findOneCategory(id);
+		cat.name = name;
+		cat.description = description;
+
+		if (parentId) {
+			cat.parent = await this.findOneCategory(parentId);
+		}
+
+		return await this.categories.save(cat);
+	}
 }

@@ -80,7 +80,7 @@ export class ItemEntity implements Item {
 	})
 	special!: Object;
 
-	@Column()
+	@Column({nullable: true})
 	skill!: number;
 
 	@CreateDateColumn()

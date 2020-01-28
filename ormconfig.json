@@ -5,5 +5,9 @@
 	"password": "ReactHeroes",
 	"database": "heroes",
 	"uuidExtension": "pgcrypto",
-	"synchronize": true
+	"synchronize": true,
+	"migrations": ["backend/migrations/*{.js,.ts}"],
+	"cli": {
+		"migrationsDir": "backend/migrations"
+	}
 }

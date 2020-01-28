@@ -3,7 +3,7 @@ import {Repository} from "typeorm";
 import {MonsterTypeEntity} from "./monster-type.entity";
 import {MonsterEntity} from "./monster.entity";
 
-interface MonsterInfo {
+export interface MonsterInfo {
 	name: string,
 	description: string,
 	type: MonsterTypeEntity,
@@ -13,6 +13,11 @@ interface MonsterInfo {
 	vitality: number,
 	intellect: number,
 	picture: string,
+}
+
+export interface TypeInfo{
+	name: string,
+	description: string,
 }
 
 @Injectable()
@@ -25,20 +30,41 @@ export class MonsterService {
 	) {
 	}
 
-	async create(data: MonsterInfo): Promise<MonsterEntity> {
+	//CREATE Section
+	async createMonster(data: MonsterInfo): Promise<MonsterEntity> {
 		return await this.monsters.save(this.monsters.create({...data}));
 	}
 
-	async findAll(): Promise<MonsterEntity[]> {
+	async createType(name: string, description: string): Promise<MonsterTypeEntity>{
+		const type = await this.types.save(this.types.create({
+			name,
+			description,
+		}));
+		await this.types.create(type);
+		return type;
+	}
+
+	//FIND ALL Section
+	async findAllMonsters(): Promise<MonsterEntity[]> {
 		return await this.monsters.find();
 	}
 
-	async findOne(id: number): Promise<MonsterEntity> {
+	async findAllTypes(): Promise<MonsterTypeEntity[]>{
+		return await this.types.find();
+	}
+
+	//FIND ONE Section
+	async findOneMonster(id: number): Promise<MonsterEntity> {
 		return await this.monsters.findOneOrFail({where: {id}});
 	}
 
-	async update(id: number, newMonster: Partial<MonsterInfo>): Promise<MonsterEntity> {
-		const monster = await this.findOne(id);
+	async findOneType(id: number): Promise<MonsterTypeEntity>{
+		return await this.types.findOneOrFail({where: {id}});
+	}
+
+	//UPDATE Section
+	async updateMonster(id: number, newMonster: Partial<MonsterInfo>): Promise<MonsterEntity> {
+		const monster = await this.findOneMonster(id);
 		if (newMonster.name) {
 			monster.name = newMonster.name;
 		}
@@ -68,5 +94,17 @@ export class MonsterService {
 		}
 		return await this.monsters.save(monster);
 	}
+
+	async updateType(id: number, newType: Partial<TypeInfo>): Promise<MonsterTypeEntity>{
+		const type = await this.findOneType(id);
+		if(newType.name){
+			type.name = newType.name;
+		}
+		if(newType.description){
+			type.description = newType.description;
+		}
+		return await this.types.save(type);
+	}
+
 
 }

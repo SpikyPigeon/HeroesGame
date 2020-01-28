@@ -9,7 +9,7 @@ import {join} from "path";
 
 import {AppModule} from "./app.module";
 
-const webpackConfig = require("../../frontend/webpack.config.js");
+const webpackConfig = require("../../../frontend/webpack.config.js");
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);

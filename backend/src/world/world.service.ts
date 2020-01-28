@@ -26,7 +26,7 @@ export class WorldService {
 	}
 
 	async update(id: number, newName?: string, newImage?: string, newColor?: string): Promise<WorldEntity> {
-		const world = await this.worlds.findOneOrFail({where: {id}});
+		const world = await this.findOne(id);
 		if (newName) {
 			world.name = newName;
 		}

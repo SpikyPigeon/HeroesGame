@@ -3,6 +3,14 @@ import {Repository} from "typeorm";
 import {EncounterDropEntity} from "./encounter-drop.entity";
 import {EncounterEntity} from "./encounter.entity";
 
+export interface EncounterInfo{
+	worldId: number,
+	x: number,
+	y: number,
+	monsterId: number,
+	spawnChance: number,
+}
+
 @Injectable()
 export class EncounterService {
 	constructor(
@@ -12,4 +20,6 @@ export class EncounterService {
 		private readonly drops: Repository<EncounterDropEntity>,
 	) {
 	}
+
+
 }

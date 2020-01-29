@@ -6,6 +6,7 @@ import {DatabaseModule} from "../database";
 import {AvatarService} from "./avatar.service";
 import {InventoryModule} from "./inventory";
 import {WorldModule} from "../world";
+import {SlapModule} from "./slap";
 
 @Module({
 	exports: [
@@ -14,6 +15,8 @@ import {WorldModule} from "../world";
 	],
 	imports: [
 		DatabaseModule,
+		InventoryModule,
+		SlapModule,
 		forwardRef(() => InventoryModule),
 		forwardRef(() => WorldModule),
 	],

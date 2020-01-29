@@ -1,5 +1,6 @@
-import {Body, Controller, Get, Param, Post, Put} from "@nestjs/common";
-import {ApiBody, ApiCreatedResponse, ApiOkResponse, ApiTags} from "@nestjs/swagger";
+import {ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiTags} from "@nestjs/swagger";
+import {Body, Controller, Get, Param, Post, Put, UseGuards} from "@nestjs/common";
+import {AuthGuard} from "@nestjs/passport";
 import {CreateWorldInfo, UpdateWorldInfo} from "./world.dto";
 import {WorldService} from "./world.service";
 import {WorldEntity} from "./world.entity";
@@ -22,15 +23,19 @@ export class WorldController {
 		return await this.worlds.findOne(id);
 	}
 
+	@ApiBearerAuth()
 	@ApiCreatedResponse({type: WorldEntity})
 	@ApiBody({type: CreateWorldInfo})
+	@UseGuards(AuthGuard("jwt"))
 	@Post()
 	async create(@Body() data: CreateWorldInfo): Promise<WorldEntity> {
 		return await this.worlds.create(data.name, data.limitX, data.limitY, data.color, data.bgImage);
 	}
 
+	@ApiBearerAuth()
 	@ApiOkResponse({type: WorldEntity})
 	@ApiBody({type: UpdateWorldInfo})
+	@UseGuards(AuthGuard("jwt"))
 	@Put(":id")
 	async update(@Param("id") id: number, @Body() data: Partial<UpdateWorldInfo>): Promise<WorldEntity> {
 		return await this.worlds.update(id, data.name, data.bgImage, data.color);

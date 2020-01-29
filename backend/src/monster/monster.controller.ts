@@ -5,7 +5,6 @@ import {MonsterInfo, MonsterTypeInfo} from "./monster.dto";
 import {MonsterTypeEntity} from "./monster-type.entity";
 import {MonsterService} from "./monster.service";
 import {MonsterEntity} from "./monster.entity";
-import {AdminGuard} from "../user";
 
 @ApiTags("monster")
 @Controller()
@@ -28,7 +27,7 @@ export class MonsterController {
 	@ApiBearerAuth()
 	@ApiCreatedResponse({type: MonsterTypeEntity})
 	@ApiBody({type: MonsterTypeInfo})
-	@UseGuards(AuthGuard("jwt"), AdminGuard)
+	@UseGuards(AuthGuard("jwt"))
 	@Post("type")
 	async createType(@Body() data: MonsterTypeInfo): Promise<MonsterTypeEntity> {
 		return await this.monsters.createType(data.name, data.description);
@@ -37,7 +36,7 @@ export class MonsterController {
 	@ApiBearerAuth()
 	@ApiOkResponse({type: MonsterTypeEntity})
 	@ApiBody({type: MonsterTypeInfo})
-	@UseGuards(AuthGuard("jwt"), AdminGuard)
+	@UseGuards(AuthGuard("jwt"))
 	@Put("type/:id")
 	async updateType(@Param("id") id: number, @Body() data: Partial<MonsterTypeInfo>): Promise<MonsterTypeEntity> {
 		return await this.monsters.updateType(id, data);
@@ -58,7 +57,7 @@ export class MonsterController {
 	@ApiBearerAuth()
 	@ApiCreatedResponse({type: MonsterEntity})
 	@ApiBody({type: MonsterInfo})
-	@UseGuards(AuthGuard("jwt"), AdminGuard)
+	@UseGuards(AuthGuard("jwt"))
 	@Post()
 	async createMonster(@Body() data: MonsterInfo): Promise<MonsterEntity> {
 		return await this.monsters.createMonster(data);
@@ -67,7 +66,7 @@ export class MonsterController {
 	@ApiBearerAuth()
 	@ApiOkResponse({type: MonsterEntity})
 	@ApiBody({type: MonsterInfo})
-	@UseGuards(AuthGuard("jwt"), AdminGuard)
+	@UseGuards(AuthGuard("jwt"))
 	@Put(":id")
 	async updateMonster(@Param("id") id: number, @Body() data: Partial<MonsterInfo>): Promise<MonsterEntity> {
 		return await this.monsters.updateMonster(id, data);

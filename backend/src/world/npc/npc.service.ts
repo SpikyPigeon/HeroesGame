@@ -1,16 +1,23 @@
-import {Inject, Injectable} from "@nestjs/common";
+import {Inject, Injectable, OnModuleInit} from "@nestjs/common";
+import {ModuleRef} from "@nestjs/core";
 import {Repository} from "typeorm";
 import {SquareService} from "../square.service";
 import {NpcEntity} from "./npc.entity";
 import {NpcInfo} from "./npc.dto";
 
 @Injectable()
-export class NpcService {
+export class NpcService implements OnModuleInit {
+	private squares!: SquareService;
+
 	constructor(
 		@Inject("NPC_REPOSITORY")
 		private readonly npcs: Repository<NpcEntity>,
-		private readonly squares: SquareService,
+		private readonly refs: ModuleRef,
 	) {
+	}
+
+	onModuleInit() {
+		this.squares = this.refs.get(SquareService, {strict: false});
 	}
 
 	async findAll(): Promise<Array<NpcEntity>> {

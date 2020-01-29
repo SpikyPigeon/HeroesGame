@@ -3,7 +3,7 @@ import {DatabaseModule} from "../../database";
 import {structureProviders} from "./structure.provider";
 import {StructureController} from "./structure.controller";
 import {StructureService} from "./structure.service";
-import {WorldModule} from "../world.module";
+import {AuthModule} from "../../auth";
 
 @Module({
 	exports: [
@@ -11,7 +11,7 @@ import {WorldModule} from "../world.module";
 	],
 	imports: [
 		DatabaseModule,
-		forwardRef(() => WorldModule),
+		forwardRef(() => AuthModule),
 	],
 	controllers: [
 		StructureController,

@@ -13,11 +13,11 @@ import {UserModule} from "./user";
 @Module({
 	imports: [
 		RouterModule.forRoutes(routes),
+		BankModule,
 		UserModule,
 		CharacterModule,
 		MonsterModule,
 		ItemModule,
-		BankModule,
 		WorldModule,
 	],
 })

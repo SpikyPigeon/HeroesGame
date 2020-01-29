@@ -1,4 +1,4 @@
-import {Module} from "@nestjs/common";
+import {forwardRef, Module} from "@nestjs/common";
 import {WorldController} from "./world.controller";
 import {WorldService} from "./world.service";
 import {worldProviders} from "./world.provider";
@@ -9,6 +9,7 @@ import {EncounterModule} from "./encounter";
 import {NpcModule} from "./npc";
 import {ShopModule} from "./shop";
 import {StructureModule} from "./structure";
+import {AuthModule} from "../auth";
 
 @Module({
 	exports: [
@@ -17,6 +18,7 @@ import {StructureModule} from "./structure";
 	],
 	imports: [
 		DatabaseModule,
+		forwardRef(() => AuthModule),
 		EncounterModule,
 		NpcModule,
 		ShopModule,

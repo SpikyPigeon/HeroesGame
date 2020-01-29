@@ -1,27 +1,24 @@
-import {Inject, Injectable} from "@nestjs/common";
+import {Inject, Injectable, OnModuleInit} from "@nestjs/common";
+import {ModuleRef} from "@nestjs/core";
 import {Repository} from "typeorm";
+import {CreateStructureInfo} from "./structure.dto";
 import {StructureEntity} from "./structure.entity";
 import {SquareService} from "../square.service";
 import {StructureType} from "heroes-common";
-import {ShopEntity} from "../shop";
-
-export interface UpdateStructureInfo {
-	worldId: number,
-	x: number,
-	y: number,
-	name: string,
-	description: string,
-	type: StructureType,
-	shop: ShopEntity,
-}
 
 @Injectable()
-export class StructureService {
+export class StructureService implements OnModuleInit {
+	private squares!: SquareService;
+
 	constructor(
 		@Inject("STRUCTURE_REPOSITORY")
 		private readonly structures: Repository<StructureEntity>,
-		private readonly squares: SquareService,
+		private readonly refs: ModuleRef,
 	) {
+	}
+
+	onModuleInit() {
+		this.squares = this.refs.get(SquareService, {strict: false});
 	}
 
 	async findAll(): Promise<Array<StructureEntity>> {
@@ -43,7 +40,7 @@ export class StructureService {
 		return structure;
 	}
 
-	async update(id: number, newStructure: Partial<UpdateStructureInfo>): Promise<StructureEntity> {
+	async update(id: number, newStructure: Partial<CreateStructureInfo>): Promise<StructureEntity> {
 		const structure = await this.findOne(id);
 		if (newStructure.worldId && newStructure.x && newStructure.y) {
 			structure.square = await this.squares.findOne(newStructure.worldId, newStructure.x, newStructure.y);
@@ -56,9 +53,6 @@ export class StructureService {
 		}
 		if (newStructure.type) {
 			structure.type = newStructure.type;
-		}
-		if (newStructure.shop) {
-			structure.shop = newStructure.shop;
 		}
 		return await this.structures.save(structure);
 	}

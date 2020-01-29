@@ -3,6 +3,7 @@ import {PassportStrategy} from "@nestjs/passport";
 import {Injectable, Logger} from "@nestjs/common";
 import {UserEntity, UserService} from "../user";
 import {jwtConstants} from "./constants";
+import {AuthPayload} from "./auth.dto";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -16,7 +17,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 		});
 	}
 
-	async validate(payload: any): Promise<UserEntity> {
+	async validate(payload: AuthPayload): Promise<UserEntity> {
 		this.logger.log(`validate : ${payload.email}`);
 		return await this.users.findOneById(payload.sub) as UserEntity;
 	}

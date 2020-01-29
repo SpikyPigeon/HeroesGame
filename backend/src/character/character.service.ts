@@ -28,16 +28,16 @@ export class CharacterService {
 	}
 
 	async create(owner: UserEntity, name: string, avatar: AvatarEntity): Promise<CharacterEntity> {
-		const char = this.characters.create({
+		const char = await this.characters.save(this.characters.create({
+			currentHealth: 0,
+			currentMana: 0,
 			owner,
 			name,
 			avatar,
-		});
+		}));
 
-		char.equipment = await this.createEquipment(char);
-		char.currentHealth = 0;
-		char.currentMana = 0;
-		return await this.characters.save(char);
+		await this.createEquipment(char);
+		return await this.findOne(char.id);
 	}
 
 	async updateStats(id: string, strength: number, dexterity: number, vitality: number, intellect: number): Promise<CharacterEntity> {

@@ -77,7 +77,9 @@ export class CharacterEntity implements PlayerCharacter {
 	@UpdateDateColumn()
 	updatedAt!: Date;
 
-	@OneToOne(type => EquipmentEntity, equipment => equipment.player)
+	@OneToOne(type => EquipmentEntity, equipment => equipment.player, {
+		eager: true,
+	})
 	equipment!: EquipmentEntity;
 
 	@OneToMany(type => InventoryEntity, inventory => inventory.owner)

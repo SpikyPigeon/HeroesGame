@@ -23,6 +23,7 @@ async function bootstrap() {
 		.setVersion("0.1")
 		.addServer("http://localhost:3000/", "Development Server")
 		.addServer("http://10.100.2.19/", "Production Server")
+		.addTag("auth")
 		.addTag("item")
 		.addTag("monster")
 		.addTag("world")

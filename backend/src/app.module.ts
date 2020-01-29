@@ -9,10 +9,12 @@ import {MessageModule, UserModule} from "./user";
 import {MonsterModule} from "./monster";
 import {ItemModule} from "./item";
 import {BankModule} from "./bank";
+import {AuthModule} from "./auth";
 
 @Module({
 	imports: [
 		RouterModule.forRoutes(routes),
+		AuthModule,
 		UserModule,
 		MessageModule,
 		CharacterModule,

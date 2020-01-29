@@ -3,9 +3,8 @@ import {Repository} from "typeorm";
 import {CharacterEntity} from "./character.entity";
 import {EquipmentEntity} from "./equipment.entity";
 import {AvatarService} from "./avatar.service";
-import {UserEntity} from "../user";
 import {AvatarEntity} from "./avatar.entity";
-import {WorldService} from "../world";
+import {UserEntity} from "../user";
 
 @Injectable()
 export class CharacterService {
@@ -15,7 +14,6 @@ export class CharacterService {
 		@Inject("EQUIPMENT_REPOSITORY")
 		private readonly equipments: Repository<EquipmentEntity>,
 		private readonly avatars: AvatarService,
-		private readonly worlds: WorldService,
 	) {
 	}
 

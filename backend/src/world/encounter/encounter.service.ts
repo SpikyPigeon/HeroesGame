@@ -3,7 +3,7 @@ import {Repository} from "typeorm";
 import {EncounterDropEntity} from "./encounter-drop.entity";
 import {EncounterEntity} from "./encounter.entity";
 
-export interface EncounterInfo{
+export interface EncounterInfo {
 	worldId: number,
 	x: number,
 	y: number,
@@ -20,6 +20,5 @@ export class EncounterService {
 		private readonly drops: Repository<EncounterDropEntity>,
 	) {
 	}
-
 
 }

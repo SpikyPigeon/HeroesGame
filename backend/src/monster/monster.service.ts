@@ -15,7 +15,7 @@ export interface MonsterInfo {
 	picture: string,
 }
 
-export interface TypeInfo{
+export interface TypeInfo {
 	name: string,
 	description: string,
 }
@@ -35,7 +35,7 @@ export class MonsterService {
 		return await this.monsters.save(this.monsters.create({...data}));
 	}
 
-	async createType(name: string, description: string): Promise<MonsterTypeEntity>{
+	async createType(name: string, description: string): Promise<MonsterTypeEntity> {
 		const type = await this.types.save(this.types.create({
 			name,
 			description,
@@ -49,7 +49,7 @@ export class MonsterService {
 		return await this.monsters.find();
 	}
 
-	async findAllTypes(): Promise<MonsterTypeEntity[]>{
+	async findAllTypes(): Promise<MonsterTypeEntity[]> {
 		return await this.types.find();
 	}
 
@@ -58,7 +58,7 @@ export class MonsterService {
 		return await this.monsters.findOneOrFail({where: {id}});
 	}
 
-	async findOneType(id: number): Promise<MonsterTypeEntity>{
+	async findOneType(id: number): Promise<MonsterTypeEntity> {
 		return await this.types.findOneOrFail({where: {id}});
 	}
 
@@ -95,16 +95,15 @@ export class MonsterService {
 		return await this.monsters.save(monster);
 	}
 
-	async updateType(id: number, newType: Partial<TypeInfo>): Promise<MonsterTypeEntity>{
+	async updateType(id: number, newType: Partial<TypeInfo>): Promise<MonsterTypeEntity> {
 		const type = await this.findOneType(id);
-		if(newType.name){
+		if (newType.name) {
 			type.name = newType.name;
 		}
-		if(newType.description){
+		if (newType.description) {
 			type.description = newType.description;
 		}
 		return await this.types.save(type);
 	}
-
 
 }

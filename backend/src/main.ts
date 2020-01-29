@@ -33,7 +33,7 @@ async function bootstrap() {
 	SwaggerModule.setup("api/doc", app, document);
 
 	if (process.env.NODE_ENV === "production") {
-		const path = join(__dirname, "../../frontend/dist");
+		const path = join(__dirname, "../../../frontend/dist");
 		instance.use(serve(path));
 		instance.get("*", (req, res) => res.sendFile(join(path, "index.html")));
 	} else {

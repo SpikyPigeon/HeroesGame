@@ -35,7 +35,7 @@ async function bootstrap() {
 	if (process.env.NODE_ENV === "production") {
 		const path = join(__dirname, "../../../frontend/dist");
 		instance.use(serve(path));
-		instance.get("*", (req, res) => res.sendFile(join(path, "index.html")));
+		instance.get(/^(?!\/api).*$/, (req, res) => res.sendFile(join(path, "index.html")));
 	} else {
 		const compiler = webpack({
 			mode: "development",

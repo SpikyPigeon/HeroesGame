@@ -19,7 +19,9 @@ export class BankService {
 	}
 
 	async create(): Promise<BankEntity> {
-		const bank = this.banks.create();
+		const bank = this.banks.create({
+			goldAmount: 0,
+		});
 		return await this.banks.save(bank);
 	}
 

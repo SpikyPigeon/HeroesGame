@@ -9,7 +9,7 @@ export class BankEntity implements Bank {
 	id!: string;
 
 	@ApiProperty()
-	@Column()
+	@Column({default: 0})
 	goldAmount!: number;
 
 	@ApiProperty()

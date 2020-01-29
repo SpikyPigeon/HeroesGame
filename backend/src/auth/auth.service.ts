@@ -34,7 +34,11 @@ export class AuthService {
 	}
 
 	async login(user: UserEntity): Promise<LoginResponse> {
-		return new LoginResponse(this.jwt.sign(new AuthPayload(user.email, user.id)));
+		const payload: AuthPayload = {
+			email: user.email,
+			sub: user.id,
+		};
+		return new LoginResponse(this.jwt.sign(payload));
 	}
 
 	async changePassword(userId: string, oldPass: string, newPass: string): Promise<UserEntity> {

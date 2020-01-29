@@ -3,6 +3,7 @@ import {UserController} from "./user.controller";
 import {UserService} from "./user.service";
 import {DatabaseModule} from "../database";
 import {userProviders} from "./user.provider";
+import {MessageModule} from "./message";
 import {AuthModule} from "../auth";
 import {BankModule} from "../bank";
 
@@ -15,6 +16,7 @@ import {BankModule} from "../bank";
 	],
 	imports: [
 		DatabaseModule,
+		MessageModule,
 		forwardRef(() => AuthModule),
 		forwardRef(() => BankModule),
 	],

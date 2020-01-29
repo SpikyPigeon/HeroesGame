@@ -15,10 +15,10 @@ import {UserModule} from "./user";
 		RouterModule.forRoutes(routes),
 		UserModule,
 		CharacterModule,
-		WorldModule,
+		MonsterModule,
 		ItemModule,
 		BankModule,
-		MonsterModule,
+		WorldModule,
 	],
 })
 export class AppModule {

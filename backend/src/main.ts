@@ -1,14 +1,14 @@
 import "reflect-metadata";
+import {DocumentBuilder, SwaggerModule} from "@nestjs/swagger";
 import {Express, static as serve} from "express";
 import webpackHot from "webpack-hot-middleware";
 import webpackDev from "webpack-dev-middleware";
 import {NestFactory} from "@nestjs/core";
 import webpack from "webpack";
 import {last} from "lodash";
-import {join} from "path";
 
+import {join} from "path";
 import {AppModule} from "./app.module";
-import {DocumentBuilder, SwaggerModule} from "@nestjs/swagger";
 
 const webpackConfig = require("../../../frontend/webpack.config.js");
 
@@ -23,6 +23,10 @@ async function bootstrap() {
 		.setVersion("0.1")
 		.addServer("http://localhost:3000/", "Development Server")
 		.addServer("http://10.100.2.19/", "Production Server")
+		.addTag("item")
+		.addTag("monster")
+		.addTag("world")
+		.addTag("user")
 		.addBearerAuth()
 		.build();
 	const document = SwaggerModule.createDocument(app, options);

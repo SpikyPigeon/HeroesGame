@@ -1,13 +1,8 @@
 import {ApiProperty} from "@nestjs/swagger";
 
-export class AuthPayload {
+export interface AuthPayload {
 	email: string;
 	sub: string;
-
-	constructor(email: string, sub: string) {
-		this.email = email;
-		this.sub = sub;
-	}
 }
 
 export class LoginResponse {

@@ -1,13 +1,14 @@
-import {Entity, JoinColumn, ManyToOne, OneToOne} from "typeorm";
+import {Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn} from "typeorm";
 import {CharacterEquipment} from "heroes-common";
 import {CharacterEntity} from "./character.entity";
 import {RollEntity} from "../item";
 
 @Entity("CharacterEquipment")
 export class EquipmentEntity implements CharacterEquipment {
-	@OneToOne(type => CharacterEntity, character => character.equipment, {
-		primary: true,
-	})
+	@PrimaryColumn()
+	playerId!: string;
+
+	@OneToOne(type => CharacterEntity, character => character.equipment)
 	@JoinColumn()
 	player!: CharacterEntity;
 

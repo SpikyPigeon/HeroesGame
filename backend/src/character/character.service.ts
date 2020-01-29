@@ -50,9 +50,8 @@ export class CharacterService {
 	}
 
 	private async createEquipment(character: CharacterEntity): Promise<EquipmentEntity> {
-		const equip = this.equipments.create({
+		return await this.equipments.save(this.equipments.create({
 			player: character,
-		});
-		return await this.equipments.save(equip);
+		}));
 	}
 }

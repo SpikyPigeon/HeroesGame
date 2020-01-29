@@ -28,7 +28,7 @@ export class AuthService {
 			} else {
 				return undefined;
 			}
-		} catch(e) {
+		} catch (e) {
 			return undefined;
 		}
 	}

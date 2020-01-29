@@ -3,6 +3,7 @@ import {UserController} from "./user.controller";
 import {UserService} from "./user.service";
 import {DatabaseModule} from "../database";
 import {userProviders} from "./user.provider";
+import {AuthModule} from "../auth";
 import {BankModule} from "../bank";
 
 @Module({
@@ -14,6 +15,7 @@ import {BankModule} from "../bank";
 	],
 	imports: [
 		DatabaseModule,
+		forwardRef(() => AuthModule),
 		forwardRef(() => BankModule),
 	],
 	providers: [

@@ -1,5 +1,4 @@
 import {ApiProperty} from "@nestjs/swagger";
-import {MonsterTypeEntity} from "./monster-type.entity";
 
 export class MonsterInfo {
 	@ApiProperty()

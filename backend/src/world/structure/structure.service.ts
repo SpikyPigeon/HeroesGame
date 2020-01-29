@@ -24,6 +24,14 @@ export class StructureService {
 	) {
 	}
 
+	async findAll(): Promise<Array<StructureEntity>> {
+		return await this.structures.find();
+	}
+
+	async findOne(structureId: number): Promise<StructureEntity> {
+		return await this.structures.findOneOrFail({where: {structureId}});
+	}
+
 	async create(worldId: number, x: number, y: number, name: string, description: string, type: StructureType): Promise<StructureEntity> {
 		const structure = await this.structures.save(this.structures.create({
 			square: await this.squares.findOne(worldId, x, y),
@@ -33,14 +41,6 @@ export class StructureService {
 		}));
 		await this.structures.create(structure);
 		return structure;
-	}
-
-	async findAll(): Promise<StructureEntity[]> {
-		return await this.structures.find();
-	}
-
-	async findOne(structureId: number): Promise<StructureEntity> {
-		return await this.structures.findOneOrFail({where: {structureId}});
 	}
 
 	async update(id: number, newStructure: Partial<UpdateStructureInfo>): Promise<StructureEntity> {
@@ -62,5 +62,4 @@ export class StructureService {
 		}
 		return await this.structures.save(structure);
 	}
-
 }

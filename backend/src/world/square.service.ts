@@ -11,7 +11,19 @@ export class SquareService {
 	) {
 	}
 
-	async create(world: WorldEntity): Promise<SquareEntity[]> {
+	async findAll(worldId: number): Promise<Array<SquareEntity>> {
+		return await this.squares.find({where: {worldId}});
+	}
+
+	async findOne(worldId: number, x: number, y: number): Promise<SquareEntity> {
+		return await this.squares.findOneOrFail({
+			where: {
+				worldId, x, y
+			}
+		});
+	}
+
+	async create(world: WorldEntity): Promise<Array<SquareEntity>> {
 		const squares = new Array<SquareEntity>();
 
 		for (let x = 0; x < world.limitX; x++) {
@@ -28,22 +40,9 @@ export class SquareService {
 		return await this.squares.save(squares);
 	}
 
-	async findOne(worldId: number, x: number, y: number): Promise<SquareEntity> {
-		return await this.squares.findOneOrFail({
-			where: {
-				worldId, x, y
-			}
-		});
-	}
-
-	async findAll(worldId: number): Promise<SquareEntity[]> {
-		return await this.squares.find({where: {worldId}});
-	}
-
 	async setImage(worldId: number, x: number, y: number, newImage: string): Promise<SquareEntity> {
 		const square = await this.findOne(worldId, x, y);
 		square.image = newImage;
 		return await this.squares.save(square);
 	}
-
 }

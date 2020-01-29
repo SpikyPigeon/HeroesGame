@@ -14,7 +14,7 @@ export class MonsterService {
 	) {
 	}
 
-	async findAllTypes(): Promise<MonsterTypeEntity[]> {
+	async findAllTypes(): Promise<Array<MonsterTypeEntity>> {
 		return await this.types.find();
 	}
 
@@ -34,7 +34,7 @@ export class MonsterService {
 		return await this.types.save(type);
 	}
 
-	async findAllMonsters(): Promise<MonsterEntity[]> {
+	async findAllMonsters(): Promise<Array<MonsterEntity>> {
 		return await this.monsters.find();
 	}
 

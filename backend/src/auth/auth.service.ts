@@ -14,10 +14,6 @@ export class AuthService {
 	) {
 	}
 
-	private static hashPassword(password: string): string {
-		return crypto.createHmac("sha256", password).digest("hex");
-	}
-
 	async validateUser(email: string, password: string): Promise<UserEntity | undefined> {
 		this.logger.log(`Searching for user email ${email}`);
 

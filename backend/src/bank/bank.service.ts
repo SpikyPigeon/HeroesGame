@@ -38,5 +38,4 @@ export class BankService {
 			return await this.banks.save(bank);
 		}
 	}
-
 }

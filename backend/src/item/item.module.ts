@@ -1,10 +1,11 @@
-import {Module} from '@nestjs/common';
+import {forwardRef, Module} from '@nestjs/common';
 import {ItemController} from './item.controller';
 import {ItemService} from './item.service';
 import {RollController} from "./roll.controller";
 import {RollService} from "./roll.service";
 import {itemProviders} from "./item.provider";
 import {DatabaseModule} from "../database";
+import {AuthModule} from "../auth";
 
 @Module({
 	exports: [
@@ -13,6 +14,7 @@ import {DatabaseModule} from "../database";
 	],
 	imports: [
 		DatabaseModule,
+		forwardRef(() => AuthModule),
 	],
 	controllers: [
 		ItemController,

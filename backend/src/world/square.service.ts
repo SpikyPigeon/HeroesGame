@@ -45,5 +45,4 @@ export class SquareService {
 		square.image = newImage;
 		return await this.squares.save(square);
 	}
-
 }

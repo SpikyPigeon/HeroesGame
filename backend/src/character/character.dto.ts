@@ -1,6 +1,7 @@
 import {ApiProperty} from "@nestjs/swagger";
+import {CharacterInfo, UpdateCharacterInfo} from "heroes-common";
 
-export class CharacterInfo {
+export class CharacterInfoDto implements CharacterInfo {
 	@ApiProperty()
 	owner: string = "";
 
@@ -11,7 +12,7 @@ export class CharacterInfo {
 	avatarId: number = 0;
 }
 
-export class UpdateCharacterInfo {
+export class UpdateCharacterInfoDto implements UpdateCharacterInfo {
 	@ApiProperty()
 	name: string = "";
 

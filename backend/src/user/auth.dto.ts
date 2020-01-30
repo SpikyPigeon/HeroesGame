@@ -1,11 +1,12 @@
 import {ApiProperty} from "@nestjs/swagger";
+import {LoginInfo, LoginResponse, PasswordChange} from "heroes-common";
 
 export interface AuthPayload {
 	email: string;
 	sub: string;
 }
 
-export class LoginResponse {
+export class LoginResponseDto implements LoginResponse {
 	@ApiProperty()
 	access_token: string;
 
@@ -14,7 +15,7 @@ export class LoginResponse {
 	}
 }
 
-export class LoginDefinition {
+export class LoginInfoDto implements LoginInfo {
 	@ApiProperty()
 	public readonly email: string;
 
@@ -27,7 +28,7 @@ export class LoginDefinition {
 	}
 }
 
-export class PasswordChangeDefinition {
+export class PasswordChangeInfoDto implements PasswordChange {
 	@ApiProperty()
 	public readonly oldPass: string;
 

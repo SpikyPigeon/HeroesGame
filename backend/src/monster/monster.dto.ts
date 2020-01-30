@@ -1,6 +1,7 @@
 import {ApiProperty} from "@nestjs/swagger";
+import {MonsterInfo, MonsterTypeInfo} from "heroes-common";
 
-export class MonsterInfo {
+export class MonsterInfoDto implements MonsterInfo {
 	@ApiProperty()
 	name: string = "";
 
@@ -29,7 +30,7 @@ export class MonsterInfo {
 	picture: string = "";
 }
 
-export class MonsterTypeInfo {
+export class MonsterTypeInfoDto implements MonsterTypeInfo {
 	@ApiProperty()
 	name: string = "";
 

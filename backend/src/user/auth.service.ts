@@ -1,6 +1,6 @@
 import {Injectable, Logger} from '@nestjs/common';
 import {JwtService} from "@nestjs/jwt";
-import {AuthPayload, LoginResponse} from "./auth.dto";
+import {AuthPayload, LoginResponseDto} from "./auth.dto";
 import {UserService} from "./user.service";
 import {UserEntity} from "./user.entity";
 
@@ -29,12 +29,12 @@ export class AuthService {
 		}
 	}
 
-	async login(user: UserEntity): Promise<LoginResponse> {
+	async login(user: UserEntity): Promise<LoginResponseDto> {
 		const payload: AuthPayload = {
 			email: user.email,
 			sub: user.id,
 		};
-		return new LoginResponse(this.jwt.sign(payload));
+		return new LoginResponseDto(this.jwt.sign(payload));
 	}
 
 	async changePassword(userId: string, oldPass: string, newPass: string): Promise<UserEntity> {

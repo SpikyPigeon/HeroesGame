@@ -1,6 +1,7 @@
 import {ApiProperty} from "@nestjs/swagger";
+import {CreateUserInfo, ModifyUserProfile} from "heroes-common";
 
-export class CreateUserInfo {
+export class CreateUserInfoDto implements CreateUserInfo {
 	@ApiProperty()
 	email: string = "";
 
@@ -14,7 +15,7 @@ export class CreateUserInfo {
 	lastName: string = "";
 }
 
-export class ModifyUserProfile {
+export class ModifyUserProfileDto implements ModifyUserProfile {
 	@ApiProperty()
 	email: string = "";
 

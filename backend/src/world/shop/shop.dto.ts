@@ -1,11 +1,11 @@
 import {ApiProperty} from "@nestjs/swagger";
 
-export class ShopInfo{
+export class ShopInfo {
 	@ApiProperty()
 	priceMod: number = 0;
 }
 
-export class CreateSellsInfo{
+export class CreateSellsInfo {
 	@ApiProperty()
 	shopId: number = 0;
 
@@ -16,7 +16,7 @@ export class CreateSellsInfo{
 	price: number = 0;
 }
 
-export class UpdateSellsInfo{
+export class UpdateSellsInfo {
 	@ApiProperty()
 	price: number = 0;
 }

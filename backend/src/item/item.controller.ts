@@ -1,7 +1,7 @@
 import {ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiTags} from "@nestjs/swagger";
 import {Body, Controller, Get, Param, Post, Put, UseGuards} from "@nestjs/common";
 import {AuthGuard} from "@nestjs/passport";
-import {CreateCategoryInfo, CreateItemInfo, UpdateItemInfo} from "./item.dto";
+import {CreateCategoryInfoDto, CreateItemInfoDto, UpdateItemInfoDto} from "./item.dto";
 import {CategoryEntity} from "./category.entity";
 import {ItemService} from "./item.service";
 import {ItemEntity} from "./item.entity";
@@ -26,19 +26,19 @@ export class ItemController {
 
 	@ApiBearerAuth()
 	@ApiCreatedResponse({type: CategoryEntity})
-	@ApiBody({type: CreateCategoryInfo})
+	@ApiBody({type: CreateCategoryInfoDto})
 	@UseGuards(AuthGuard("jwt"))
 	@Post("category")
-	async createCategory(@Body() data: CreateCategoryInfo): Promise<CategoryEntity> {
+	async createCategory(@Body() data: CreateCategoryInfoDto): Promise<CategoryEntity> {
 		return await this.items.createCategory(data.name, data.description, data.parentId);
 	}
 
 	@ApiBearerAuth()
 	@ApiOkResponse({type: CategoryEntity})
-	@ApiBody({type: CreateCategoryInfo})
+	@ApiBody({type: CreateCategoryInfoDto})
 	@UseGuards(AuthGuard("jwt"))
 	@Put("category/:id")
-	async updateCategory(@Param("id") id: number, @Body() data: Partial<CreateCategoryInfo>): Promise<CategoryEntity> {
+	async updateCategory(@Param("id") id: number, @Body() data: Partial<CreateCategoryInfoDto>): Promise<CategoryEntity> {
 		return await this.items.updateCategory(id, data.name, data.description, data.parentId);
 	}
 
@@ -56,19 +56,19 @@ export class ItemController {
 
 	@ApiBearerAuth()
 	@ApiCreatedResponse({type: ItemEntity})
-	@ApiBody({type: CreateItemInfo})
+	@ApiBody({type: CreateItemInfoDto})
 	@UseGuards(AuthGuard("jwt"))
 	@Post()
-	async createItem(@Body() data: CreateItemInfo): Promise<ItemEntity> {
+	async createItem(@Body() data: CreateItemInfoDto): Promise<ItemEntity> {
 		return await this.items.createItem(data.name, data.description, data.categoryId);
 	}
 
 	@ApiBearerAuth()
 	@ApiOkResponse({type: ItemEntity})
-	@ApiBody({type: UpdateItemInfo})
+	@ApiBody({type: UpdateItemInfoDto})
 	@UseGuards(AuthGuard("jwt"))
 	@Put(":id")
-	async updateItem(@Param("id") id: number, @Body() data: Partial<UpdateItemInfo>): Promise<ItemEntity> {
+	async updateItem(@Param("id") id: number, @Body() data: Partial<UpdateItemInfoDto>): Promise<ItemEntity> {
 		return await this.items.updateItem(id, {...data});
 	}
 }

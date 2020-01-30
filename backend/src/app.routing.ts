@@ -6,16 +6,11 @@ import {MessageModule, UserModule} from "./user";
 import {MonsterModule} from "./monster";
 import {ItemModule} from "./item";
 import {BankModule} from "./bank";
-import {AuthModule} from "./auth";
 
 export const routes: Routes = [
 	{
 		path: "/api",
 		children: [
-			{
-				path: "/auth",
-				module: AuthModule,
-			},
 			{
 				path: "/user",
 				module: UserModule,

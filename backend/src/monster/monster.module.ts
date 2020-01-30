@@ -3,7 +3,7 @@ import {MonsterController} from "./monster.controller";
 import {MonsterService} from "./monster.service";
 import {monsterProviders} from "./monster.provider";
 import {DatabaseModule} from "../database";
-import {AuthModule} from "../auth";
+import {UserModule} from "../user";
 
 @Module({
 	exports: [
@@ -11,7 +11,7 @@ import {AuthModule} from "../auth";
 	],
 	imports: [
 		DatabaseModule,
-		forwardRef(() => AuthModule)
+		forwardRef(() => UserModule)
 	],
 	controllers: [
 		MonsterController,

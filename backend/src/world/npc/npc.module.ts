@@ -3,7 +3,7 @@ import {DatabaseModule} from "../../database";
 import {NpcService} from "./npc.service";
 import {npcProviders} from "./npc.provider";
 import {NpcController} from "./npc.controller";
-import {AuthModule} from "../../auth";
+import {UserModule} from "../../user";
 
 @Module({
 	exports: [
@@ -11,7 +11,7 @@ import {AuthModule} from "../../auth";
 	],
 	imports: [
 		DatabaseModule,
-		forwardRef(() => AuthModule),
+		forwardRef(() => UserModule),
 	],
 	controllers: [
 		NpcController,

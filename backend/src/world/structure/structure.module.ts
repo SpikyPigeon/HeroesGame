@@ -3,7 +3,7 @@ import {DatabaseModule} from "../../database";
 import {structureProviders} from "./structure.provider";
 import {StructureController} from "./structure.controller";
 import {StructureService} from "./structure.service";
-import {AuthModule} from "../../auth";
+import {UserModule} from "../../user";
 
 @Module({
 	exports: [
@@ -11,7 +11,7 @@ import {AuthModule} from "../../auth";
 	],
 	imports: [
 		DatabaseModule,
-		forwardRef(() => AuthModule),
+		forwardRef(() => UserModule),
 	],
 	controllers: [
 		StructureController,

@@ -5,7 +5,7 @@ import {RollController} from "./roll.controller";
 import {RollService} from "./roll.service";
 import {itemProviders} from "./item.provider";
 import {DatabaseModule} from "../database";
-import {AuthModule} from "../auth";
+import {UserModule} from "../user";
 
 @Module({
 	exports: [
@@ -14,7 +14,7 @@ import {AuthModule} from "../auth";
 	],
 	imports: [
 		DatabaseModule,
-		forwardRef(() => AuthModule),
+		forwardRef(() => UserModule),
 	],
 	controllers: [
 		ItemController,

@@ -2,11 +2,12 @@ import {ApiBearerAuth, ApiBody, ApiForbiddenResponse, ApiOkResponse, ApiTags} fr
 import {Body, Controller, HttpException, HttpStatus, Post, UseGuards} from "@nestjs/common";
 import {AuthGuard} from "@nestjs/passport";
 import {LoginDefinition, LoginResponse, PasswordChangeDefinition} from "./auth.dto";
-import {UserEntity, UserRequest} from "../user";
+import {UserRequest} from "./user.decorator";
 import {AuthService} from "./auth.service";
+import {UserEntity} from "./user.entity";
 
 @ApiTags("auth")
-@Controller()
+@Controller("auth")
 export class AuthController {
 	constructor(private readonly auth: AuthService) {
 	}
@@ -15,7 +16,7 @@ export class AuthController {
 	@ApiForbiddenResponse({description: "Login information are incorrect"})
 	@ApiBody({type: LoginDefinition})
 	@UseGuards(AuthGuard("local"))
-	@Post("login")
+	@Post()
 	async login(@UserRequest() user: UserEntity): Promise<LoginResponse> {
 		return this.auth.login(user);
 	}

@@ -9,7 +9,7 @@ import {EncounterModule} from "./encounter";
 import {NpcModule} from "./npc";
 import {ShopModule} from "./shop";
 import {StructureModule} from "./structure";
-import {AuthModule} from "../auth";
+import {UserModule} from "../user";
 
 @Module({
 	exports: [
@@ -18,7 +18,7 @@ import {AuthModule} from "../auth";
 	],
 	imports: [
 		DatabaseModule,
-		forwardRef(() => AuthModule),
+		forwardRef(() => UserModule),
 		EncounterModule,
 		NpcModule,
 		ShopModule,

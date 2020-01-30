@@ -33,7 +33,6 @@ export class CharacterService {
 			name,
 			avatar,
 		}));
-
 		await this.createEquipment(char);
 		return await this.findOne(char.id);
 	}

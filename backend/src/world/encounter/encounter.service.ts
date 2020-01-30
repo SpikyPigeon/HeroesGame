@@ -48,13 +48,13 @@ export class EncounterService implements OnModuleInit {
 
 	async updateDrop(id: number, newDrop: Partial<UpdateDropInfo>): Promise<EncounterDropEntity> {
 		const drop = await this.findOneDrop(id);
-		if(newDrop.dropChance){
+		if (newDrop.dropChance) {
 			drop.dropChance = newDrop.dropChance;
 		}
-		if(newDrop.minQuantity){
+		if (newDrop.minQuantity) {
 			drop.minQuantity = newDrop.minQuantity;
 		}
-		if(newDrop.maxQuantity){
+		if (newDrop.maxQuantity) {
 			drop.maxQuantity = newDrop.maxQuantity;
 		}
 		return await this.drops.save(drop);

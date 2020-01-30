@@ -1,6 +1,6 @@
 import {ApiProperty} from "@nestjs/swagger";
 
-export class CharacterInfo{
+export class CharacterInfo {
 	@ApiProperty()
 	owner: string = "";
 
@@ -11,7 +11,7 @@ export class CharacterInfo{
 	avatarId: number = 0;
 }
 
-export class UpdateCharacterInfo{
+export class UpdateCharacterInfo {
 	@ApiProperty()
 	name: string = "";
 

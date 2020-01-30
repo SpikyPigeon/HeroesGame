@@ -1,7 +1,7 @@
 import {ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiTags} from "@nestjs/swagger";
 import {Body, Controller, Get, Param, Post, Put, UseGuards} from "@nestjs/common";
 import {AuthGuard} from "@nestjs/passport";
-import {EncounterDropInfo, EncounterInfo} from "./encounter.dto";
+import {CreateDropInfo, EncounterInfo, UpdateDropInfo} from "./encounter.dto";
 import {EncounterDropEntity} from "./encounter-drop.entity";
 import {EncounterService} from "./encounter.service";
 import {EncounterEntity} from "./encounter.entity";
@@ -28,19 +28,19 @@ export class EncounterController {
 
 	@ApiBearerAuth()
 	@ApiCreatedResponse({type: EncounterDropEntity})
-	@ApiBody({type: EncounterDropInfo})
+	@ApiBody({type: CreateDropInfo})
 	@UseGuards(AuthGuard("jwt"))
 	@Post("drop")
-	async createDrop(@Body() data: EncounterDropInfo): Promise<EncounterDropEntity> {
+	async createDrop(@Body() data: CreateDropInfo): Promise<EncounterDropEntity> {
 		return await this.encounters.createDrop(data);
 	}
 
 	@ApiBearerAuth()
 	@ApiOkResponse({type: EncounterDropEntity})
-	@ApiBody({type: EncounterDropInfo})
+	@ApiBody({type: UpdateDropInfo})
 	@UseGuards(AuthGuard("jwt"))
 	@Put("drop/:id")
-	async updateDrop(@Param() id: number, @Body() data: Partial<EncounterDropInfo>): Promise<EncounterDropEntity> {
+	async updateDrop(@Param() id: number, @Body() data: Partial<UpdateDropInfo>): Promise<EncounterDropEntity> {
 		return await this.encounters.updateDrop(id, data);
 	}
 

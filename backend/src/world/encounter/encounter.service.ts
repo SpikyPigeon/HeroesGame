@@ -1,6 +1,6 @@
 import {Inject, Injectable, OnModuleInit} from "@nestjs/common";
 import {Repository} from "typeorm";
-import {EncounterDropInfo, EncounterInfo} from "./encounter.dto";
+import {CreateDropInfo, EncounterInfo, UpdateDropInfo} from "./encounter.dto";
 import {EncounterDropEntity} from "./encounter-drop.entity";
 import {EncounterEntity} from "./encounter.entity";
 import {SquareService} from "../square.service";
@@ -34,7 +34,7 @@ export class EncounterService implements OnModuleInit {
 		return await this.drops.findOneOrFail({where: {id}});
 	}
 
-	async createDrop(data: EncounterDropInfo): Promise<EncounterDropEntity> {
+	async createDrop(data: CreateDropInfo): Promise<EncounterDropEntity> {
 		const drop = await this.drops.save(this.drops.create({
 			itemId: data.itemId,
 			encounterId: data.encounterId,
@@ -46,7 +46,7 @@ export class EncounterService implements OnModuleInit {
 		return drop;
 	}
 
-	async updateDrop(id: number, newDrop: Partial<EncounterDropInfo>): Promise<EncounterDropEntity> {
+	async updateDrop(id: number, newDrop: Partial<UpdateDropInfo>): Promise<EncounterDropEntity> {
 		const drop = await this.findOneDrop(id);
 		if(newDrop.dropChance){
 			drop.dropChance = newDrop.dropChance;

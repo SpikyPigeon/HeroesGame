@@ -23,13 +23,24 @@ export class EncounterInfo {
 	maxGold: number = 0;
 }
 
-export class EncounterDropInfo {
+export class CreateDropInfo {
 	@ApiProperty()
 	itemId: number = 0;
 
 	@ApiProperty()
 	encounterId: number = 0;
 
+	@ApiProperty()
+	dropChance: number = 0;
+
+	@ApiProperty()
+	minQuantity: number = 0;
+
+	@ApiProperty()
+	maxQuantity: number = 0;
+}
+
+export class UpdateDropInfo {
 	@ApiProperty()
 	dropChance: number = 0;
 

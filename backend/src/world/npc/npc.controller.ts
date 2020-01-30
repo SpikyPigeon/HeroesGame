@@ -1,39 +1,43 @@
-import {Body, Controller, Param, Get, Post, Put} from "@nestjs/common";
-import {SquareEntity} from "../square.entity";
-import {ShopEntity} from "../shop";
+import {ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiTags} from "@nestjs/swagger";
+import {Body, Controller, Get, Param, Post, Put, UseGuards} from "@nestjs/common";
 import {NpcService} from "./npc.service";
 import {NpcEntity} from "./npc.entity";
+import {NpcInfo} from "./npc.dto";
+import {AuthGuard} from "@nestjs/passport";
 
-interface CreateNpcInfo{
-	square: SquareEntity,
-	name: string,
-	description: string,
-	shop: ShopEntity,
-}
-
+@ApiTags("world")
 @Controller()
 export class NpcController {
 	constructor(private readonly npcs: NpcService) {
 	}
 
-	@Post()
-	async create(@Body() data: CreateNpcInfo): Promise<NpcEntity>{
-		return await this.npcs.create(data.square.worldId, data.square.x, data.square.y, data.name, data.description);
-	}
-
+	@ApiOkResponse({type: NpcEntity, isArray: true})
 	@Get()
-	async findAll(): Promise<NpcEntity[]>{
+	async findAll(): Promise<Array<NpcEntity>> {
 		return await this.npcs.findAll();
 	}
 
+	@ApiOkResponse({type: NpcEntity})
 	@Get(":id")
-	async findOne(@Param("id") id: number): Promise<NpcEntity>{
+	async findOne(@Param("id") id: number): Promise<NpcEntity> {
 		return await this.npcs.findOne(id);
 	}
 
-	@Put(":id")
-	async update(@Param("id") id:number, @Body() data: Partial<NpcEntity>): Promise<NpcEntity>{
-		return await this.npcs.update(id, data);
+	@ApiBearerAuth()
+	@ApiCreatedResponse({type: NpcEntity})
+	@ApiBody({type: NpcInfo})
+	@UseGuards(AuthGuard("jwt"))
+	@Post()
+	async create(@Body() data: NpcInfo): Promise<NpcEntity> {
+		return await this.npcs.create(data.worldId, data.x, data.y, data.name, data.description);
 	}
 
+	@ApiBearerAuth()
+	@ApiOkResponse({type: NpcEntity})
+	@ApiBody({type: NpcInfo})
+	@UseGuards(AuthGuard("jwt"))
+	@Put(":id")
+	async update(@Param("id") id: number, @Body() data: Partial<NpcEntity>): Promise<NpcEntity> {
+		return await this.npcs.update(id, data);
+	}
 }

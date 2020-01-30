@@ -6,3 +6,4 @@ export * from "./roll.service";
 export * from "./item.module";
 export * from "./item.entity";
 export * from "./roll.entity";
+export * from "./item.dto";

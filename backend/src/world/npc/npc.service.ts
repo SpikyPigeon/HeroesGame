@@ -1,36 +1,26 @@
-import {Inject, Injectable} from "@nestjs/common";
+import {Inject, Injectable, OnModuleInit} from "@nestjs/common";
+import {ModuleRef} from "@nestjs/core";
 import {Repository} from "typeorm";
-import {NpcEntity} from "./npc.entity";
 import {SquareService} from "../square.service";
-
-interface UpdateNpcInfo {
-	worldId: number,
-	x: number,
-	y: number,
-	name: string,
-	description: string,
-}
+import {NpcEntity} from "./npc.entity";
+import {NpcInfo} from "./npc.dto";
 
 @Injectable()
-export class NpcService {
+export class NpcService implements OnModuleInit {
+	private squares!: SquareService;
+
 	constructor(
 		@Inject("NPC_REPOSITORY")
 		private readonly npcs: Repository<NpcEntity>,
-		private readonly squares: SquareService,
+		private readonly refs: ModuleRef,
 	) {
 	}
 
-	async create(worldId: number, x: number, y: number, name: string, description: string): Promise<NpcEntity> {
-		const npc = await this.npcs.save(this.npcs.create({
-			square: await this.squares.findOne(worldId, x, y),
-			name,
-			description,
-		}));
-		await this.npcs.create(npc);
-		return npc;
+	onModuleInit() {
+		this.squares = this.refs.get(SquareService, {strict: false});
 	}
 
-	async findAll(): Promise<NpcEntity[]> {
+	async findAll(): Promise<Array<NpcEntity>> {
 		return await this.npcs.find();
 	}
 
@@ -38,18 +28,25 @@ export class NpcService {
 		return await this.npcs.findOneOrFail({where: {id}});
 	}
 
-	async update(id: number, newNpc: Partial<UpdateNpcInfo>): Promise<NpcEntity> {
+	async create(worldId: number, x: number, y: number, name: string, description: string): Promise<NpcEntity> {
+		return await this.npcs.save(this.npcs.create({
+			square: await this.squares.findOne(worldId, x, y),
+			name,
+			description,
+		}));
+	}
+
+	async update(id: number, info: Partial<NpcInfo>): Promise<NpcEntity> {
 		const npc = await this.findOne(id);
-		if (newNpc.worldId && newNpc.x && newNpc.y) {
-			npc.square = await this.squares.findOne(newNpc.worldId, newNpc.x, newNpc.y);
+		if (info.worldId && info.x && info.y) {
+			npc.square = await this.squares.findOne(info.worldId, info.x, info.y);
 		}
-		if (newNpc.name) {
-			npc.name = newNpc.name;
+		if (info.name) {
+			npc.name = info.name;
 		}
-		if (newNpc.description) {
-			npc.description = newNpc.description;
+		if (info.description) {
+			npc.description = info.description;
 		}
 		return await this.npcs.save(npc);
 	}
-
 }

@@ -12,6 +12,14 @@ export class WorldService {
 	) {
 	}
 
+	async findAll(): Promise<Array<WorldEntity>> {
+		return await this.worlds.find();
+	}
+
+	async findOne(id: number): Promise<WorldEntity> {
+		return await this.worlds.findOneOrFail({where: {id}});
+	}
+
 	async create(name: string, limitX: number, limitY: number, color: string, bgImage: string): Promise<WorldEntity> {
 		const world = await this.worlds.save(this.worlds.create({
 			name,
@@ -38,13 +46,4 @@ export class WorldService {
 		}
 		return await this.worlds.save(world);
 	}
-
-	async findAll(): Promise<WorldEntity[]> {
-		return await this.worlds.find();
-	}
-
-	async findOne(id: number): Promise<WorldEntity> {
-		return await this.worlds.findOneOrFail({where: {id}});
-	}
-
 }

@@ -3,9 +3,8 @@ import {Repository} from "typeorm";
 import {CharacterEntity} from "./character.entity";
 import {EquipmentEntity} from "./equipment.entity";
 import {AvatarService} from "./avatar.service";
-import {UserEntity} from "../user";
 import {AvatarEntity} from "./avatar.entity";
-import {WorldService} from "../world";
+import {UserEntity} from "../user";
 
 @Injectable()
 export class CharacterService {
@@ -15,7 +14,6 @@ export class CharacterService {
 		@Inject("EQUIPMENT_REPOSITORY")
 		private readonly equipments: Repository<EquipmentEntity>,
 		private readonly avatars: AvatarService,
-		private readonly worlds: WorldService,
 	) {
 	}
 
@@ -28,16 +26,16 @@ export class CharacterService {
 	}
 
 	async create(owner: UserEntity, name: string, avatar: AvatarEntity): Promise<CharacterEntity> {
-		const char = this.characters.create({
+		const char = await this.characters.save(this.characters.create({
+			currentHealth: 0,
+			currentMana: 0,
 			owner,
 			name,
 			avatar,
-		});
+		}));
 
-		char.equipment = await this.createEquipment(char);
-		char.currentHealth = 0;
-		char.currentMana = 0;
-		return await this.characters.save(char);
+		await this.createEquipment(char);
+		return await this.findOne(char.id);
 	}
 
 	async updateStats(id: string, strength: number, dexterity: number, vitality: number, intellect: number): Promise<CharacterEntity> {
@@ -50,9 +48,8 @@ export class CharacterService {
 	}
 
 	private async createEquipment(character: CharacterEntity): Promise<EquipmentEntity> {
-		const equip = this.equipments.create({
+		return await this.equipments.save(this.equipments.create({
 			player: character,
-		});
-		return await this.equipments.save(equip);
+		}));
 	}
 }

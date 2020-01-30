@@ -1,9 +1,8 @@
-import {forwardRef, Module} from "@nestjs/common";
+import {Module} from "@nestjs/common";
 import {InventoryController} from "./inventory.controller";
 import {InventoryService} from "./inventory.service";
 import {inventoryProviders} from "./inventory.provider";
 import {DatabaseModule} from "../../database";
-import {ItemModule} from "../../item";
 
 @Module({
 	exports: [
@@ -11,7 +10,6 @@ import {ItemModule} from "../../item";
 	],
 	imports: [
 		DatabaseModule,
-		forwardRef(() => ItemModule),
 	],
 	controllers: [
 		InventoryController,

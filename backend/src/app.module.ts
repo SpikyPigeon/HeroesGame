@@ -3,29 +3,22 @@ import {Module} from "@nestjs/common";
 
 import {routes} from "./app.routing";
 
-import {EncounterModule, NpcModule, ShopModule, StructureModule, WorldModule} from "./world";
-import {CharacterModule, InventoryModule, SlapModule} from "./character";
-import {MessageModule, UserModule} from "./user";
+import {CharacterModule} from "./character";
 import {MonsterModule} from "./monster";
+import {WorldModule} from "./world";
 import {ItemModule} from "./item";
 import {BankModule} from "./bank";
+import {UserModule} from "./user";
 
 @Module({
 	imports: [
 		RouterModule.forRoutes(routes),
-		UserModule,
-		MessageModule,
-		CharacterModule,
-		SlapModule,
-		InventoryModule,
-		WorldModule,
-		ItemModule,
 		BankModule,
+		UserModule,
+		CharacterModule,
 		MonsterModule,
-		EncounterModule,
-		StructureModule,
-		ShopModule,
-		NpcModule,
+		ItemModule,
+		WorldModule,
 	],
 })
 export class AppModule {

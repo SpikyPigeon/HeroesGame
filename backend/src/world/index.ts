@@ -5,6 +5,7 @@ export * from "./world.service";
 export * from "./world.module";
 export * from "./square.entity";
 export * from "./world.entity";
+export * from "./world.dto";
 
 export * from "./encounter";
 export * from "./structure";

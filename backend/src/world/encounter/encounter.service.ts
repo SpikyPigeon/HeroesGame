@@ -1,50 +1,37 @@
-import {Inject, Injectable} from "@nestjs/common";
+import {Inject, Injectable, OnModuleInit} from "@nestjs/common";
 import {Repository} from "typeorm";
+import {EncounterDropInfo, EncounterInfo} from "./encounter.dto";
 import {EncounterDropEntity} from "./encounter-drop.entity";
 import {EncounterEntity} from "./encounter.entity";
 import {SquareService} from "../square.service";
 import {MonsterService} from "../../monster";
-
-export interface EncounterInfo {
-	worldId: number,
-	x: number,
-	y: number,
-	monsterId: number,
-	spawnChance: number,
-	minGold: number,
-	maxGold: number,
-}
-
-export interface EncounterDropInfo {
-	itemId: number,
-	encounterId: number,
-	dropChance: number,
-	minQuantity: number,
-	maxQuantity: number,
-}
+import {ModuleRef} from "@nestjs/core";
 
 @Injectable()
-export class EncounterService {
+export class EncounterService implements OnModuleInit {
+	private squares!: SquareService;
+	private monsters!: MonsterService;
+
 	constructor(
 		@Inject("ENCOUNTER_REPOSITORY")
 		private readonly encounters: Repository<EncounterEntity>,
 		@Inject("ENCOUNTER_DROP_REPOSITORY")
 		private readonly drops: Repository<EncounterDropEntity>,
-		private readonly squares: SquareService,
-		private readonly monsters: MonsterService,
+		private readonly refs: ModuleRef,
 	) {
 	}
 
-	async createEncounter(data: EncounterInfo): Promise<EncounterEntity> {
-		const encounter = await this.encounters.save(this.encounters.create({
-			square: await this.squares.findOne(data.worldId, data.x, data.y),
-			monster: await this.monsters.findOneMonster(data.monsterId),
-			spawnChance: data.spawnChance,
-			minGold: data.minGold,
-			maxGold: data.maxGold,
-		}));
-		await this.encounters.save(encounter);
-		return encounter;
+	onModuleInit() {
+		this.monsters = this.refs.get(MonsterService, {strict: false});
+		this.squares = this.refs.get(SquareService, {strict: false});
+	}
+
+	async findAllDrops(): Promise<EncounterDropEntity[]> {
+		return await this.drops.find();
+	}
+
+	async findOneDrop(id: number): Promise<EncounterDropEntity> {
+		return await this.drops.findOneOrFail({where: {id}});
 	}
 
 	async createDrop(data: EncounterDropInfo): Promise<EncounterDropEntity> {
@@ -59,20 +46,38 @@ export class EncounterService {
 		return drop;
 	}
 
-	async findAllEncounters(): Promise<EncounterEntity[]> {
-		return await this.encounters.find();
+	async updateDrop(id: number, newDrop: Partial<EncounterDropInfo>): Promise<EncounterDropEntity> {
+		const drop = await this.findOneDrop(id);
+		if(newDrop.dropChance){
+			drop.dropChance = newDrop.dropChance;
+		}
+		if(newDrop.minQuantity){
+			drop.minQuantity = newDrop.minQuantity;
+		}
+		if(newDrop.maxQuantity){
+			drop.maxQuantity = newDrop.maxQuantity;
+		}
+		return await this.drops.save(drop);
 	}
 
-	async findAllDrops(): Promise<EncounterDropEntity[]> {
-		return await this.drops.find();
+	async findAllEncounters(): Promise<EncounterEntity[]> {
+		return await this.encounters.find();
 	}
 
 	async findOneEncounter(id: number): Promise<EncounterEntity> {
 		return await this.encounters.findOneOrFail({where: {id}});
 	}
 
-	async findOneDrop(id: number): Promise<EncounterDropEntity> {
-		return await this.drops.findOneOrFail({where: {id}});
+	async createEncounter(data: EncounterInfo): Promise<EncounterEntity> {
+		const encounter = await this.encounters.save(this.encounters.create({
+			square: await this.squares.findOne(data.worldId, data.x, data.y),
+			monster: await this.monsters.findOneMonster(data.monsterId),
+			spawnChance: data.spawnChance,
+			minGold: data.minGold,
+			maxGold: data.maxGold,
+		}));
+		await this.encounters.save(encounter);
+		return encounter;
 	}
 
 	async updateEncounter(id: number, newEncounter: Partial<EncounterInfo>): Promise<EncounterEntity> {
@@ -93,19 +98,5 @@ export class EncounterService {
 			encounter.maxGold = newEncounter.maxGold;
 		}
 		return await this.encounters.save(encounter);
-	}
-
-	async updateDrop(id: number, newDrop: Partial<EncounterDropInfo>): Promise<EncounterDropEntity> {
-		const drop = await this.findOneDrop(id);
-		if(newDrop.dropChance){
-			drop.dropChance = newDrop.dropChance;
-		}
-		if(newDrop.minQuantity){
-			drop.minQuantity = newDrop.minQuantity;
-		}
-		if(newDrop.maxQuantity){
-			drop.maxQuantity = newDrop.maxQuantity;
-		}
-		return await this.drops.save(drop);
 	}
 }

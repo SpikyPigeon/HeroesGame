@@ -5,6 +5,7 @@ import {EncounterController} from "./encounter.controller";
 import {EncounterService} from "./encounter.service";
 import {WorldModule} from "../world.module";
 import {MonsterModule} from "../../monster";
+import {UserModule} from "../../user";
 
 @Module({
 	exports: [
@@ -12,8 +13,7 @@ import {MonsterModule} from "../../monster";
 	],
 	imports: [
 		DatabaseModule,
-		forwardRef(() => WorldModule),
-		forwardRef(() => MonsterModule),
+		forwardRef(() => UserModule),
 	],
 	controllers: [
 		EncounterController,

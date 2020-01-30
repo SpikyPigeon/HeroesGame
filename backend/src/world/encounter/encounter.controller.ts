@@ -1,8 +1,12 @@
-import {Body, Controller, Get, Param, Post, Put} from "@nestjs/common";
-import {EncounterDropInfo, EncounterInfo, EncounterService} from "./encounter.service";
-import {EncounterEntity} from "./encounter.entity";
+import {ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiTags} from "@nestjs/swagger";
+import {Body, Controller, Get, Param, Post, Put, UseGuards} from "@nestjs/common";
+import {AuthGuard} from "@nestjs/passport";
+import {EncounterDropInfo, EncounterInfo} from "./encounter.dto";
 import {EncounterDropEntity} from "./encounter-drop.entity";
+import {EncounterService} from "./encounter.service";
+import {EncounterEntity} from "./encounter.entity";
 
+@ApiTags("world")
 @Controller()
 export class EncounterController {
 	constructor(
@@ -10,43 +14,63 @@ export class EncounterController {
 	) {
 	}
 
-	@Post()
-	async createEncounter(@Body() data: EncounterInfo): Promise<EncounterEntity>{
-		return await this.encounters.createEncounter(data);
-	}
-
-	@Post("drop")
-	async createDrop(@Body() data: EncounterDropInfo): Promise<EncounterDropEntity>{
-		return await this.encounters.createDrop(data);
-	}
-
-	@Get()
-	async findAllEncounters(): Promise<EncounterEntity[]>{
-		return await this.encounters.findAllEncounters();
-	}
-
+	@ApiOkResponse({type: EncounterDropEntity, isArray: true})
 	@Get("drop")
-	async findAllDrops(): Promise<EncounterDropEntity[]>{
+	async findAllDrops(): Promise<EncounterDropEntity[]> {
 		return await this.encounters.findAllDrops();
 	}
 
-	@Get(":id")
-	async findOneEncounter(@Param() id: number): Promise<EncounterEntity>{
-		return this.encounters.findOneEncounter(id);
-	}
-
+	@ApiOkResponse({type: EncounterDropEntity})
 	@Get("drop/:id")
-	async findOneDrop(@Param() id: number): Promise<EncounterDropEntity>{
+	async findOneDrop(@Param() id: number): Promise<EncounterDropEntity> {
 		return await this.encounters.findOneDrop(id);
 	}
 
-	@Put(":id")
-	async updateEncounter(@Param() id: number, @Body() data: Partial<EncounterInfo>): Promise<EncounterEntity>{
-		return await this.encounters.updateEncounter(id, data);
+	@ApiBearerAuth()
+	@ApiCreatedResponse({type: EncounterDropEntity})
+	@ApiBody({type: EncounterDropInfo})
+	@UseGuards(AuthGuard("jwt"))
+	@Post("drop")
+	async createDrop(@Body() data: EncounterDropInfo): Promise<EncounterDropEntity> {
+		return await this.encounters.createDrop(data);
 	}
 
+	@ApiBearerAuth()
+	@ApiOkResponse({type: EncounterDropEntity})
+	@ApiBody({type: EncounterDropInfo})
+	@UseGuards(AuthGuard("jwt"))
 	@Put("drop/:id")
-	async updateDrop(@Param() id: number, @Body() data: Partial<EncounterDropInfo>): Promise<EncounterDropEntity>{
+	async updateDrop(@Param() id: number, @Body() data: Partial<EncounterDropInfo>): Promise<EncounterDropEntity> {
 		return await this.encounters.updateDrop(id, data);
+	}
+
+	@ApiOkResponse({type: EncounterEntity, isArray: true})
+	@Get()
+	async findAllEncounters(): Promise<EncounterEntity[]> {
+		return await this.encounters.findAllEncounters();
+	}
+
+	@ApiOkResponse({type: EncounterEntity})
+	@Get(":id")
+	async findOneEncounter(@Param() id: number): Promise<EncounterEntity> {
+		return this.encounters.findOneEncounter(id);
+	}
+
+	@ApiBearerAuth()
+	@ApiCreatedResponse({type: EncounterEntity})
+	@ApiBody({type: EncounterInfo})
+	@UseGuards(AuthGuard("jwt"))
+	@Post()
+	async createEncounter(@Body() data: EncounterInfo): Promise<EncounterEntity> {
+		return await this.encounters.createEncounter(data);
+	}
+
+	@ApiBearerAuth()
+	@ApiOkResponse({type: EncounterEntity})
+	@ApiBody({type: EncounterInfo})
+	@UseGuards(AuthGuard("jwt"))
+	@Put(":id")
+	async updateEncounter(@Param() id: number, @Body() data: Partial<EncounterInfo>): Promise<EncounterEntity> {
+		return await this.encounters.updateEncounter(id, data);
 	}
 }

@@ -5,6 +5,7 @@ import {EquipmentEntity} from "./equipment.entity";
 import {AvatarService} from "./avatar.service";
 import {AvatarEntity} from "./avatar.entity";
 import {UserEntity} from "../user";
+import {SquareService} from "../world";
 
 @Injectable()
 export class CharacterService {
@@ -45,6 +46,12 @@ export class CharacterService {
 		char.intellect = intellect;
 		return await this.characters.save(char);
 	}
+
+	/*async moveTo(charId: string, worldId: number, x: number, y: number): Promise<CharacterEntity> {
+		const player = await this.findOne(charId);
+		player.square = await this.squares.findOne(worldId, x, y);
+		return player;
+	}*/
 
 	private async createEquipment(character: CharacterEntity): Promise<EquipmentEntity> {
 		return await this.equipments.save(this.equipments.create({

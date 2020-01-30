@@ -3,9 +3,11 @@ import {createElement, FunctionComponent, Suspense} from "react";
 import {HelmetProvider} from "react-navi-helmet-async";
 import {purple, teal} from "@material-ui/core/colors";
 import {hot} from "react-hot-loader/root";
+import {StoreProvider} from "easy-peasy";
 import {Router, View} from "react-navi";
 
 import Routes from "./routes";
+import {store} from "./store";
 
 const theme: Theme = createMuiTheme({
 	palette: {
@@ -32,16 +34,18 @@ const RootLayout: FunctionComponent = props => {
 	</div>;
 };
 
-const Site: FunctionComponent = props => {
+const Site: FunctionComponent = () => {
 	return <HelmetProvider>
 		<Router routes={Routes}>
-			<ThemeProvider theme={theme}>
-				<RootLayout>
-					<Suspense fallback={null}>
-						<View/>
-					</Suspense>
-				</RootLayout>
-			</ThemeProvider>
+			<StoreProvider store={store}>
+				<ThemeProvider theme={theme}>
+					<RootLayout>
+						<Suspense fallback={null}>
+							<View/>
+						</Suspense>
+					</RootLayout>
+				</ThemeProvider>
+			</StoreProvider>
 		</Router>
 	</HelmetProvider>;
 };

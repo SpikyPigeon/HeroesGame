@@ -1,4 +1,4 @@
-import {createElement, FunctionComponent, useState} from "react";
+import {createElement, Fragment, FunctionComponent, useState} from "react";
 import {useNavigation} from "react-navi";
 import {useForm} from "react-hook-form";
 import {
@@ -20,6 +20,8 @@ import {
 	Theme,
 	Typography
 } from "@material-ui/core";
+import {useStoreActions, useStoreState} from "../store";
+import {CreateUserInfo} from "heroes-common";
 
 interface LoginCredential {
 	email: string;
@@ -44,27 +46,109 @@ const Content = styled("div")(({theme}) => ({
 	minHeight: "100vh",
 }));
 
-const Home: FunctionComponent = () => {
-	const {register, handleSubmit, errors} = useForm<LoginCredential>();
-	const nav = useNavigation();
-	const classes = useStyles();
+interface RegisterDialogProps {
+	open: boolean;
+	onClose: () => void;
+}
 
-	const onSubmit = async (data: LoginCredential) => {
+const RegisterDialog: FunctionComponent<RegisterDialogProps> = props => {
+	type RegisterData = CreateUserInfo & { validate: string };
+	const {register, handleSubmit, errors, clearError, reset, getValues} = useForm<RegisterData>();
+	const {open, onClose} = props;
+	const nav = useNavigation();
+
+	const registerUser = useStoreActions(state => state.user.register);
+
+	const handleClose = () => {
+		clearError();
+		reset();
+		onClose();
+	};
+
+	const onSubmit = async (data: RegisterData) => {
 		try {
-			await nav.navigate("/game");
+			await registerUser({...data});
+			handleClose();
+			await nav.navigate("/hero");
 		} catch (e) {
-			alert("ERROR");
+			console.error(e);
 		}
 	};
 
-	const [open, setOpen] = useState(false);
+	return <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+		<form onSubmit={handleSubmit(onSubmit)}>
+			<DialogTitle id="form-dialog-title">Create account</DialogTitle>
+			<DialogContent>
+				<DialogContentText>
+					To start playing, please fill this form and click Register.
+				</DialogContentText>
+				<TextField
+					margin="dense" label="First Name" name="firstName"
+					fullWidth autoFocus error={Boolean(errors.firstName)} inputRef={register({
+					required: true,
+					maxLength: 30,
+				})}/>
+				<TextField
+					margin="dense" label="Last Name" name="lastName"
+					fullWidth error={Boolean(errors.lastName)} inputRef={register({
+					required: true,
+					maxLength: 30,
+				})}/>
+				<TextField
+					margin="dense" label="Email Adress" name="email"
+					fullWidth error={Boolean(errors.email)} inputRef={register({
+					required: true,
+					pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+					maxLength: 60,
+				})}/>
+				<TextField
+					margin="dense" label="Password" type="password" name="password"
+					fullWidth error={Boolean(errors.password)} inputRef={register({
+					required: true,
+					minLength: 7,
+				})}/>
+				<TextField
+					margin="dense" label="Confirm Password" type="password" name="validate"
+					fullWidth error={Boolean(errors.validate)} inputRef={register({
+					required: true,
+					minLength: 7,
+					validate: value => {
+						const {password} = getValues();
+						return value === password;
+					},
+				})}/>
+			</DialogContent>
+			<DialogActions>
+				<Button onClick={handleClose} color="primary" type="reset">
+					Cancel
+				</Button>
+				<Button color="primary" type="submit">
+					Register
+				</Button>
+			</DialogActions>
+		</form>
+	</Dialog>;
+};
 
-	const handleClickOpen = () => {
-		setOpen(true);
+const Home: FunctionComponent = () => {
+	const {register, handleSubmit, errors} = useForm<LoginCredential>();
+	const [registerOpen, setRegisterOpen] = useState(false);
+	const nav = useNavigation();
+	const classes = useStyles();
+
+	const user = {
+		logout: useStoreActions(state => state.user.logout),
+		login: useStoreActions(state => state.user.login),
+		info: useStoreState(state => state.user.user),
 	};
 
-	const handleClose = () => {
-		setOpen(false);
+	const onSubmit = async (data: LoginCredential) => {
+		try {
+			await user.login(data);
+			await nav.navigate("/hero");
+		} catch (e) {
+			console.error(e);
+		}
 	};
 
 	return <Content>
@@ -81,69 +165,46 @@ const Home: FunctionComponent = () => {
 				<Card raised className={classes.card}>
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<CardHeader title="Connect to the game"/>
-						<CardContent>
-							<TextField autoFocus margin="dense" label="Email Adress" name="email" fullWidth
-							           inputRef={register({
-								           required: true,
-								           pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-							           })} error={Boolean(errors.email)}/>
-							<TextField margin="dense" label="Password" type="password" name="password" fullWidth
-							           inputRef={register({
-								           required: true,
-								           minLength: 7,
-							           })} error={Boolean(errors.password)}/>
-						</CardContent>
-						<CardActions>
-							<Button type="button" color="secondary" onClick={handleClickOpen}>
-								Register
-							</Button>
-							<Button type="submit" color="primary">Login</Button>
-						</CardActions>
+						{user.info && <Fragment>
+							<CardContent>
+								<Typography variant="body1" paragraph>
+									Logged in as {user.info.firstName} {user.info.lastName}
+								</Typography>
+							</CardContent>
+							<CardActions>
+								<Button color="secondary" onClick={() => user.logout()}>
+									Logout
+								</Button>
+								<Button color="primary" onClick={async () => await nav.navigate("/hero")}>
+									Continue
+								</Button>
+							</CardActions>
+						</Fragment>}
+						{user.info === null && <Fragment>
+							<CardContent>
+								<TextField autoFocus margin="dense" label="Email Adress" name="email" fullWidth
+								           inputRef={register({
+									           required: true,
+									           pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+								           })} error={Boolean(errors.email)}/>
+								<TextField margin="dense" label="Password" type="password" name="password" fullWidth
+								           inputRef={register({
+									           required: true,
+									           minLength: 7,
+								           })} error={Boolean(errors.password)}/>
+							</CardContent>
+							<CardActions>
+								<Button type="button" color="secondary" onClick={() => setRegisterOpen(true)}>
+									Register
+								</Button>
+								<Button type="submit" color="primary">Login</Button>
+							</CardActions>
+						</Fragment>}
 					</form>
 				</Card>
 			</Grid>
 		</Grid>
-		<Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-			<form>
-				<DialogTitle id="form-dialog-title">Create account</DialogTitle>
-				<DialogContent>
-					<DialogContentText>
-						To start playing, please fill this form and click Register.
-					</DialogContentText>
-					<TextField
-						margin="dense" label="First Name" type="text"
-						fullWidth autoFocus
-					/>
-					<TextField
-						margin="dense" label="Last Name" type="text"
-						fullWidth
-					/>
-					<TextField
-						margin="dense" label="Email Adress" type="email"
-						fullWidth
-					/>
-					<TextField
-						margin="dense" label="Password" type="password"
-						fullWidth
-					/>
-					<TextField
-						margin="dense" label="Confirm Password" type="password"
-						fullWidth
-					/>
-				</DialogContent>
-				<DialogActions>
-					<Button onClick={handleClose} color="primary" type="reset">
-						Cancel
-					</Button>
-					<Button color="primary" type="submit" onClick={async () => {
-						handleClose();
-						await nav.navigate("/hero");
-					}}>
-						Register
-					</Button>
-				</DialogActions>
-			</form>
-		</Dialog>
+		<RegisterDialog open={registerOpen} onClose={() => setRegisterOpen(false)}/>
 	</Content>;
 };
 

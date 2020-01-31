@@ -19,6 +19,8 @@ import {
 	Typography
 } from "@material-ui/core";
 
+import {ModifyUserProfile, PasswordChange} from "heroes-common";
+
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
 		chips: {
@@ -32,19 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
 	}),
 );
 
-interface UserProfile {
-	email: string;
-	firstName: string;
-	lastName: string;
-}
-
-interface PasswordData {
-	oldPass: string;
-	newPass: string;
-	validate: string;
-}
-
-const user: UserProfile = {
+const user: ModifyUserProfile = {
 	email: "king@numsgil.co",
 	firstName: "Daniel",
 	lastName: "Grondin",
@@ -84,6 +74,7 @@ const DisableAccountDialog: FunctionComponent<MyDialogProps> = props => {
 const PasswordDialog: FunctionComponent<MyDialogProps> = props => {
 	const {open, onClose} = props;
 
+	type PasswordData = PasswordChange & { validate: string };
 	const {register, handleSubmit, errors, clearError, reset, getValues} = useForm<PasswordData>();
 
 	const handleClose = () => {
@@ -129,7 +120,7 @@ const PasswordDialog: FunctionComponent<MyDialogProps> = props => {
 const ProfileDialog: FunctionComponent<MyDialogProps> = props => {
 	const {open, onClose} = props;
 
-	const {register, handleSubmit, errors, clearError, reset} = useForm<UserProfile>({
+	const {register, handleSubmit, errors, clearError, reset} = useForm<ModifyUserProfile>({
 		defaultValues: {
 			email: user.email,
 			firstName: user.firstName,
@@ -143,7 +134,7 @@ const ProfileDialog: FunctionComponent<MyDialogProps> = props => {
 		onClose();
 	};
 
-	const onSubmit = async (data: UserProfile) => {
+	const onSubmit = async (data: ModifyUserProfile) => {
 		handleClose();
 	};
 

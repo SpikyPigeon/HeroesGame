@@ -1,4 +1,4 @@
-import {User, CreateUserInfo, LoginInfo} from "heroes-common";
+import {CreateUserInfo, LoginInfo, User} from "heroes-common";
 import {Context} from "./index";
 import {LoginResponse, ModifyUserProfile, PasswordChange} from "heroes-common/src";
 
@@ -20,7 +20,7 @@ export class UserService {
 	}
 
 	static async login(credential: LoginInfo): Promise<string> {
-		const response = await Context.post<LoginResponse>("user/auth", {
+		const response = await Context.post<LoginResponse>("/user/auth", {
 			...credential,
 		});
 		return response.data.access_token;

@@ -1,6 +1,6 @@
 import {Inject, Injectable} from "@nestjs/common";
 import {Repository} from "typeorm";
-import {MonsterInfo, MonsterTypeInfo} from "./monster.dto";
+import {MonsterInfoDto, MonsterTypeInfoDto} from "./monster.dto";
 import {MonsterTypeEntity} from "./monster-type.entity";
 import {MonsterEntity} from "./monster.entity";
 
@@ -29,7 +29,7 @@ export class MonsterService {
 		}));
 	}
 
-	async updateType(id: number, newType: Partial<MonsterTypeInfo>): Promise<MonsterTypeEntity> {
+	async updateType(id: number, newType: Partial<MonsterTypeInfoDto>): Promise<MonsterTypeEntity> {
 		const type = {...await this.findOneType(id), ...newType};
 		return await this.types.save(type);
 	}
@@ -42,7 +42,7 @@ export class MonsterService {
 		return await this.monsters.findOneOrFail({where: {id}});
 	}
 
-	async createMonster(data: MonsterInfo): Promise<MonsterEntity> {
+	async createMonster(data: MonsterInfoDto): Promise<MonsterEntity> {
 		const {typeId, ...info} = data;
 		return await this.monsters.save(this.monsters.create({
 			type: await this.findOneType(typeId),
@@ -50,7 +50,7 @@ export class MonsterService {
 		}));
 	}
 
-	async updateMonster(id: number, newMonster: Partial<MonsterInfo>): Promise<MonsterEntity> {
+	async updateMonster(id: number, newMonster: Partial<MonsterInfoDto>): Promise<MonsterEntity> {
 		const {typeId, ...info} = newMonster;
 		const monster = {...await this.findOneMonster(id), ...info};
 

@@ -1,7 +1,7 @@
 import {ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiTags} from "@nestjs/swagger";
 import {Body, Controller, Get, Param, Post, Put, UseGuards} from "@nestjs/common";
 import {AuthGuard} from "@nestjs/passport";
-import {MonsterInfo, MonsterTypeInfo} from "./monster.dto";
+import {MonsterInfoDto, MonsterTypeInfoDto} from "./monster.dto";
 import {MonsterTypeEntity} from "./monster-type.entity";
 import {MonsterService} from "./monster.service";
 import {MonsterEntity} from "./monster.entity";
@@ -26,19 +26,19 @@ export class MonsterController {
 
 	@ApiBearerAuth()
 	@ApiCreatedResponse({type: MonsterTypeEntity})
-	@ApiBody({type: MonsterTypeInfo})
+	@ApiBody({type: MonsterTypeInfoDto})
 	@UseGuards(AuthGuard("jwt"))
 	@Post("type")
-	async createType(@Body() data: MonsterTypeInfo): Promise<MonsterTypeEntity> {
+	async createType(@Body() data: MonsterTypeInfoDto): Promise<MonsterTypeEntity> {
 		return await this.monsters.createType(data.name, data.description);
 	}
 
 	@ApiBearerAuth()
 	@ApiOkResponse({type: MonsterTypeEntity})
-	@ApiBody({type: MonsterTypeInfo})
+	@ApiBody({type: MonsterTypeInfoDto})
 	@UseGuards(AuthGuard("jwt"))
 	@Put("type/:id")
-	async updateType(@Param("id") id: number, @Body() data: Partial<MonsterTypeInfo>): Promise<MonsterTypeEntity> {
+	async updateType(@Param("id") id: number, @Body() data: Partial<MonsterTypeInfoDto>): Promise<MonsterTypeEntity> {
 		return await this.monsters.updateType(id, data);
 	}
 
@@ -56,19 +56,19 @@ export class MonsterController {
 
 	@ApiBearerAuth()
 	@ApiCreatedResponse({type: MonsterEntity})
-	@ApiBody({type: MonsterInfo})
+	@ApiBody({type: MonsterInfoDto})
 	@UseGuards(AuthGuard("jwt"))
 	@Post()
-	async createMonster(@Body() data: MonsterInfo): Promise<MonsterEntity> {
+	async createMonster(@Body() data: MonsterInfoDto): Promise<MonsterEntity> {
 		return await this.monsters.createMonster(data);
 	}
 
 	@ApiBearerAuth()
 	@ApiOkResponse({type: MonsterEntity})
-	@ApiBody({type: MonsterInfo})
+	@ApiBody({type: MonsterInfoDto})
 	@UseGuards(AuthGuard("jwt"))
 	@Put(":id")
-	async updateMonster(@Param("id") id: number, @Body() data: Partial<MonsterInfo>): Promise<MonsterEntity> {
+	async updateMonster(@Param("id") id: number, @Body() data: Partial<MonsterInfoDto>): Promise<MonsterEntity> {
 		return await this.monsters.updateMonster(id, data);
 	}
 }

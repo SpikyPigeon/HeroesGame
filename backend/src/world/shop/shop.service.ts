@@ -2,7 +2,7 @@ import {Inject, Injectable} from "@nestjs/common";
 import {Repository} from "typeorm";
 import {ShopSellsEntity} from "./shop-sells.entity";
 import {ShopEntity} from "./shop.entity";
-import {CreateSellsInfo, UpdateSellsInfo, ShopInfo} from "./shop.dto";
+import {CreateSellsInfo, ShopInfo, UpdateSellsInfo} from "./shop.dto";
 
 @Injectable()
 export class ShopService {
@@ -14,13 +14,13 @@ export class ShopService {
 	) {
 	}
 
-	async createShop(data: ShopInfo): Promise<ShopEntity>{
+	async createShop(data: ShopInfo): Promise<ShopEntity> {
 		return await this.shops.save(this.shops.create({
 			priceMod: data.priceMod,
 		}));
 	}
 
-	async createSell(data: CreateSellsInfo): Promise<ShopSellsEntity>{
+	async createSell(data: CreateSellsInfo): Promise<ShopSellsEntity> {
 		return await this.sells.save(this.sells.create({
 			shopId: data.shopId,
 			rollId: data.rollId,
@@ -28,29 +28,29 @@ export class ShopService {
 		}));
 	}
 
-	async findAllShops(): Promise<ShopEntity[]>{
+	async findAllShops(): Promise<ShopEntity[]> {
 		return await this.shops.find();
 	}
 
-	async findAllSells(): Promise<ShopSellsEntity[]>{
+	async findAllSells(): Promise<ShopSellsEntity[]> {
 		return await this.sells.find();
 	}
 
-	async findOneShop(id: number): Promise<ShopEntity>{
+	async findOneShop(id: number): Promise<ShopEntity> {
 		return await this.shops.findOneOrFail({where: {id}});
 	}
 
-	async findOneSell(id: number): Promise<ShopSellsEntity>{
+	async findOneSell(id: number): Promise<ShopSellsEntity> {
 		return await this.sells.findOneOrFail({where: {id}});
 	}
 
-	async updateShop(id: number, newShop: ShopInfo): Promise<ShopEntity>{
+	async updateShop(id: number, newShop: ShopInfo): Promise<ShopEntity> {
 		const shop = await this.findOneShop(id);
 		shop.priceMod = newShop.priceMod;
 		return await this.shops.save(shop);
 	}
 
-	async updateSell(id: number, newSell: UpdateSellsInfo): Promise<ShopSellsEntity>{
+	async updateSell(id: number, newSell: UpdateSellsInfo): Promise<ShopSellsEntity> {
 		const sell = await this.findOneSell(id);
 		sell.price = newSell.price;
 		return await this.sells.save(sell);

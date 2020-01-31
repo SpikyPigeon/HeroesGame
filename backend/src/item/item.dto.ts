@@ -1,7 +1,7 @@
 import {ApiProperty} from "@nestjs/swagger";
-import {ItemRarity} from "heroes-common";
+import {CreateCategoryInfo, CreateItemInfo, ItemRarity, UpdateItemInfo} from "heroes-common";
 
-export class CreateCategoryInfo {
+export class CreateCategoryInfoDto implements CreateCategoryInfo {
 	@ApiProperty()
 	name: string = "";
 
@@ -12,7 +12,7 @@ export class CreateCategoryInfo {
 	parentId: number | undefined = undefined;
 }
 
-export class CreateItemInfo {
+export class CreateItemInfoDto implements CreateItemInfo {
 	@ApiProperty()
 	name: string = "";
 
@@ -23,7 +23,7 @@ export class CreateItemInfo {
 	categoryId: number = 0;
 }
 
-export class UpdateItemInfo {
+export class UpdateItemInfoDto implements UpdateItemInfo {
 	@ApiProperty({required: false})
 	name: string = "";
 

@@ -1,7 +1,7 @@
 import {ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiTags} from "@nestjs/swagger";
 import {Body, Controller, Get, Param, Post, Put, UseGuards} from "@nestjs/common";
 import {AuthGuard} from "@nestjs/passport";
-import {ShopInfo, CreateSellsInfo, UpdateSellsInfo} from "./shop.dto";
+import {CreateSellsInfo, ShopInfo, UpdateSellsInfo} from "./shop.dto";
 import {ShopSellsEntity} from "./shop-sells.entity";
 import {ShopService} from "./shop.service";
 import {ShopEntity} from "./shop.entity";
@@ -17,7 +17,7 @@ export class ShopController {
 	@ApiBody({type: ShopInfo})
 	@UseGuards(AuthGuard("jwt"))
 	@Post()
-	async createShop(@Body() data: ShopInfo): Promise<ShopEntity>{
+	async createShop(@Body() data: ShopInfo): Promise<ShopEntity> {
 		return await this.shops.createShop(data);
 	}
 
@@ -26,31 +26,31 @@ export class ShopController {
 	@ApiBody({type: CreateSellsInfo})
 	@UseGuards(AuthGuard("jwt"))
 	@Post("sell")
-	async createSell(data: CreateSellsInfo): Promise<ShopSellsEntity>{
+	async createSell(data: CreateSellsInfo): Promise<ShopSellsEntity> {
 		return await this.shops.createSell(data);
 	}
 
 	@ApiOkResponse({type: ShopEntity, isArray: true})
 	@Get()
-	async findAllShops(): Promise<ShopEntity[]>{
+	async findAllShops(): Promise<ShopEntity[]> {
 		return await this.shops.findAllShops();
 	}
 
 	@ApiOkResponse({type: ShopSellsEntity, isArray: true})
 	@Get("sell")
-	async findAllSells(): Promise<ShopSellsEntity[]>{
+	async findAllSells(): Promise<ShopSellsEntity[]> {
 		return await this.shops.findAllSells();
 	}
 
 	@ApiOkResponse({type: ShopEntity})
 	@Get(":id")
-	async findOneShop(@Param() id: number): Promise<ShopEntity>{
+	async findOneShop(@Param() id: number): Promise<ShopEntity> {
 		return await this.shops.findOneShop(id);
 	}
 
 	@ApiOkResponse({type: ShopSellsEntity})
 	@Get("sell/:id")
-	async findOneSell(@Param() id: number): Promise<ShopSellsEntity>{
+	async findOneSell(@Param() id: number): Promise<ShopSellsEntity> {
 		return await this.shops.findOneSell(id);
 	}
 
@@ -59,7 +59,7 @@ export class ShopController {
 	@ApiBody({type: ShopInfo})
 	@UseGuards(AuthGuard("jwt"))
 	@Put(":id")
-	async updateShop(@Param() id: number, @Body() data: ShopInfo): Promise<ShopEntity>{
+	async updateShop(@Param() id: number, @Body() data: ShopInfo): Promise<ShopEntity> {
 		return await this.shops.updateShop(id, data);
 	}
 
@@ -68,7 +68,7 @@ export class ShopController {
 	@ApiBody({type: UpdateSellsInfo})
 	@UseGuards(AuthGuard("jwt"))
 	@Put("sell/:id")
-	async updateSell(@Param() id: number, @Body() data: UpdateSellsInfo): Promise<ShopSellsEntity>{
+	async updateSell(@Param() id: number, @Body() data: UpdateSellsInfo): Promise<ShopSellsEntity> {
 		return await this.shops.updateSell(id, data);
 	}
 

@@ -5,9 +5,6 @@ import {UserService} from "./context";
 export interface UserStore {
 	user: User | null;
 
-	isLoggedIn: Computed<UserStore, boolean>;
-	isAdmin: Computed<UserStore, boolean>;
-
 	setUser: Action<UserStore, User | null>;
 	getCurrent: Thunk<UserStore>;
 	register: Thunk<UserStore, CreateUserInfo>;
@@ -19,10 +16,6 @@ export interface UserStore {
 
 export const userStore: UserStore = {
 	user: null,
-
-	isLoggedIn: computed(state => state.user === null),
-
-	isAdmin: computed(state => state.user !== null && state.user.isAdmin),
 
 	setUser: action((state, payload) => {
 		state.user = payload;

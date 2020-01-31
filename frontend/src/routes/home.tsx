@@ -1,4 +1,4 @@
-import {createElement, FunctionComponent, useState} from "react";
+import {createElement, FunctionComponent, useState, Fragment} from "react";
 import {useNavigation} from "react-navi";
 import {useForm} from "react-hook-form";
 import {
@@ -21,7 +21,7 @@ import {
 	Typography
 } from "@material-ui/core";
 import {useStoreActions, useStoreState} from "../store";
-import {CreateUserInfo} from "heroes-common/src";
+import {CreateUserInfo} from "heroes-common";
 
 interface LoginCredential {
 	email: string;
@@ -137,8 +137,9 @@ const Home: FunctionComponent = () => {
 	const classes = useStyles();
 
 	const user = {
-		isLoggedIn: useStoreState(state => state.user.isLoggedIn),
+		logout: useStoreActions(state => state.user.logout),
 		login: useStoreActions(state => state.user.login),
+		info: useStoreState(state => state.user.user),
 	};
 
 	const onSubmit = async (data: LoginCredential) => {
@@ -164,24 +165,41 @@ const Home: FunctionComponent = () => {
 				<Card raised className={classes.card}>
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<CardHeader title="Connect to the game"/>
-						<CardContent>
-							<TextField autoFocus margin="dense" label="Email Adress" name="email" fullWidth
-							           inputRef={register({
-								           required: true,
-								           pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-							           })} error={Boolean(errors.email)}/>
-							<TextField margin="dense" label="Password" type="password" name="password" fullWidth
-							           inputRef={register({
-								           required: true,
-								           minLength: 7,
-							           })} error={Boolean(errors.password)}/>
-						</CardContent>
-						<CardActions>
-							<Button type="button" color="secondary" onClick={() => setRegisterOpen(true)}>
-								Register
-							</Button>
-							<Button type="submit" color="primary">Login</Button>
-						</CardActions>
+						{user.info && <Fragment>
+							<CardContent>
+								<Typography variant="body1" paragraph>
+									Logged in as {user.info.firstName} {user.info.lastName}
+								</Typography>
+							</CardContent>
+							<CardActions>
+								<Button color="secondary" onClick={() => user.logout()}>
+									Logout
+								</Button>
+								<Button color="primary" onClick={async () => await nav.navigate("/hero")}>
+									Continue
+								</Button>
+							</CardActions>
+						</Fragment>}
+						{user.info === null && <Fragment>
+							<CardContent>
+								<TextField autoFocus margin="dense" label="Email Adress" name="email" fullWidth
+								           inputRef={register({
+									           required: true,
+									           pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+								           })} error={Boolean(errors.email)}/>
+								<TextField margin="dense" label="Password" type="password" name="password" fullWidth
+								           inputRef={register({
+									           required: true,
+									           minLength: 7,
+								           })} error={Boolean(errors.password)}/>
+							</CardContent>
+							<CardActions>
+								<Button type="button" color="secondary" onClick={() => setRegisterOpen(true)}>
+									Register
+								</Button>
+								<Button type="submit" color="primary">Login</Button>
+							</CardActions>
+						</Fragment>}
 					</form>
 				</Card>
 			</Grid>

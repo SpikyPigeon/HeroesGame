@@ -50,4 +50,12 @@ export class CharacterController {
 	async moveTo(@Body() data: MoveCharacterInfoDto): Promise<CharacterEntity> {
 		return await this.characters.moveTo(data.characterId, data.worldId, data.x, data.y);
 	}
+
+	@ApiBearerAuth()
+	@ApiOkResponse({type: CharacterEntity})
+	@UseGuards(AuthGuard("jwt"))
+	@Get("me")
+	async findMine(@Request() req: any): Promise<CharacterEntity>{
+		return await this.characters.findMine((req.user as UserEntity).id);
+	}
 }

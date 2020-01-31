@@ -7,6 +7,7 @@ import {AvatarService} from "./avatar.service";
 import {InventoryModule} from "./inventory";
 import {SlapModule} from "./slap";
 import {WorldModule} from "../world";
+import {UserModule} from "../user";
 
 @Module({
 	exports: [
@@ -18,6 +19,7 @@ import {WorldModule} from "../world";
 		InventoryModule,
 		SlapModule,
 		forwardRef(() => WorldModule),
+		forwardRef(() => UserModule),
 	],
 	controllers: [
 		CharacterController,

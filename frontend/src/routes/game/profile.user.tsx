@@ -74,7 +74,7 @@ const DisableAccountDialog: FunctionComponent<MyDialogProps> = props => {
 const PasswordDialog: FunctionComponent<MyDialogProps> = props => {
 	const {open, onClose} = props;
 
-	type PasswordData = PasswordChange & {validate: string};
+	type PasswordData = PasswordChange & { validate: string };
 	const {register, handleSubmit, errors, clearError, reset, getValues} = useForm<PasswordData>();
 
 	const handleClose = () => {

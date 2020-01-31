@@ -1,4 +1,4 @@
-import {createElement, FunctionComponent, useState, Fragment} from "react";
+import {createElement, Fragment, FunctionComponent, useState} from "react";
 import {useNavigation} from "react-navi";
 import {useForm} from "react-hook-form";
 import {
@@ -70,7 +70,7 @@ const RegisterDialog: FunctionComponent<RegisterDialogProps> = props => {
 			await registerUser({...data});
 			handleClose();
 			await nav.navigate("/hero");
-		} catch(e) {
+		} catch (e) {
 			console.error(e);
 		}
 	};

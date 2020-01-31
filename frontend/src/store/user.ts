@@ -1,4 +1,4 @@
-import {action, Action, computed, Computed, thunk, Thunk} from "easy-peasy";
+import {action, Action, thunk, Thunk} from "easy-peasy";
 import {CreateUserInfo, LoginInfo, ModifyUserProfile, PasswordChange, User} from "heroes-common";
 import {UserService} from "./context";
 

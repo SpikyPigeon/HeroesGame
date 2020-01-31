@@ -1,4 +1,4 @@
-import {User, CreateUserInfo, LoginInfo} from "heroes-common";
+import {CreateUserInfo, LoginInfo, User} from "heroes-common";
 import {Context} from "./index";
 import {LoginResponse, ModifyUserProfile, PasswordChange} from "heroes-common/src";
 

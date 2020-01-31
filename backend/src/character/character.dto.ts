@@ -1,15 +1,26 @@
 import {ApiProperty} from "@nestjs/swagger";
-import {CharacterInfo, UpdateCharacterInfo} from "heroes-common";
+import {CharacterInfo, UpdateCharacterInfo, MoveCharacterInfo} from "heroes-common";
 
 export class CharacterInfoDto implements CharacterInfo {
-	@ApiProperty()
-	owner: string = "";
-
 	@ApiProperty()
 	name: string = "";
 
 	@ApiProperty()
 	avatarId: number = 0;
+}
+
+export class MoveCharacterInfoDto implements MoveCharacterInfo {
+	@ApiProperty()
+	characterId: string = "";
+
+	@ApiProperty()
+	worldId: number = 0;
+
+	@ApiProperty()
+	x: number = 0;
+
+	@ApiProperty()
+	y: number = 0;
 }
 
 export class UpdateCharacterInfoDto implements UpdateCharacterInfo {

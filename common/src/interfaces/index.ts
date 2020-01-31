@@ -33,3 +33,4 @@ export * from "./create-user-info";
 export * from "./password-change";
 export * from "./login-response";
 export * from "./login-info";
+export * from "./move-character-info";

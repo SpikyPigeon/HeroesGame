@@ -6,6 +6,7 @@ import {AvatarService} from "./avatar.service";
 import {AvatarEntity} from "./avatar.entity";
 import {UserEntity} from "../user";
 import {SquareService, WorldService} from "../world";
+import {UpdateCharacterInfoDto} from "./character.dto";
 
 @Injectable()
 export class CharacterService {
@@ -28,25 +29,25 @@ export class CharacterService {
 		return await this.characters.findOneOrFail(id);
 	}
 
-	async create(owner: UserEntity, name: string, avatar: AvatarEntity): Promise<CharacterEntity> {
+	async create(owner: UserEntity, name: string, avatarId: number): Promise<CharacterEntity> {
 		const char = await this.characters.save(this.characters.create({
 			currentHealth: 0,
 			currentMana: 0,
 			owner,
 			name,
-			avatar,
+			avatar: await this.avatars.findOne(avatarId),
 		}));
 		await this.createEquipment(char);
 		return await this.findOne(char.id);
 	}
 
-	async updateStats(id: string, strength: number, dexterity: number, vitality: number, intellect: number): Promise<CharacterEntity> {
-		const char = await this.findOne(id);
-		char.strength = strength;
-		char.dexterity = dexterity;
-		char.vitality = vitality;
-		char.intellect = intellect;
-		return await this.characters.save(char);
+	async update(id: string, data: Partial<UpdateCharacterInfoDto>): Promise<CharacterEntity> {
+		const {avatarId, ...info} = data;
+		const character = {...await this.findOne(id), ...info};
+		if(data.avatarId){
+			character.avatar = await this.avatars.findOne(data.avatarId);
+		}
+		return await this.characters.save(character);
 	}
 
 	async moveTo(charId: string, worldId: number, x: number, y: number): Promise<CharacterEntity> {

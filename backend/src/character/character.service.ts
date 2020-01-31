@@ -7,6 +7,7 @@ import {AvatarEntity} from "./avatar.entity";
 import {UserEntity} from "../user";
 import {SquareService, WorldService} from "../world";
 import {UpdateCharacterInfoDto} from "./character.dto";
+import {UserInfo} from "os";
 
 @Injectable()
 export class CharacterService {
@@ -44,7 +45,7 @@ export class CharacterService {
 	async update(id: string, data: Partial<UpdateCharacterInfoDto>): Promise<CharacterEntity> {
 		const {avatarId, ...info} = data;
 		const character = {...await this.findOne(id), ...info};
-		if(data.avatarId){
+		if (data.avatarId) {
 			character.avatar = await this.avatars.findOne(data.avatarId);
 		}
 		return await this.characters.save(character);
@@ -72,6 +73,17 @@ export class CharacterService {
 					throw new Error("Target square is out of range!");
 				}
 			}
+		}
+	}
+
+	async findMine(id: string): Promise<CharacterEntity> {
+		const character = await this.characters.createQueryBuilder("char")
+			.where("char.userId = :user", {user: id})
+			.getOne();
+		if (character) {
+			return character;
+		} else {
+			throw new Error("No characters for this user!");
 		}
 	}
 

@@ -5,7 +5,7 @@ import {EquipmentEntity} from "./equipment.entity";
 import {AvatarService} from "./avatar.service";
 import {AvatarEntity} from "./avatar.entity";
 import {UserEntity} from "../user";
-import {SquareService} from "../world";
+import {SquareService, WorldService} from "../world";
 
 @Injectable()
 export class CharacterService {
@@ -15,6 +15,8 @@ export class CharacterService {
 		@Inject("EQUIPMENT_REPOSITORY")
 		private readonly equipments: Repository<EquipmentEntity>,
 		private readonly avatars: AvatarService,
+		private readonly squares: SquareService,
+		private readonly worlds: WorldService,
 	) {
 	}
 
@@ -47,11 +49,30 @@ export class CharacterService {
 		return await this.characters.save(char);
 	}
 
-	/*async moveTo(charId: string, worldId: number, x: number, y: number): Promise<CharacterEntity> {
+	async moveTo(charId: string, worldId: number, x: number, y: number): Promise<CharacterEntity> {
 		const player = await this.findOne(charId);
-		player.square = await this.squares.findOne(worldId, x, y);
-		return player;
-	}*/
+		if (player.square.worldId != worldId) {
+			player.square = await this.squares.findOne(worldId, 0, 0);
+			return await this.characters.save(player);
+		} else {
+			const world = await this.worlds.findOne(worldId);
+			if (x < 0 || y < 0 || x >= world.limitX || y >= world.limitY) {
+				throw new Error("Target square is out of bounds!");
+			} else {
+				const target = await this.squares.findOne(worldId, x, y);
+				if (Math.abs(player.square.x - target.x) <= 1 && Math.abs(player.square.y - target.y) <= 1) {
+					if (player.square.x === target.x && player.square.y === target.y) {
+						return player;
+					} else {
+						player.square = target;
+						return await this.characters.save(player);
+					}
+				} else {
+					throw new Error("Target square is out of range!");
+				}
+			}
+		}
+	}
 
 	private async createEquipment(character: CharacterEntity): Promise<EquipmentEntity> {
 		return await this.equipments.save(this.equipments.create({

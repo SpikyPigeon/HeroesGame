@@ -20,6 +20,7 @@ import {
 } from "@material-ui/core";
 
 import {ModifyUserProfile, PasswordChange} from "heroes-common";
+import {useStoreActions} from "../../store";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -38,6 +39,7 @@ const user: ModifyUserProfile = {
 	email: "king@numsgil.co",
 	firstName: "Daniel",
 	lastName: "Grondin",
+	isActive: true,
 };
 
 interface MyDialogProps {
@@ -47,9 +49,13 @@ interface MyDialogProps {
 
 const DisableAccountDialog: FunctionComponent<MyDialogProps> = props => {
 	const {open, onClose} = props;
+	const modifyProfile = useStoreActions(state => state.user.modifyProfile);
+	const logout = useStoreActions(state => state.user.logout);
 	const nav = useNavigation();
 
 	const handleClick = async () => {
+		await modifyProfile({isActive: false});
+		logout();
 		await nav.navigate("/");
 	};
 

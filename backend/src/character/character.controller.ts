@@ -1,12 +1,13 @@
+import {ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiTags} from "@nestjs/swagger";
 import {Body, Controller, Get, Param, Post, Put, Request, UseGuards} from "@nestjs/common";
-import {ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse} from "@nestjs/swagger";
 import {AuthGuard} from "@nestjs/passport";
 import {CharacterInfoDto, MoveCharacterInfoDto, UpdateCharacterInfoDto} from "./character.dto";
 import {CharacterService} from "./character.service";
 import {CharacterEntity} from "./character.entity";
 import {UserEntity} from "../user";
 
-@Controller("user")
+@ApiTags("user")
+@Controller()
 export class CharacterController {
 	constructor(private readonly characters: CharacterService) {
 	}

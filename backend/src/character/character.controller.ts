@@ -27,6 +27,14 @@ export class CharacterController {
 	}
 
 	@ApiBearerAuth()
+	@ApiOkResponse({type: CharacterEntity})
+	@UseGuards(AuthGuard("jwt"))
+	@Get("me")
+	async findMine(@Request() req: any): Promise<CharacterEntity> {
+		return await this.characters.findMine((req.user as UserEntity).id);
+	}
+
+	@ApiBearerAuth()
 	@ApiCreatedResponse({type: CharacterEntity})
 	@ApiBody({type: CharacterInfoDto})
 	@UseGuards(AuthGuard("jwt"))
@@ -63,13 +71,5 @@ export class CharacterController {
 	@Put("move")
 	async moveTo(@Body() data: MoveCharacterInfoDto): Promise<CharacterEntity> {
 		return await this.characters.moveTo(data.characterId, data.worldId, data.x, data.y);
-	}
-
-	@ApiBearerAuth()
-	@ApiOkResponse({type: CharacterEntity})
-	@UseGuards(AuthGuard("jwt"))
-	@Get("me")
-	async findMine(@Request() req: any): Promise<CharacterEntity> {
-		return await this.characters.findMine((req.user as UserEntity).id);
 	}
 }

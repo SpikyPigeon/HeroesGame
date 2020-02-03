@@ -1,5 +1,5 @@
 import {ApiProperty} from "@nestjs/swagger";
-import {CharacterInfo, UpdateCharacterInfo, MoveCharacterInfo} from "heroes-common";
+import {CharacterInfo, MoveCharacterInfo, UpdateCharacterInfo} from "heroes-common";
 
 export class CharacterInfoDto implements CharacterInfo {
 	@ApiProperty()

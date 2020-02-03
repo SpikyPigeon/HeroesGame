@@ -3,6 +3,7 @@ import {Repository} from "typeorm";
 import {createHmac} from "crypto";
 import {UserEntity} from "./user.entity";
 import {BankService} from "../bank";
+import {ModifyUserProfileDto} from "./user.dto";
 
 @Injectable()
 export class UserService {
@@ -30,11 +31,8 @@ export class UserService {
 		return UserService.hashPassword(pass) === user.password_hash;
 	}
 
-	async changeProfile(id: string, firstName: string, lastName: string, email: string): Promise<UserEntity> {
-		const user = await this.findOneById(id);
-		user.firstName = firstName;
-		user.lastName = lastName;
-		user.email = email;
+	async changeProfile(id: string, data: Partial<ModifyUserProfileDto>): Promise<UserEntity> {
+		const user = {...await this.findOneById(id), ...data};
 		return await this.users.save(user);
 	}
 

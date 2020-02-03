@@ -20,6 +20,7 @@ import {
 	Typography,
 	Zoom
 } from "@material-ui/core";
+import {useStoreActions} from "../../store";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -146,6 +147,7 @@ const GameLayout: FunctionComponent = props => {
 	const classes = useStyles();
 	const [socialEl, setSocialEl] = useState<null | HTMLElement>(null);
 	const [profileEl, setProfileEl] = useState<null | HTMLElement>(null);
+	const logout = useStoreActions(state => state.user.logout);
 
 	const handleSocialClose = () => setSocialEl(null);
 	const handleProfileClose = () => setProfileEl(null);
@@ -190,7 +192,7 @@ const GameLayout: FunctionComponent = props => {
 					onClose={handleProfileClose}
 				>
 					<AppMenuLink text="Profile" href="/game/profile" onClick={handleProfileClose}/>
-					<AppMenuLink text="Logout" href="/" onClick={handleProfileClose}/>
+					<AppMenuLink text="Logout" href="/" onClick={() => {logout(); handleProfileClose(); }}/>
 				</Menu>
 			</Toolbar>
 		</AppBar>

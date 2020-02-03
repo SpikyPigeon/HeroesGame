@@ -19,7 +19,6 @@ export class AvatarService {
 	}
 
 	async create(filename: string): Promise<AvatarEntity> {
-		const avatar = this.avatars.create({filename});
-		return await this.avatars.save(avatar);
+		return await this.avatars.save(this.avatars.create({filename}));
 	}
 }

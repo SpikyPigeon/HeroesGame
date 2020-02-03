@@ -22,11 +22,9 @@ export const userStore: UserStore = {
 	}),
 
 	getCurrent: thunk(async state => {
-		if ("userJWT" in localStorage) {
-			const token = localStorage.getItem("userJWT");
-			if (token) {
-				state.setUser(await UserService.getUserInfo(token));
-			}
+		const token = localStorage.getItem("userJWT");
+		if (token) {
+			state.setUser(await UserService.getUserInfo(token));
 		}
 	}),
 

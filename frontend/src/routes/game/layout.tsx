@@ -192,7 +192,10 @@ const GameLayout: FunctionComponent = props => {
 					onClose={handleProfileClose}
 				>
 					<AppMenuLink text="Profile" href="/game/profile" onClick={handleProfileClose}/>
-					<AppMenuLink text="Logout" href="/" onClick={() => {logout(); handleProfileClose(); }}/>
+					<AppMenuLink text="Logout" href="/" onClick={() => {
+						logout();
+						handleProfileClose();
+					}}/>
 				</Menu>
 			</Toolbar>
 		</AppBar>

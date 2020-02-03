@@ -1,4 +1,4 @@
-import {createElement, Fragment, FunctionComponent, useState} from "react";
+import {createElement, Fragment, FunctionComponent, useEffect, useState} from "react";
 import {useNavigation} from "react-navi";
 import {useForm} from "react-hook-form";
 import {
@@ -20,7 +20,7 @@ import {
 } from "@material-ui/core";
 
 import {ModifyUserProfile, PasswordChange} from "heroes-common";
-import {useStoreActions} from "../../store";
+import {useStoreActions, useStoreState} from "../../store";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -128,14 +128,20 @@ const PasswordDialog: FunctionComponent<MyDialogProps> = props => {
 
 const ProfileDialog: FunctionComponent<MyDialogProps> = props => {
 	const {open, onClose} = props;
+	const user = useStoreState(state => state.user.user);
+	const modifyProfile = useStoreActions(state => state.user.modifyProfile);
 
-	const {register, handleSubmit, errors, clearError, reset} = useForm<ModifyUserProfile>({
-		defaultValues: {
-			email: user.email,
-			firstName: user.firstName,
-			lastName: user.lastName,
-		},
-	});
+	const {register, handleSubmit, errors, clearError, reset, setValue} = useForm<ModifyUserProfile>();
+
+	useEffect(() => {
+		setTimeout(() => {
+			if (user) {
+				setValue("email", user.email);
+				setValue("firstName", user.firstName);
+				setValue("lastName", user.lastName);
+			}
+		});
+	}, [setValue, open]);
 
 	const handleClose = () => {
 		clearError();
@@ -144,8 +150,13 @@ const ProfileDialog: FunctionComponent<MyDialogProps> = props => {
 	};
 
 	const onSubmit = async (data: ModifyUserProfile) => {
+		await modifyProfile(data);
 		handleClose();
 	};
+
+	if (!user) {
+		return <Fragment/>;
+	}
 
 	return <Dialog open={open} onClose={handleClose}>
 		<DialogTitle>Modify Profile</DialogTitle>
@@ -154,12 +165,12 @@ const ProfileDialog: FunctionComponent<MyDialogProps> = props => {
 				<TextField margin="dense" label="Email Adress" name="email" fullWidth inputRef={register({
 					required: true,
 					pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-				})} error={Boolean(errors.email)}/>
+				})} error={Boolean(errors.email)} InputLabelProps={{shrink: true}}/>
 
-				<TextField margin="dense" label="First Name" name="firstName" fullWidth
+				<TextField margin="dense" label="First Name" name="firstName" fullWidth InputLabelProps={{shrink: true}}
 				           error={Boolean(errors.firstName)} inputRef={register({required: true})}/>
 
-				<TextField margin="dense" label="Last Name" name="lastName" fullWidth
+				<TextField margin="dense" label="Last Name" name="lastName" fullWidth InputLabelProps={{shrink: true}}
 				           error={Boolean(errors.lastName)} inputRef={register({required: true})}/>
 			</DialogContent>
 			<DialogActions>

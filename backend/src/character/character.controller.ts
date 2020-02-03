@@ -1,15 +1,14 @@
+import {Body, Controller, Get, Param, Post, Put, Request, UseGuards} from "@nestjs/common";
 import {ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse} from "@nestjs/swagger";
-import {Body, Controller, Get, Request, Post, Param, Put, UseGuards} from "@nestjs/common";
 import {AuthGuard} from "@nestjs/passport";
 import {CharacterInfoDto, MoveCharacterInfoDto, UpdateCharacterInfoDto} from "./character.dto";
 import {CharacterService} from "./character.service";
 import {CharacterEntity} from "./character.entity";
-import {AvatarService} from "./avatar.service";
 import {UserEntity} from "../user";
 
-@Controller()
+@Controller("user")
 export class CharacterController {
-	constructor(private readonly characters: CharacterService, private readonly avatars: AvatarService) {
+	constructor(private readonly characters: CharacterService) {
 	}
 
 	@ApiBearerAuth()
@@ -55,7 +54,7 @@ export class CharacterController {
 	@ApiOkResponse({type: CharacterEntity})
 	@UseGuards(AuthGuard("jwt"))
 	@Get("me")
-	async findMine(@Request() req: any): Promise<CharacterEntity>{
+	async findMine(@Request() req: any): Promise<CharacterEntity> {
 		return await this.characters.findMine((req.user as UserEntity).id);
 	}
 }

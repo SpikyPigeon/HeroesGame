@@ -3,11 +3,9 @@ import {Repository} from "typeorm";
 import {CharacterEntity} from "./character.entity";
 import {EquipmentEntity} from "./equipment.entity";
 import {AvatarService} from "./avatar.service";
-import {AvatarEntity} from "./avatar.entity";
 import {UserEntity} from "../user";
 import {SquareService, WorldService} from "../world";
 import {UpdateCharacterInfoDto} from "./character.dto";
-import {UserInfo} from "os";
 
 @Injectable()
 export class CharacterService {

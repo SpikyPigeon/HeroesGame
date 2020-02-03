@@ -82,6 +82,7 @@ const PasswordDialog: FunctionComponent<MyDialogProps> = props => {
 
 	type PasswordData = PasswordChange & { validate: string };
 	const {register, handleSubmit, errors, clearError, reset, getValues} = useForm<PasswordData>();
+	const changePassword = useStoreActions(state => state.user.changePassword);
 
 	const handleClose = () => {
 		clearError();
@@ -90,6 +91,8 @@ const PasswordDialog: FunctionComponent<MyDialogProps> = props => {
 	};
 
 	const onSubmit = async (data: PasswordData) => {
+		await changePassword({...data});
+		reset();
 		handleClose();
 	};
 

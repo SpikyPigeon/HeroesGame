@@ -1,11 +1,14 @@
 import {createStore, createTypedHooks} from "easy-peasy";
+import {characterStore, CharacterStore} from "./character";
 import {userStore, UserStore} from "./user";
 
 export interface AppStore {
-	user: UserStore,
+	character: CharacterStore;
+	user: UserStore;
 }
 
 export const store = createStore<AppStore>({
+	character: characterStore,
 	user: userStore,
 });
 

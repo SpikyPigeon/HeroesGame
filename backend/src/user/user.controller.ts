@@ -1,4 +1,4 @@
-import {ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiTags} from "@nestjs/swagger";
+import {ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiTags} from "@nestjs/swagger";
 import {Body, Controller, Get, Post, Put, UseGuards} from "@nestjs/common";
 import {AuthGuard} from "@nestjs/passport";
 import {CreateUserInfoDto, ModifyUserProfileDto} from "./user.dto";
@@ -28,9 +28,10 @@ export class UserController {
 
 	@ApiBearerAuth()
 	@ApiOkResponse({type: UserEntity})
+	@ApiBody({type: ModifyUserProfileDto})
 	@UseGuards(AuthGuard("jwt"))
 	@Put("me")
-	async changeProfile(@UserRequest() user: UserEntity, @Body() data: ModifyUserProfileDto): Promise<UserEntity> {
-		return await this.users.changeProfile(user.id, data.firstName, data.lastName, data.email);
+	async changeProfile(@UserRequest() user: UserEntity, @Body() data: Partial<ModifyUserProfileDto>): Promise<UserEntity> {
+		return await this.users.changeProfile(user.id, data);
 	}
 }

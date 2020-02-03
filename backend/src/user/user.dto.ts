@@ -24,4 +24,7 @@ export class ModifyUserProfileDto implements ModifyUserProfile {
 
 	@ApiProperty()
 	lastName: string = "";
+
+	@ApiProperty()
+	isActive: boolean = true;
 }

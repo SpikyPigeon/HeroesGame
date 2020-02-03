@@ -26,8 +26,8 @@ export class UserService {
 		return response.data.access_token;
 	}
 
-	static async modifyProfile(token: string, profile: ModifyUserProfile): Promise<User> {
-		const response = await Context.put<User>("/user/me", profile, {
+	static async modifyProfile(token: string, profile: Partial<ModifyUserProfile>): Promise<User> {
+		const response = await Context.put<User>("/user/me", {...profile}, {
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},

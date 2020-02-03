@@ -10,7 +10,7 @@ export interface UserStore {
 	register: Thunk<UserStore, CreateUserInfo>;
 	login: Thunk<UserStore, LoginInfo>;
 	logout: Action<UserStore>;
-	modifyProfile: Thunk<UserStore, ModifyUserProfile>;
+	modifyProfile: Thunk<UserStore, Partial<ModifyUserProfile>>;
 	changePassword: Thunk<UserStore, PasswordChange>;
 }
 

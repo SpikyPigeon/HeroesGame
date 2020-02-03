@@ -76,7 +76,8 @@ export class CharacterService {
 
 	async findMine(id: string): Promise<CharacterEntity> {
 		const character = await this.characters.createQueryBuilder("char")
-			.where("char.userId = :user", {user: id})
+			.leftJoinAndSelect("char.owner", "owner")
+			.where("owner.id = :user", {user: id})
 			.getOne();
 		if (character) {
 			return character;

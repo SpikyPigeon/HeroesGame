@@ -23,7 +23,7 @@ import {
 } from "@material-ui/core";
 
 import {Avatar} from "heroes-common";
-import {useStoreActions} from "../store";
+import {useStoreActions, useStoreState} from "../store";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -62,9 +62,18 @@ const CreateHero: FunctionComponent = () => {
 	const [int, setInt] = useState(10);
 
 	const listAvatars = useStoreActions(state => state.character.listAvatars);
+	const getMine = useStoreActions(state => state.character.getMine);
+	const character = useStoreState(state => state.character.character);
 
 	useEffect(() => {
-		const request = async () => setAvatarList(await listAvatars());
+		const request = async () => {
+			await getMine();
+			if (character === null) {
+				setAvatarList(await listAvatars());
+			} else {
+				await nav.navigate("/game");
+			}
+		};
 		request().catch(console.error);
 	}, []);
 

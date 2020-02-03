@@ -1,4 +1,4 @@
-import {createElement, FunctionComponent, useState} from "react";
+import {createElement, FunctionComponent, useEffect, useState} from "react";
 import {AddSharp, RemoveSharp} from "@material-ui/icons";
 import {green} from "@material-ui/core/colors";
 import {useNavigation} from "react-navi";
@@ -10,6 +10,7 @@ import {
 	CardActions,
 	CardContent,
 	CardHeader,
+	CardMedia,
 	createStyles,
 	Grid,
 	GridList,
@@ -20,6 +21,9 @@ import {
 	Theme,
 	Typography
 } from "@material-ui/core";
+
+import {Avatar} from "heroes-common";
+import {useStoreActions} from "../store";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -50,11 +54,19 @@ const CreateHero: FunctionComponent = () => {
 	const classes = useStyles();
 	const nav = useNavigation();
 	const [avatar, setAvatar] = useState<number | boolean>(false);
+	const [avatarList, setAvatarList] = useState<Array<Avatar>>([]);
 	const [name, setName] = useState("");
 	const [str, setStr] = useState(10);
 	const [dex, setDex] = useState(10);
 	const [vit, setVit] = useState(10);
 	const [int, setInt] = useState(10);
+
+	const listAvatars = useStoreActions(state => state.character.listAvatars);
+
+	useEffect(() => {
+		const request = async () => setAvatarList(await listAvatars());
+		request().catch(console.error);
+	}, []);
 
 	const getPointsLeft = () => 10 - (str - 10) - (dex - 10) - (vit - 10) - (int - 10);
 
@@ -131,21 +143,23 @@ const CreateHero: FunctionComponent = () => {
 								<TextField margin="dense" label="Name" fullWidth value={name}
 								           onChange={e => setName(e.target.value)}/>
 								<GridList cellHeight={128} cols={5} style={{maxHeight: "45vh", overflow: "auto"}}>
-									{[...Array(20).keys()].map(value => (
-										<GridListTile key={value}>
+									{avatarList.map(value => (
+										<GridListTile key={value.id}>
 											<Card variant="outlined"
 											      style={{
 												      height: "100%",
-												      backgroundColor: avatar === value ? green[300] : "white",
+												      backgroundColor: avatar === value.id ? green[300] : "white",
 											      }}
 											>
 												<CardActionArea
 													style={{height: "100%"}}
-													onClick={() => setAvatar(value)}
+													onClick={() => setAvatar(value.id)}
 												>
-													<CardContent>
-														<Typography>Avatar {value + 1}</Typography>
-													</CardContent>
+													<CardMedia
+														component="img"
+														image={`/assets/avatar/${value.filename}`}
+														height={128}
+													/>
 												</CardActionArea>
 											</Card>
 										</GridListTile>

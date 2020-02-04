@@ -1,4 +1,4 @@
-import {createElement, FunctionComponent, useState} from "react";
+import {createElement, FunctionComponent, useState, Fragment, useEffect} from "react";
 import {
 	Card,
 	CardActionArea,
@@ -13,6 +13,8 @@ import {
 	Theme,
 	Typography
 } from "@material-ui/core";
+import {useStoreActions, useStoreState} from "../../store";
+import {useNavigation} from "react-navi";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -63,9 +65,29 @@ const InventorySlot: FunctionComponent = () => {
 
 const Hero: FunctionComponent = () => {
 	const classes = useStyles();
+	const currentHero = useStoreState(state => state.character.character);
+	const loadHero = useStoreActions(state => state.character.getMine);
+	const nav = useNavigation();
+	/*if(!currentHero){
+		nav.navigate("/");
+		return <Fragment/>;
+	}*/
+	useEffect(() => {
+		const req = async () => {
+			await loadHero();
+			if(!currentHero){
+				await nav.navigate("/");
+			}
+		};
+		req().catch(console.error);
+	},[]);
+
+	if(!currentHero){
+		return <Fragment/>;
+	}
 
 	return <Grid container justify="center" spacing={2}>
-		<Grid item lg={9}>
+		<Grid item lg={7}>
 			<Card raised>
 				<CardHeader title="Hero"/>
 				<CardContent style={{padding: 8}}>
@@ -86,12 +108,14 @@ const Hero: FunctionComponent = () => {
 								</Grid>
 							</Grid>
 
-							<Grid item lg={8}>
+							<Grid item lg={6}>
 								<Card style={{height: "100%"}} variant="outlined">
-									<CardContent>
-										<Typography paragraph>Hero Picture Here</Typography>
-										<CardMedia image={}></CardMedia>
-									</CardContent>
+									<CardMedia
+										component="img"
+										height={"100%"}
+										image={`/assets/avatar/${currentHero.avatar.filename}`}
+										style={{backgroundSize: "cover"}}
+									/>
 								</Card>
 							</Grid>
 
@@ -111,7 +135,7 @@ const Hero: FunctionComponent = () => {
 							</Grid>
 						</Grid>
 
-						<Grid container item lg={12} justify="space-evenly">
+						<Grid container item lg={12} justify="center" spacing={3}>
 							<Grid item lg={2}>
 								<EquipmentSlot name="Neck"/>
 							</Grid>

@@ -4,6 +4,7 @@ import {
 	CardActionArea,
 	CardContent,
 	CardHeader,
+	CardMedia,
 	createStyles,
 	Grid,
 	GridList,
@@ -89,6 +90,7 @@ const Hero: FunctionComponent = () => {
 								<Card style={{height: "100%"}} variant="outlined">
 									<CardContent>
 										<Typography paragraph>Hero Picture Here</Typography>
+										<CardMedia image={}></CardMedia>
 									</CardContent>
 								</Card>
 							</Grid>

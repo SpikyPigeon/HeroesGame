@@ -87,10 +87,15 @@ const CreateHero: FunctionComponent = () => {
 				<Grid container direction="row" spacing={2}>
 					<Grid container item lg={3} direction="column" spacing={4}>
 						<Grid item lg>
-							<Typography gutterBottom>Stat Points Left : {getPointsLeft()}</Typography>
+							<Grid item>
+								<Typography align="center" gutterBottom>Stat Points Left :</Typography>
+							</Grid>
+							<Grid item>
+								<Typography align="center" variant="h4"> {getPointsLeft()}</Typography>
+							</Grid>
 						</Grid>
 						<Grid item lg>
-							<Typography variant="caption" gutterBottom>Strength</Typography>
+							<Typography variant="h6" gutterBottom>Strength</Typography>
 							<ButtonGroup variant="contained" color="primary" fullWidth>
 								<Button onClick={() => setStr(str - 1)} disabled={str === charStats.start}>
 									<RemoveSharp/>
@@ -104,7 +109,7 @@ const CreateHero: FunctionComponent = () => {
 							</ButtonGroup>
 						</Grid>
 						<Grid item lg>
-							<Typography variant="caption" gutterBottom>Dexterity</Typography>
+							<Typography variant="h6" gutterBottom>Dexterity</Typography>
 							<ButtonGroup variant="contained" color="primary" fullWidth>
 								<Button onClick={() => setDex(dex - 1)} disabled={dex === charStats.start}>
 									<RemoveSharp/>
@@ -118,7 +123,7 @@ const CreateHero: FunctionComponent = () => {
 							</ButtonGroup>
 						</Grid>
 						<Grid item lg>
-							<Typography variant="caption" gutterBottom>Vitality</Typography>
+							<Typography variant="h6" gutterBottom>Vitality</Typography>
 							<ButtonGroup variant="contained" color="primary" fullWidth>
 								<Button onClick={() => setVit(vit - 1)} disabled={vit === charStats.start}>
 									<RemoveSharp/>
@@ -132,7 +137,7 @@ const CreateHero: FunctionComponent = () => {
 							</ButtonGroup>
 						</Grid>
 						<Grid item lg>
-							<Typography variant="caption" gutterBottom>Intellect</Typography>
+							<Typography variant="h6" gutterBottom>Intellect</Typography>
 							<ButtonGroup variant="contained" color="primary" fullWidth>
 								<Button onClick={() => setInt(int - 1)} disabled={int === charStats.start}>
 									<RemoveSharp/>
@@ -180,28 +185,28 @@ const CreateHero: FunctionComponent = () => {
 					</Grid>
 					<Grid container item lg={3} direction="column" spacing={4}>
 						<Grid item lg>
-							<Typography variant="caption" gutterBottom>Damage</Typography>
-							<Typography variant="body1">
+							<Typography align="center" variant="body1" gutterBottom>Damage</Typography>
+							<Typography align="center" variant="h4">
 								{charStats.calculate.damage(str, 0).min} - {charStats.calculate.damage(str, 0).max}
 							</Typography>
 						</Grid>
 						<Grid item lg>
-							<Typography variant="caption" gutterBottom>Health</Typography>
-							<Typography variant="body1">{charStats.calculate.health(vit, 0)}</Typography>
+							<Typography align="center" variant="body1" gutterBottom>Health</Typography>
+							<Typography align="center" variant="h4">{charStats.calculate.health(vit, 0)}</Typography>
 						</Grid>
 						<Grid item lg>
-							<Typography variant="caption" gutterBottom>Mana</Typography>
-							<Typography variant="body1">{charStats.calculate.mana(int, 0)}</Typography>
-						</Grid>
-						<Grid item lg>
-							<Typography variant="caption" gutterBottom>Dodge Chance</Typography>
+							<Typography align="center" variant="body1" gutterBottom>Dodge Chance</Typography>
 							<Typography
-								variant="body1">{charStats.calculate.dodgeChance(dex, 0).toPrecision(4)}%</Typography>
+					align="center" variant="h4">{charStats.calculate.dodgeChance(dex, 0).toPrecision(4)}%</Typography>
 						</Grid>
 						<Grid item lg>
-							<Typography variant="caption" gutterBottom>Critical Chance</Typography>
+							<Typography align="center" variant="body1" gutterBottom>Critical Chance</Typography>
 							<Typography
-								variant="body1">{charStats.calculate.criticalChance(dex, 0).toPrecision(4)}%</Typography>
+					align="center" variant="h4">{charStats.calculate.criticalChance(dex, 0).toPrecision(4)}%</Typography>
+						</Grid>
+						<Grid item lg>
+							<Typography align="center" variant="body1" gutterBottom>Mana</Typography>
+							<Typography align="center" variant="h4">{charStats.calculate.mana(int, 0)}</Typography>
 						</Grid>
 					</Grid>
 				</Grid>

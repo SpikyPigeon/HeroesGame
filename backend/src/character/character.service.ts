@@ -30,6 +30,7 @@ export class CharacterService {
 
 	async create(owner: UserEntity, name: string, avatarId: number): Promise<CharacterEntity> {
 		const char = await this.characters.save(this.characters.create({
+			square: await this.squares.findOne(1, 0, 0),
 			currentHealth: 0,
 			currentMana: 0,
 			owner,

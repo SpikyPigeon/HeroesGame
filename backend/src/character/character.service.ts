@@ -77,12 +77,12 @@ export class CharacterService {
 	async findMine(id: string): Promise<CharacterEntity> {
 		const character = await this.characters.createQueryBuilder("char")
 			.leftJoinAndSelect("char.owner", "owner")
-			.where("owner.id = :user", {user: id})
+			.where("owner.id = :user AND char.isActive = TRUE", {user: id})
 			.getOne();
 		if (character) {
 			return character;
 		} else {
-			throw new Error("No characters for this user!");
+			throw new Error("No active characters for this user!");
 		}
 	}
 

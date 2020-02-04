@@ -21,11 +21,22 @@ export class CharacterService {
 	}
 
 	async findAll(): Promise<Array<CharacterEntity>> {
-		return await this.characters.find();
+		return await this.characters.createQueryBuilder("char")
+			.leftJoinAndSelect("char.avatar", "avatar")
+			.getMany();
 	}
 
 	async findOne(id: string): Promise<CharacterEntity> {
-		return await this.characters.findOneOrFail(id);
+		const char = await this.characters.createQueryBuilder("char")
+			.leftJoinAndSelect("char.avatar", "avatar")
+			.where("char.id = :id", {id})
+			.getOne();
+
+		if (char) {
+			return char;
+		} else {
+			throw new Error(`There are no character with ID = ${id}`);
+		}
 	}
 
 	async create(owner: UserEntity, name: string, avatarId: number): Promise<CharacterEntity> {
@@ -78,6 +89,7 @@ export class CharacterService {
 	async findMine(id: string): Promise<CharacterEntity> {
 		const character = await this.characters.createQueryBuilder("char")
 			.leftJoinAndSelect("char.owner", "owner")
+			.leftJoinAndSelect("char.avatar", "avatar")
 			.where("owner.id = :user AND char.isActive = TRUE", {user: id})
 			.getOne();
 		if (character) {

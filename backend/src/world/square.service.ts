@@ -2,6 +2,7 @@ import {Inject, Injectable} from "@nestjs/common";
 import {Repository} from "typeorm";
 import {SquareEntity} from "./square.entity";
 import {WorldEntity} from "./world.entity";
+import {UpdateSquareImageInfo} from "./world.dto";
 
 @Injectable()
 export class SquareService {
@@ -40,9 +41,9 @@ export class SquareService {
 		return await this.squares.save(squares);
 	}
 
-	async setImage(worldId: number, x: number, y: number, newImage: string): Promise<SquareEntity> {
+	async setImage(worldId: number, x: number, y: number, newImage: UpdateSquareImageInfo): Promise<SquareEntity> {
 		const square = await this.findOne(worldId, x, y);
-		square.image = newImage;
+		square.image = newImage.filename;
 		return await this.squares.save(square);
 	}
 }

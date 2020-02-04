@@ -18,14 +18,23 @@ export class SquareController {
 
 	@ApiOkResponse({type: SquareEntity})
 	@Get(":worldId/:x/:y")
-	async findOne(@Param("worldId") worldId: number, @Param("x") x: number, @Param("y") y: number): Promise<SquareEntity> {
+	async findOne(
+		@Param("worldId") worldId: number,
+		@Param("x") x: number,
+		@Param("y") y: number,
+	): Promise<SquareEntity> {
 		return await this.squares.findOne(worldId, x, y);
 	}
 
 	@ApiOkResponse({type: SquareEntity})
 	@ApiBody({type: UpdateSquareImageInfo})
 	@Put(":worldId/:x/:y")
-	async setImage(@Param("worldId") worldId: number, @Param("x") x: number, @Param("y") y: number, @Param("newImage") newImage: UpdateSquareImageInfo): Promise<SquareEntity> {
+	async setImage(
+		@Param("worldId") worldId: number,
+		@Param("x") x: number,
+		@Param("y") y: number,
+		@Body() newImage: UpdateSquareImageInfo,
+	): Promise<SquareEntity> {
 		return await this.squares.setImage(worldId, x, y, newImage);
 	}
 }

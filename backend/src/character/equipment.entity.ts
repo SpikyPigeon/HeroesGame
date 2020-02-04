@@ -10,7 +10,7 @@ export class EquipmentEntity implements CharacterEquipment {
 	@PrimaryColumn()
 	playerId!: string;
 
-	@ApiProperty()
+	@ApiProperty({type: () => CharacterEntity})
 	@OneToOne(type => CharacterEntity, character => character.equipment)
 	@JoinColumn()
 	player!: CharacterEntity;

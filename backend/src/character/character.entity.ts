@@ -22,7 +22,7 @@ export class CharacterEntity implements PlayerCharacter {
 	@PrimaryGeneratedColumn("uuid")
 	id!: string;
 
-	@ApiProperty()
+	@ApiProperty({type: () => UserEntity})
 	@ManyToOne(type => UserEntity, user => user.characters)
 	owner!: UserEntity;
 
@@ -34,7 +34,7 @@ export class CharacterEntity implements PlayerCharacter {
 	@ManyToOne(type => AvatarEntity)
 	avatar!: AvatarEntity;
 
-	@ApiProperty()
+	@ApiProperty({type: () => SquareEntity})
 	@ManyToOne(type => SquareEntity)
 	square!: SquareEntity;
 

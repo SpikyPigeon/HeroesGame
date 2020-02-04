@@ -39,6 +39,15 @@ export class MessageService {
 			.getMany();
 	}
 
+	async findReceivedByUser(userId : string):Promise<Array<MessageEntity>>{
+		return await this.messages.createQueryBuilder("msg")
+			.leftJoinAndSelect("msg.previous", "prev")
+			.leftJoinAndSelect("msg.receiver", "uReceiver")
+			.where("uReceiver.id = :user", {user: userId})
+			.orderBy("msg.createdAt", "DESC")
+			.getMany();
+	}
+
 	async deleteById(msgId: string){
 		await this.messages.delete(msgId);
 	}

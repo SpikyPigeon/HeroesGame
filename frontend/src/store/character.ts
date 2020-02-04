@@ -1,5 +1,5 @@
 import {action, Action, thunk, Thunk} from "easy-peasy";
-import {Avatar, PlayerCharacter, CharacterInfo, UpdateCharacterInfo} from "heroes-common";
+import {Avatar, CharacterInfo, MoveCharacterInfo, PlayerCharacter, UpdateCharacterInfo} from "heroes-common";
 import {CharacterService} from "./context";
 
 export interface CharacterStore {
@@ -13,6 +13,7 @@ export interface CharacterStore {
 	userHasChar: Thunk<CharacterStore, void, any, {}, Promise<boolean>>;
 	create: Thunk<CharacterStore, CharacterInfo>;
 	update: Thunk<CharacterStore, Partial<UpdateCharacterInfo>>;
+	moveTo: Thunk<CharacterStore, MoveCharacterInfo>;
 }
 
 export const characterStore: CharacterStore = {
@@ -58,5 +59,12 @@ export const characterStore: CharacterStore = {
 		if (token) {
 			state.setCharacter(await CharacterService.update(token, payload));
 		}
-	})
+	}),
+
+	moveTo: thunk(async (state, payload) => {
+		const token = localStorage.getItem("userJWT");
+		if (token) {
+			state.setCharacter(await CharacterService.moveTo(token, payload));
+		}
+	}),
 };

@@ -1,14 +1,17 @@
 import {createStore, createTypedHooks} from "easy-peasy";
 import {characterStore, CharacterStore} from "./character";
+import {worldStore, WorldStore} from "./world";
 import {userStore, UserStore} from "./user";
 
 export interface AppStore {
 	character: CharacterStore;
+	world: WorldStore;
 	user: UserStore;
 }
 
 export const store = createStore<AppStore>({
 	character: characterStore,
+	world: worldStore,
 	user: userStore,
 });
 

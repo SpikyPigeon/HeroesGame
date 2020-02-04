@@ -30,6 +30,7 @@ export class CharacterService {
 
 	async create(owner: UserEntity, name: string, avatarId: number): Promise<CharacterEntity> {
 		const char = await this.characters.save(this.characters.create({
+			square: await this.squares.findOne(1, 0, 0),
 			currentHealth: 0,
 			currentMana: 0,
 			owner,
@@ -77,12 +78,12 @@ export class CharacterService {
 	async findMine(id: string): Promise<CharacterEntity> {
 		const character = await this.characters.createQueryBuilder("char")
 			.leftJoinAndSelect("char.owner", "owner")
-			.where("owner.id = :user", {user: id})
+			.where("owner.id = :user AND char.isActive = TRUE", {user: id})
 			.getOne();
 		if (character) {
 			return character;
 		} else {
-			throw new Error("No characters for this user!");
+			throw new Error("No active characters for this user!");
 		}
 	}
 

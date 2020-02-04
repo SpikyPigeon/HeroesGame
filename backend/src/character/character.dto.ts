@@ -11,9 +11,6 @@ export class CharacterInfoDto implements CharacterInfo {
 
 export class MoveCharacterInfoDto implements MoveCharacterInfo {
 	@ApiProperty()
-	characterId: string = "";
-
-	@ApiProperty()
 	worldId: number = 0;
 
 	@ApiProperty()

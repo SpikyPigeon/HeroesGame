@@ -1,4 +1,4 @@
-import {Avatar, PlayerCharacter, CharacterInfo, UpdateCharacterInfo, MoveCharacterInfo} from "heroes-common";
+import {Avatar, CharacterInfo, MoveCharacterInfo, PlayerCharacter, UpdateCharacterInfo} from "heroes-common";
 import {Context} from "./index";
 
 export class CharacterService {
@@ -53,6 +53,15 @@ export class CharacterService {
 
 	static async update(token: string, data: Partial<UpdateCharacterInfo>): Promise<PlayerCharacter> {
 		const response = await Context.put<PlayerCharacter>("/character/me", {...data}, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
+		return response.data;
+	}
+
+	static async moveTo(token: string, data: MoveCharacterInfo): Promise<PlayerCharacter> {
+		const response = await Context.put<PlayerCharacter>("/character/me/move", data, {
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},

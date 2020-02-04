@@ -10,4 +10,5 @@ export const Context: AxiosInstance = axios.create({
 });
 
 export * from "./character.service";
+export * from "./world.service";
 export * from "./user.service";

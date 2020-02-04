@@ -77,19 +77,19 @@ export class CharacterController {
 
 	@ApiBearerAuth()
 	@ApiOkResponse({type: CharacterEntity})
-	@ApiBody({type: MoveCharacterInfoDto})
-	@UseGuards(AuthGuard("jwt"))
-	@Put("move")
-	async moveTo(@Body() data: MoveCharacterInfoDto): Promise<CharacterEntity> {
-		return await this.characters.moveTo(data.characterId, data.worldId, data.x, data.y);
-	}
-
-	@ApiBearerAuth()
-	@ApiOkResponse({type: CharacterEntity})
 	@ApiBody({type: UpdateCharacterInfoDto})
 	@UseGuards(AuthGuard("jwt"))
 	@Put(":id")
 	async update(@Param() id: string, @Body() data: Partial<UpdateCharacterInfoDto>): Promise<CharacterEntity> {
 		return await this.characters.update(id, data);
+	}
+
+	@ApiBearerAuth()
+	@ApiOkResponse({type: CharacterEntity})
+	@ApiBody({type: MoveCharacterInfoDto})
+	@UseGuards(AuthGuard("jwt"))
+	@Put(":id/move")
+	async moveTo(@Param("id") charId: string, @Body() data: MoveCharacterInfoDto): Promise<CharacterEntity> {
+		return await this.characters.moveTo(charId, data.worldId, data.x, data.y);
 	}
 }

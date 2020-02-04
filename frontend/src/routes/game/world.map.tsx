@@ -101,8 +101,13 @@ export const WorldMapCard: FunctionComponent = () => {
 		e.preventDefault();
 		if (e.button === 0 && !navMode && !dragging && canvas.current) {
 			const rect = canvas.current.getBoundingClientRect();
-			const position = transform.transformPoint(new DOMPoint(e.clientX - rect.left, e.clientY - rect.top));
-			console.log(`CLICKED @ ${position.x}:${position.y}!`);
+			const mousePos = transform.transformPoint(new DOMPoint(e.clientX - rect.left, e.clientY - rect.top));
+
+			if (mousePos.x >= 0 && mousePos.y >= 0) {
+				const x = Math.floor(mousePos.x / 32);
+				const y = Math.floor(mousePos.y / 32);
+				console.log(`SQUARE @ ${x}:${y}`);
+			}
 		}
 	};
 

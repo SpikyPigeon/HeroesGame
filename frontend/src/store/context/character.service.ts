@@ -27,6 +27,21 @@ export class CharacterService {
 		}
 	}
 
+	static async userHasChar(token: string): Promise<boolean> {
+		try {
+			const response = await Context.get<PlayerCharacter>("/character/me", {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+
+			return response.status === 200;
+		} catch (e) {
+			console.error(e);
+			return false;
+		}
+	}
+
 	static async create(token: string, info: CharacterInfo): Promise<PlayerCharacter> {
 		const response = await Context.post<PlayerCharacter>("/character", info, {
 			headers: {

@@ -1,5 +1,5 @@
 import {action, Action, thunk, Thunk} from "easy-peasy";
-import {Avatar, PlayerCharacter} from "heroes-common";
+import {Avatar, PlayerCharacter, CharacterInfo, UpdateCharacterInfo} from "heroes-common";
 import {CharacterService} from "./context";
 
 export interface CharacterStore {
@@ -10,6 +10,9 @@ export interface CharacterStore {
 
 	setCharacter: Action<CharacterStore, PlayerCharacter | null>;
 	getMine: Thunk<CharacterStore>;
+	userHasChar: Thunk<CharacterStore, void, any, {}, Promise<boolean>>;
+	create: Thunk<CharacterStore, CharacterInfo>;
+	update: Thunk<CharacterStore, Partial<UpdateCharacterInfo>>;
 }
 
 export const characterStore: CharacterStore = {
@@ -33,4 +36,27 @@ export const characterStore: CharacterStore = {
 			state.setCharacter(await CharacterService.findMine(token));
 		}
 	}),
+
+	userHasChar: thunk(async () => {
+		const token = localStorage.getItem("userJWT");
+		if (token) {
+			return await CharacterService.userHasChar(token);
+		} else {
+			return false
+		}
+	}),
+
+	create: thunk(async (state, payload) => {
+		const token = localStorage.getItem("userJWT");
+		if (token) {
+			state.setCharacter(await CharacterService.create(token, payload));
+		}
+	}),
+
+	update: thunk(async (state, payload) => {
+		const token = localStorage.getItem("userJWT");
+		if (token) {
+			state.setCharacter(await CharacterService.update(token, payload));
+		}
+	})
 };

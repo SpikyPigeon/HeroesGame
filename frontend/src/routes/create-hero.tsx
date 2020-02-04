@@ -63,13 +63,13 @@ const CreateHero: FunctionComponent = () => {
 	const [int, setInt] = useState(charStats.start);
 
 	const listAvatars = useStoreActions(state => state.character.listAvatars);
-	const getMine = useStoreActions(state => state.character.getMine);
-	const character = useStoreState(state => state.character.character);
+	const createChar = useStoreActions(state => state.character.create);
+	const updateChar = useStoreActions(state => state.character.update);
+	const hasChar = useStoreActions(state => state.character.userHasChar);
 
 	useEffect(() => {
 		const request = async () => {
-			await getMine();
-			if (character === null) {
+			if (!await hasChar()) {
 				setAvatarList(await listAvatars());
 			} else {
 				await nav.navigate("/game");

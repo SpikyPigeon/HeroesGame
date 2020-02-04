@@ -10,6 +10,7 @@ export interface CharacterStore {
 
 	setCharacter: Action<CharacterStore, PlayerCharacter | null>;
 	getMine: Thunk<CharacterStore>;
+	userHasChar: Thunk<CharacterStore, void, any, {}, Promise<boolean>>;
 	create: Thunk<CharacterStore, CharacterInfo>;
 	update: Thunk<CharacterStore, Partial<UpdateCharacterInfo>>;
 }
@@ -33,6 +34,15 @@ export const characterStore: CharacterStore = {
 		const token = localStorage.getItem("userJWT");
 		if (token) {
 			state.setCharacter(await CharacterService.findMine(token));
+		}
+	}),
+
+	userHasChar: thunk(async () => {
+		const token = localStorage.getItem("userJWT");
+		if (token) {
+			return await CharacterService.userHasChar(token);
+		} else {
+			return false
 		}
 	}),
 

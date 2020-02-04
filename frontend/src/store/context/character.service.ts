@@ -1,5 +1,5 @@
+import {Avatar, PlayerCharacter, CharacterInfo, UpdateCharacterInfo, MoveCharacterInfo} from "heroes-common";
 import {Context} from "./index";
-import {Avatar, PlayerCharacter} from "heroes-common";
 
 export class CharacterService {
 	static async listAllAvatars(): Promise<Array<Avatar>> {
@@ -25,5 +25,23 @@ export class CharacterService {
 			console.error(e);
 			return null;
 		}
+	}
+
+	static async create(token: string, info: CharacterInfo): Promise<PlayerCharacter> {
+		const response = await Context.post<PlayerCharacter>("/character", info, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
+		return response.data;
+	}
+
+	static async update(token: string, data: Partial<UpdateCharacterInfo>): Promise<PlayerCharacter> {
+		const response = await Context.put<PlayerCharacter>("/character/me", {...data}, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
+		return response.data;
 	}
 }

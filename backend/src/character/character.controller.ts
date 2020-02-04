@@ -35,6 +35,16 @@ export class CharacterController {
 	}
 
 	@ApiBearerAuth()
+	@ApiOkResponse({type: CharacterEntity})
+	@ApiBody({type: UpdateCharacterInfoDto})
+	@UseGuards(AuthGuard("jwt"))
+	@Put("me")
+	async updateMine(@Request() req: any, @Body() data: Partial<UpdateCharacterInfoDto>): Promise<CharacterEntity> {
+		const {id} = await this.characters.findMine((req.user as UserEntity).id);
+		return await this.characters.update(id, data);
+	}
+
+	@ApiBearerAuth()
 	@ApiCreatedResponse({type: CharacterEntity})
 	@ApiBody({type: CharacterInfoDto})
 	@UseGuards(AuthGuard("jwt"))

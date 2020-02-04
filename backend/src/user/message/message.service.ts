@@ -13,20 +13,20 @@ export class MessageService {
 	) {
 	}
 
-	async create(data: CreateMessageInfo): Promise<MessageEntity>{
+	async create(data: CreateMessageInfo): Promise<MessageEntity> {
 		return await this.messages.save(this.messages.create({
 			receiver: await this.users.findOneById(data.receiver),
 			previous: await this.findOne(data.previous),
-			title : data.title,
+			title: data.title,
 			content: data.content,
 		}));
 	}
 
-	async findAll(): Promise<MessageEntity[]>{
+	async findAll(): Promise<MessageEntity[]> {
 		return await this.messages.find();
 	}
 
-	async findOne(id: string): Promise<MessageEntity>{
+	async findOne(id: string): Promise<MessageEntity> {
 		return await this.messages.findOneOrFail(id);
 	}
 
@@ -39,7 +39,7 @@ export class MessageService {
 			.getMany();
 	}
 
-	async findReceivedByUser(userId : string):Promise<Array<MessageEntity>>{
+	async findReceivedByUser(userId: string): Promise<Array<MessageEntity>> {
 		return await this.messages.createQueryBuilder("msg")
 			.leftJoinAndSelect("msg.previous", "prev")
 			.leftJoinAndSelect("msg.receiver", "uReceiver")
@@ -48,7 +48,7 @@ export class MessageService {
 			.getMany();
 	}
 
-	async deleteById(msgId: string){
+	async deleteById(msgId: string) {
 		await this.messages.delete(msgId);
 	}
 }

@@ -28,7 +28,7 @@ export class UpdateWorldInfo {
 	bgImage: string = "";
 }
 
-export class UpdateSquareImageInfo{
+export class UpdateSquareImageInfo {
 	@ApiProperty()
 	filename: string = "";
 }

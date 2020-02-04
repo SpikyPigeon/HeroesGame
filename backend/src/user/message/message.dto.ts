@@ -1,15 +1,15 @@
 import {ApiProperty} from "@nestjs/swagger";
 
-export class CreateMessageInfo{
+export class CreateMessageInfo {
 	@ApiProperty()
 	receiver: string = "";
 
 	@ApiProperty()
-	previous : string = "";
+	previous: string = "";
 
 	@ApiProperty()
 	title: string = "";
 
 	@ApiProperty()
-	content : string = "";
+	content: string = "";
 }

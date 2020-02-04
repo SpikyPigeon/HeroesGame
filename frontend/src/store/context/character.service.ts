@@ -59,4 +59,13 @@ export class CharacterService {
 		});
 		return response.data;
 	}
+
+	static async moveTo(token: string, data: MoveCharacterInfo): Promise<PlayerCharacter> {
+		const response = await Context.put<PlayerCharacter>("/character/me/move", data, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
+		return response.data;
+	}
 }

@@ -1,5 +1,5 @@
-import {Avatar, PlayerCharacter} from "heroes-common";
 import {action, Action, thunk, Thunk} from "easy-peasy";
+import {Avatar, PlayerCharacter} from "heroes-common";
 import {CharacterService} from "./context";
 
 export interface CharacterStore {

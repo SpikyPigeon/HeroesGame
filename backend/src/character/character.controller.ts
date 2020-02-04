@@ -4,12 +4,34 @@ import {AuthGuard} from "@nestjs/passport";
 import {CharacterInfoDto, MoveCharacterInfoDto, UpdateCharacterInfoDto} from "./character.dto";
 import {CharacterService} from "./character.service";
 import {CharacterEntity} from "./character.entity";
+import {AvatarService} from "./avatar.service";
+import {AvatarEntity} from "./avatar.entity";
 import {UserEntity} from "../user";
 
 @ApiTags("user")
 @Controller()
 export class CharacterController {
-	constructor(private readonly characters: CharacterService) {
+	constructor(private readonly characters: CharacterService, private readonly avatars: AvatarService) {
+	}
+
+	@ApiOkResponse({type: AvatarEntity, isArray: true})
+	@Get("avatar")
+	async findAllAvatars(): Promise<Array<AvatarEntity>> {
+		return await this.avatars.findAll();
+	}
+
+	@ApiOkResponse({type: AvatarEntity})
+	@Get("avatar/:id")
+	async findOneAvatar(@Param("id") id: number): Promise<AvatarEntity> {
+		return await this.avatars.findOne(id);
+	}
+
+	@ApiBearerAuth()
+	@ApiOkResponse({type: CharacterEntity})
+	@UseGuards(AuthGuard("jwt"))
+	@Get("me")
+	async findMine(@Request() req: any): Promise<CharacterEntity> {
+		return await this.characters.findMine((req.user as UserEntity).id);
 	}
 
 	@ApiBearerAuth()
@@ -49,13 +71,5 @@ export class CharacterController {
 	@Put("move")
 	async moveTo(@Body() data: MoveCharacterInfoDto): Promise<CharacterEntity> {
 		return await this.characters.moveTo(data.characterId, data.worldId, data.x, data.y);
-	}
-
-	@ApiBearerAuth()
-	@ApiOkResponse({type: CharacterEntity})
-	@UseGuards(AuthGuard("jwt"))
-	@Get("me")
-	async findMine(@Request() req: any): Promise<CharacterEntity> {
-		return await this.characters.findMine((req.user as UserEntity).id);
 	}
 }

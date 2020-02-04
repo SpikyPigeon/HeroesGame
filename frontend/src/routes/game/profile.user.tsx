@@ -35,13 +35,6 @@ const useStyles = makeStyles((theme: Theme) =>
 	}),
 );
 
-const user: ModifyUserProfile = {
-	email: "king@numsgil.co",
-	firstName: "Daniel",
-	lastName: "Grondin",
-	isActive: true,
-};
-
 interface MyDialogProps {
 	open: boolean;
 	onClose: () => void;
@@ -191,15 +184,21 @@ const UserCard: FunctionComponent = () => {
 	const [passOpen, setPassOpen] = useState(false);
 	const [profileOpen, setProfileOpen] = useState(false);
 
+	const user = useStoreState(state => state.user.user);
+
+	if (!user) {
+		return <Fragment/>;
+	}
+
 	return <Fragment>
 		<Card>
 			<CardContent>
 				<Typography variant="h6" color="textSecondary" align="center">
 					{user.firstName} {user.lastName}
 				</Typography>
-				<div className={classes.chips}>
+				{user.isAdmin && <div className={classes.chips}>
 					<Chip variant="outlined" size="small" label="Admin" color="secondary"/>
-				</div>
+				</div>}
 			</CardContent>
 			<CardActions>
 				<Button size="small" color="secondary" onClick={() => setDisAccOpen(true)}>

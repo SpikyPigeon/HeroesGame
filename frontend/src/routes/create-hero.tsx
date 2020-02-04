@@ -1,4 +1,4 @@
-import {createElement, FunctionComponent, useState} from "react";
+import {createElement, FunctionComponent, useEffect, useState} from "react";
 import {AddSharp, RemoveSharp} from "@material-ui/icons";
 import {green} from "@material-ui/core/colors";
 import {useNavigation} from "react-navi";
@@ -10,6 +10,7 @@ import {
 	CardActions,
 	CardContent,
 	CardHeader,
+	CardMedia,
 	createStyles,
 	Grid,
 	GridList,
@@ -20,6 +21,9 @@ import {
 	Theme,
 	Typography
 } from "@material-ui/core";
+
+import {Avatar, config} from "heroes-common";
+import {useStoreActions, useStoreState} from "../store";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -47,16 +51,34 @@ const Content = styled("div")(({theme}) => ({
 }));
 
 const CreateHero: FunctionComponent = () => {
+	const charStats = config.character.stats;
 	const classes = useStyles();
 	const nav = useNavigation();
 	const [avatar, setAvatar] = useState<number | boolean>(false);
+	const [avatarList, setAvatarList] = useState<Array<Avatar>>([]);
 	const [name, setName] = useState("");
-	const [str, setStr] = useState(10);
-	const [dex, setDex] = useState(10);
-	const [vit, setVit] = useState(10);
-	const [int, setInt] = useState(10);
+	const [str, setStr] = useState(charStats.start);
+	const [dex, setDex] = useState(charStats.start);
+	const [vit, setVit] = useState(charStats.start);
+	const [int, setInt] = useState(charStats.start);
 
-	const getPointsLeft = () => 10 - (str - 10) - (dex - 10) - (vit - 10) - (int - 10);
+	const listAvatars = useStoreActions(state => state.character.listAvatars);
+	const getMine = useStoreActions(state => state.character.getMine);
+	const character = useStoreState(state => state.character.character);
+
+	useEffect(() => {
+		const request = async () => {
+			await getMine();
+			if (character === null) {
+				setAvatarList(await listAvatars());
+			} else {
+				await nav.navigate("/game");
+			}
+		};
+		request().catch(console.error);
+	}, []);
+
+	const getPointsLeft = () => charStats.startPoints - (str - charStats.start) - (dex - charStats.start) - (vit - charStats.start) - (int - charStats.start);
 
 	return <Content>
 		<Card variant="outlined" classes={{root: classes.card}}>
@@ -70,7 +92,7 @@ const CreateHero: FunctionComponent = () => {
 						<Grid item lg>
 							<Typography variant="caption" gutterBottom>Strength</Typography>
 							<ButtonGroup variant="contained" color="primary" fullWidth>
-								<Button onClick={() => setStr(str - 1)} disabled={str === 10}>
+								<Button onClick={() => setStr(str - 1)} disabled={str === charStats.start}>
 									<RemoveSharp/>
 								</Button>
 								<Button disabled style={{color: "black"}}>
@@ -84,7 +106,7 @@ const CreateHero: FunctionComponent = () => {
 						<Grid item lg>
 							<Typography variant="caption" gutterBottom>Dexterity</Typography>
 							<ButtonGroup variant="contained" color="primary" fullWidth>
-								<Button onClick={() => setDex(dex - 1)} disabled={dex === 10}>
+								<Button onClick={() => setDex(dex - 1)} disabled={dex === charStats.start}>
 									<RemoveSharp/>
 								</Button>
 								<Button disabled style={{color: "black"}}>
@@ -98,7 +120,7 @@ const CreateHero: FunctionComponent = () => {
 						<Grid item lg>
 							<Typography variant="caption" gutterBottom>Vitality</Typography>
 							<ButtonGroup variant="contained" color="primary" fullWidth>
-								<Button onClick={() => setVit(vit - 1)} disabled={vit === 10}>
+								<Button onClick={() => setVit(vit - 1)} disabled={vit === charStats.start}>
 									<RemoveSharp/>
 								</Button>
 								<Button disabled style={{color: "black"}}>
@@ -112,7 +134,7 @@ const CreateHero: FunctionComponent = () => {
 						<Grid item lg>
 							<Typography variant="caption" gutterBottom>Intellect</Typography>
 							<ButtonGroup variant="contained" color="primary" fullWidth>
-								<Button onClick={() => setInt(int - 1)} disabled={int === 10}>
+								<Button onClick={() => setInt(int - 1)} disabled={int === charStats.start}>
 									<RemoveSharp/>
 								</Button>
 								<Button disabled style={{color: "black"}}>
@@ -131,21 +153,23 @@ const CreateHero: FunctionComponent = () => {
 								<TextField margin="dense" label="Name" fullWidth value={name}
 								           onChange={e => setName(e.target.value)}/>
 								<GridList cellHeight={128} cols={5} style={{maxHeight: "45vh", overflow: "auto"}}>
-									{[...Array(20).keys()].map(value => (
-										<GridListTile key={value}>
+									{avatarList.map(value => (
+										<GridListTile key={value.id}>
 											<Card variant="outlined"
 											      style={{
 												      height: "100%",
-												      backgroundColor: avatar === value ? green[300] : "white",
+												      backgroundColor: avatar === value.id ? green[300] : "white",
 											      }}
 											>
 												<CardActionArea
 													style={{height: "100%"}}
-													onClick={() => setAvatar(value)}
+													onClick={() => setAvatar(value.id)}
 												>
-													<CardContent>
-														<Typography>Avatar {value + 1}</Typography>
-													</CardContent>
+													<CardMedia
+														component="img"
+														image={`/assets/avatar/${value.filename}`}
+														height={128}
+													/>
 												</CardActionArea>
 											</Card>
 										</GridListTile>
@@ -157,23 +181,27 @@ const CreateHero: FunctionComponent = () => {
 					<Grid container item lg={3} direction="column" spacing={4}>
 						<Grid item lg>
 							<Typography variant="caption" gutterBottom>Damage</Typography>
-							<Typography variant="body1">{str * 2} - {str * 4}</Typography>
+							<Typography variant="body1">
+								{charStats.calculate.damage(str, 0).min} - {charStats.calculate.damage(str, 0).max}
+							</Typography>
 						</Grid>
 						<Grid item lg>
 							<Typography variant="caption" gutterBottom>Health</Typography>
-							<Typography variant="body1">{vit * 10}</Typography>
+							<Typography variant="body1">{charStats.calculate.health(vit, 0)}</Typography>
 						</Grid>
 						<Grid item lg>
 							<Typography variant="caption" gutterBottom>Mana</Typography>
-							<Typography variant="body1">{int * 5}</Typography>
+							<Typography variant="body1">{charStats.calculate.mana(int, 0)}</Typography>
 						</Grid>
 						<Grid item lg>
 							<Typography variant="caption" gutterBottom>Dodge Chance</Typography>
-							<Typography variant="body1">{(dex * 0.15).toPrecision(4)}%</Typography>
+							<Typography
+								variant="body1">{charStats.calculate.dodgeChance(dex, 0).toPrecision(4)}%</Typography>
 						</Grid>
 						<Grid item lg>
 							<Typography variant="caption" gutterBottom>Critical Chance</Typography>
-							<Typography variant="body1">{(2 * Math.sqrt(dex)).toPrecision(4)}%</Typography>
+							<Typography
+								variant="body1">{charStats.calculate.criticalChance(dex, 0).toPrecision(4)}%</Typography>
 						</Grid>
 					</Grid>
 				</Grid>

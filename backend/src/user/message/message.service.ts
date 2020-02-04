@@ -30,9 +30,12 @@ export class MessageService {
 		return await this.messages.findOneOrFail(id);
 	}
 
-	async findWithUser(userId: string): Promise<MessageEntity[]> {
+	async findSentByUser(userId: string): Promise<Array<MessageEntity>> {
 		return await this.messages.createQueryBuilder("msg")
-			.where("msg.senderId = :user OR msg.receiverId = :user", {user: userId})
+			.leftJoinAndSelect("msg.previous", "prev")
+			.leftJoinAndSelect("msg.sender", "uSender")
+			.where("uSender.id = :user", {user: userId})
+			.orderBy("msg.createdAt", "DESC")
 			.getMany();
 	}
 

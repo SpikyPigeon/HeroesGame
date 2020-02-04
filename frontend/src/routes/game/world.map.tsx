@@ -45,6 +45,7 @@ export const WorldMapCard: FunctionComponent = () => {
 	const [dragging, setDragging] = useState(false);
 	const [navMode, setNavMode] = useState(false);
 	const [raised, setRaised] = useState(false);
+	const [transform, setTransform] = useState<DOMMatrix>(new DOMMatrix());
 
 	const render = (canvas: HTMLCanvasElement) => {
 		const rect = canvas.getBoundingClientRect();
@@ -58,6 +59,7 @@ export const WorldMapCard: FunctionComponent = () => {
 			ctx.save();
 			ctx.scale(zoom, zoom);
 			ctx.translate(offsetX, offsetY);
+			setTransform(ctx.getTransform().inverse());
 
 			ctx.beginPath();
 			for (let y = 0; y < 32; ++y) {
@@ -89,16 +91,18 @@ export const WorldMapCard: FunctionComponent = () => {
 
 	const mouseMove = (e: MouseEvent<HTMLCanvasElement>) => {
 		if (e.button === 0 && navMode && canvas.current && dragging) {
-			setOffsetX(offsetX + e.movementX);
-			setOffsetY(offsetY + e.movementY);
+			setOffsetX(offsetX + (e.movementX / zoom));
+			setOffsetY(offsetY + (e.movementY / zoom));
 			render(canvas.current);
 		}
 	};
 
 	const click = (e: MouseEvent<HTMLCanvasElement>) => {
 		e.preventDefault();
-		if (e.button === 0 && !navMode && !dragging) {
-			console.log("CLICKED!");
+		if (e.button === 0 && !navMode && !dragging && canvas.current) {
+			const rect = canvas.current.getBoundingClientRect();
+			const position = transform.transformPoint(new DOMPoint(e.clientX - rect.left, e.clientY - rect.top));
+			console.log(`CLICKED @ ${position.x}:${position.y}!`);
 		}
 	};
 

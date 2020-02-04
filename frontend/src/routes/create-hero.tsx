@@ -212,7 +212,23 @@ const CreateHero: FunctionComponent = () => {
 					variant="contained"
 					color="primary"
 					disabled={getPointsLeft() > 0 || avatar === false || name === ""}
-					onClick={async () => await nav.navigate("/game")}
+					onClick={async () => {
+						if (typeof avatar === "number") {
+							await createChar({
+								avatarId: avatar,
+								name,
+							});
+							await updateChar({
+								strength: str,
+								dexterity: dex,
+								vitality: vit,
+								intellect: int,
+								currentHealth: charStats.calculate.health(vit, 0),
+								currentMana: charStats.calculate.mana(int, 0),
+							});
+							await nav.navigate("/game");
+						}
+					}}
 				>
 					Create
 				</Button>

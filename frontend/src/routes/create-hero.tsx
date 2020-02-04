@@ -23,7 +23,7 @@ import {
 } from "@material-ui/core";
 
 import {Avatar, config} from "heroes-common";
-import {useStoreActions, useStoreState} from "../store";
+import {useStoreActions} from "../store";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({

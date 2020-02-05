@@ -206,7 +206,9 @@ export const WorldMapCard: FunctionComponent<WorldMapProps> = props => {
 						}
 					/>
 				</FormGroup>
-			}
+			} style={{
+				backgroundColor: world?.world.color,
+			}}
 			/>
 			<CardContent classes={{root: classes.mapCard}}>
 				<canvas

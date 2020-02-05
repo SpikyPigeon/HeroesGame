@@ -47,8 +47,6 @@ export const userStore: UserStore = {
 		if ("userJWT" in localStorage) {
 			localStorage.removeItem("userJWT");
 			state.user = null;
-		} else {
-			throw new Error("Not logged in!");
 		}
 	}),
 

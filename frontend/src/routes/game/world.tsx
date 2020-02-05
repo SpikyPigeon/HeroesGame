@@ -112,7 +112,7 @@ const World: FunctionComponent = () => {
 	useEffect(() => {
 		loadChar().catch((e: any) => {
 			console.error(e);
-			nav.navigate("/");
+			nav.navigate("/", {replace: true});
 		});
 	}, []);
 

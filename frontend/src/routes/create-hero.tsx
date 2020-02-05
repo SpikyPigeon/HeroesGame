@@ -1,4 +1,4 @@
-import {createElement, FunctionComponent, useEffect, useState} from "react";
+import {createElement, FunctionComponent, useEffect, useState, Fragment} from "react";
 import {AddSharp, RemoveSharp} from "@material-ui/icons";
 import {green} from "@material-ui/core/colors";
 import {useNavigation} from "react-navi";
@@ -54,6 +54,7 @@ const CreateHero: FunctionComponent = () => {
 	const charStats = config.character.stats;
 	const classes = useStyles();
 	const nav = useNavigation();
+	const [showPage, setShowPage] = useState(false);
 	const [avatar, setAvatar] = useState<number | boolean>(false);
 	const [avatarList, setAvatarList] = useState<Array<Avatar>>([]);
 	const [name, setName] = useState("");
@@ -68,17 +69,21 @@ const CreateHero: FunctionComponent = () => {
 	const hasChar = useStoreActions(state => state.character.userHasChar);
 
 	useEffect(() => {
-		const request = async () => {
-			if (!await hasChar()) {
-				setAvatarList(await listAvatars());
+		hasChar().then(value => {
+			if (!value) {
+				listAvatars().then(value => setAvatarList(value)).catch(console.error);
+				setShowPage(true);
 			} else {
-				await nav.navigate("/game");
+				nav.navigate("/game", {replace: true});
 			}
-		};
-		request().catch(console.error);
+		}).catch(console.error);
 	}, []);
 
 	const getPointsLeft = () => charStats.startPoints - (str - charStats.start) - (dex - charStats.start) - (vit - charStats.start) - (int - charStats.start);
+
+	if (!showPage) {
+		return <Fragment/>;
+	}
 
 	return <Content>
 		<Card variant="outlined" classes={{root: classes.card}}>

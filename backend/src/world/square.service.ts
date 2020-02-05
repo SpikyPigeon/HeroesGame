@@ -13,15 +13,23 @@ export class SquareService {
 	}
 
 	async findAll(worldId: number): Promise<Array<SquareEntity>> {
-		return await this.squares.find({where: {worldId}});
+		return await this.squares.createQueryBuilder("square")
+			.leftJoinAndSelect("square.world", "world")
+			.where("world.id = :worldId", {worldId})
+			.getMany();
 	}
 
 	async findOne(worldId: number, x: number, y: number): Promise<SquareEntity> {
-		return await this.squares.findOneOrFail({
-			where: {
-				worldId, x, y
-			}
-		});
+		const square = await this.squares.createQueryBuilder("square")
+			.leftJoinAndSelect("square.world", "world")
+			.where("world.id = :worldId AND square.x = :x AND square.y = :y", {worldId, x, y})
+			.getOne();
+
+		if (square) {
+			return square;
+		} else {
+			throw new Error(`Square@${worldId}:${x}.${y} not found!`);
+		}
 	}
 
 	async create(world: WorldEntity): Promise<Array<SquareEntity>> {

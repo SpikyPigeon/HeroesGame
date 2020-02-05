@@ -1,4 +1,4 @@
-import {createElement, FunctionComponent, useEffect, useState, Fragment} from "react";
+import {createElement, Fragment, FunctionComponent, useEffect, useState} from "react";
 import {AddSharp, RemoveSharp} from "@material-ui/icons";
 import {green} from "@material-ui/core/colors";
 import {useNavigation} from "react-navi";
@@ -201,13 +201,15 @@ const CreateHero: FunctionComponent = () => {
 						</Grid>
 						<Grid item lg>
 							<Typography align="center" variant="body1" gutterBottom>Dodge Chance</Typography>
-							<Typography
-					align="center" variant="h4">{charStats.calculate.dodgeChance(dex, 0).toPrecision(4)}%</Typography>
+							<Typography align="center" variant="h4">
+								{charStats.calculate.dodgeChance(dex, 0).toPrecision(4)}%
+							</Typography>
 						</Grid>
 						<Grid item lg>
 							<Typography align="center" variant="body1" gutterBottom>Critical Chance</Typography>
-							<Typography
-					align="center" variant="h4">{charStats.calculate.criticalChance(dex, 0).toPrecision(4)}%</Typography>
+							<Typography align="center" variant="h4">
+								{charStats.calculate.criticalChance(dex, 0).toPrecision(4)}%
+							</Typography>
 						</Grid>
 						<Grid item lg>
 							<Typography align="center" variant="body1" gutterBottom>Mana</Typography>

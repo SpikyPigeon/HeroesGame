@@ -7,7 +7,6 @@ import {
 	Card,
 	CardActionArea,
 	CardActions,
-	CardContent,
 	CardHeader,
 	CardMedia,
 	Dialog,
@@ -17,8 +16,7 @@ import {
 	DialogTitle,
 	GridList,
 	GridListTile,
-	TextField,
-	Typography
+	TextField
 } from "@material-ui/core";
 import {useStoreActions, useStoreState} from "../../store";
 import {Avatar} from "heroes-common/src";
@@ -77,13 +75,13 @@ const RenameCharDialog: FunctionComponent<MyDialogProps> = props => {
 
 	useEffect(() => {
 		setTimeout(() => {
-			if(currentHero){
+			if (currentHero) {
 				setValue("name", currentHero.name);
 			}
 		});
 	}, [setValue, open, currentHero]);
 
-	if(!currentHero){
+	if (!currentHero) {
 		return <Fragment/>;
 	}
 
@@ -104,12 +102,12 @@ const RenameCharDialog: FunctionComponent<MyDialogProps> = props => {
 			<DialogContent>
 				<TextField margin="dense" label="Name" name="name" fullWidth error={Boolean(errors.name)}
 				           InputLabelProps={{shrink: true}} inputRef={
-					           register({
-						           required: true,
-						           minLength: 4,
-						           maxLength: 30,
-					           })
-				           }/>
+					register({
+						required: true,
+						minLength: 4,
+						maxLength: 30,
+					})
+				}/>
 			</DialogContent>
 			<DialogActions>
 				<Button type="submit" color="primary">
@@ -140,7 +138,7 @@ const AvatarDialog: FunctionComponent<MyDialogProps> = props => {
 		});
 		listAvatars().then(value => setAvatarList(value)).catch(console.error);
 	}, []);
-	if(!currentHero){
+	if (!currentHero) {
 		return <Fragment/>;
 	}
 
@@ -174,8 +172,8 @@ const AvatarDialog: FunctionComponent<MyDialogProps> = props => {
 		<DialogActions>
 			<Button type="button" color="primary" onClick={
 				async () => {
-					if(typeof avatar === "number"){
-						await updateChar({ avatarId: avatar });
+					if (typeof avatar === "number") {
+						await updateChar({avatarId: avatar});
 						onClose();
 					}
 				}
@@ -203,7 +201,7 @@ const CharacterCard: FunctionComponent = () => {
 			nav.navigate("/", {replace: true});
 		});
 	}, []);
-	if(!currentHero){
+	if (!currentHero) {
 		return <Fragment/>;
 	}
 

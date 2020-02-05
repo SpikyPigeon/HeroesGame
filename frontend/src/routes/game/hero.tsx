@@ -1,4 +1,4 @@
-import {createElement, FunctionComponent, useState, Fragment, useEffect} from "react";
+import {createElement, Fragment, FunctionComponent, useEffect, useState} from "react";
 import {
 	Card,
 	CardActionArea,
@@ -75,14 +75,14 @@ const Hero: FunctionComponent = () => {
 	useEffect(() => {
 		const req = async () => {
 			await loadHero();
-			if(!currentHero){
+			if (!currentHero) {
 				await nav.navigate("/");
 			}
 		};
 		req().catch(console.error);
-	},[]);
+	}, []);
 
-	if(!currentHero){
+	if (!currentHero) {
 		return <Fragment/>;
 	}
 

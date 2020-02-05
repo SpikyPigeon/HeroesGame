@@ -1,4 +1,4 @@
-import {createElement, FunctionComponent, MouseEvent, useEffect, useRef, useState} from "react";
+import {createElement, Fragment, FunctionComponent, MouseEvent, useEffect, useRef, useState} from "react";
 import {
 	Card,
 	CardActionArea,
@@ -11,8 +11,12 @@ import {
 	Mark,
 	Slider,
 	Switch,
-	Theme
+	Theme,
+	useTheme
 } from "@material-ui/core";
+
+import {PlayerCharacter} from "heroes-common";
+import {WorldData} from "../../store/world";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -36,9 +40,17 @@ const useStyles = makeStyles((theme: Theme) =>
 	}),
 );
 
-export const WorldMapCard: FunctionComponent = () => {
+interface WorldMapProps {
+	character: PlayerCharacter | null;
+	world: WorldData | null;
+	onMove: (x: number, y: number) => void;
+}
+
+export const WorldMapCard: FunctionComponent<WorldMapProps> = props => {
 	let canvas = useRef<HTMLCanvasElement>(null);
+	const {character, world, onMove} = props;
 	const classes = useStyles();
+	const theme = useTheme();
 	const [zoom, setZoom] = useState(1.0);
 	const [offsetX, setOffsetX] = useState(0);
 	const [offsetY, setOffsetY] = useState(0);
@@ -53,7 +65,8 @@ export const WorldMapCard: FunctionComponent = () => {
 		canvas.height = rect.height;
 
 		const ctx = canvas.getContext("2d");
-		if (ctx) {
+		if (ctx && world && character) {
+			const {x: cX, y: cY} = character.square;
 			ctx.clearRect(0, 0, rect.width, rect.height);
 
 			ctx.save();
@@ -62,8 +75,21 @@ export const WorldMapCard: FunctionComponent = () => {
 			setTransform(ctx.getTransform().inverse());
 
 			ctx.beginPath();
-			for (let y = 0; y < 32; ++y) {
-				for (let x = 0; x < 40; ++x) {
+			for (let y = cY - 1; y <= cY + 1; ++y) {
+				if (y >= 0 && y < world.world.limitY) {
+					for (let x = cX - 1; x <= cX + 1; ++x) {
+						if (x >= 0 && x < world.world.limitX) {
+							ctx.rect(x * 32, y * 32, 32, 32);
+						}
+					}
+				}
+			}
+			ctx.fillStyle = "#AAA9";
+			ctx.fill();
+
+			ctx.beginPath();
+			for (let y = 0; y < world.world.limitY; ++y) {
+				for (let x = 0; x < world.world.limitX; ++x) {
 					ctx.rect(x * 32, y * 32, 32, 32);
 				}
 			}
@@ -71,6 +97,11 @@ export const WorldMapCard: FunctionComponent = () => {
 			ctx.strokeStyle = "black";
 			ctx.lineWidth = 0.5;
 			ctx.stroke();
+
+			ctx.beginPath();
+			ctx.ellipse(cX * 32 + 16, cY * 32 + 16, 12, 12, 0, 0, Math.PI * 2);
+			ctx.fillStyle = theme.palette.secondary.main;
+			ctx.fill();
 			ctx.restore();
 		}
 	};
@@ -99,14 +130,17 @@ export const WorldMapCard: FunctionComponent = () => {
 
 	const click = (e: MouseEvent<HTMLCanvasElement>) => {
 		e.preventDefault();
-		if (e.button === 0 && !navMode && !dragging && canvas.current) {
+		if (e.button === 0 && !navMode && !dragging && canvas.current && character) {
 			const rect = canvas.current.getBoundingClientRect();
 			const mousePos = transform.transformPoint(new DOMPoint(e.clientX - rect.left, e.clientY - rect.top));
+			const x = Math.floor(mousePos.x / 32);
+			const y = Math.floor(mousePos.y / 32);
 
-			if (mousePos.x >= 0 && mousePos.y >= 0) {
-				const x = Math.floor(mousePos.x / 32);
-				const y = Math.floor(mousePos.y / 32);
-				console.log(`SQUARE @ ${x}:${y}`);
+			if (x >= 0 && y >= 0 && x < character.square.world.limitX && y < character.square.world.limitY) {
+				const {x: cX, y: cY} = character.square;
+				if (x <= cX + 1 && x >= cX - 1 && y <= cY + 1 && y >= cY - 1) {
+					onMove(x, y);
+				}
 			}
 		}
 	};
@@ -127,13 +161,17 @@ export const WorldMapCard: FunctionComponent = () => {
 
 		return () => {
 		};
-	}, []);
+	}, [canvas.current, world, character]);
 
 	const marks: Mark[] = [
 		{value: 0.5, label: "50%"},
 		{value: 1.0, label: "100%"},
 		{value: 1.5, label: "150%"},
 	];
+
+	if (!character || !world) {
+		return <Fragment/>;
+	}
 
 	return <Card raised={raised}>
 		<CardActionArea onMouseEnter={() => setRaised(true)} onMouseLeave={() => setRaised(false)} disableRipple>
@@ -168,11 +206,19 @@ export const WorldMapCard: FunctionComponent = () => {
 						}
 					/>
 				</FormGroup>
-			}
+			} style={{
+				backgroundColor: world?.world.color,
+			}}
 			/>
 			<CardContent classes={{root: classes.mapCard}}>
 				<canvas
 					ref={canvas} className={classes.canvas}
+					style={{
+						backgroundImage: `url('/assets/worlds/${world?.world.bgImage}')`,
+						backgroundRepeat: "no-repeat",
+						backgroundSize: "cover",
+						backgroundPosition: "center",
+					}}
 					onMouseLeave={() => setDragging(false)} onClick={click}
 					onMouseDown={mouseDown} onMouseUp={mouseUp} onMouseMove={mouseMove}
 				/>

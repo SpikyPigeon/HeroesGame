@@ -4,7 +4,7 @@ export class WorldStart1580826352901 implements MigrationInterface {
 	public async up(runner: QueryRunner): Promise<any> {
 		return await runner.query(`
             INSERT INTO "World" (id, name, "limitX", "limitY", color, "bgImage")
-            VALUES (1, 'Contigo', 20, 20, '#009900', '');
+            VALUES (1, 'Contigo', 20, 20, '#009900', 'countryside.png');
             INSERT INTO "Square" ("worldId", x, y, image)
             VALUES (1, 0, 0, ''), (1, 0, 1, ''), (1, 0, 2, ''), (1, 0, 3, ''), (1, 0, 4, ''),
                    (1, 0, 5, ''), (1, 0, 6, ''), (1, 0, 7, ''), (1, 0, 8, ''), (1, 0, 9, ''),

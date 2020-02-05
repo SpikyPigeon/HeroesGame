@@ -35,6 +35,8 @@ export const characterStore: CharacterStore = {
 		const token = localStorage.getItem("userJWT");
 		if (token) {
 			state.setCharacter(await CharacterService.findMine(token));
+		} else {
+			throw new Error("Not logged in!");
 		}
 	}),
 
@@ -51,6 +53,8 @@ export const characterStore: CharacterStore = {
 		const token = localStorage.getItem("userJWT");
 		if (token) {
 			state.setCharacter(await CharacterService.create(token, payload));
+		} else {
+			throw new Error("Not logged in!");
 		}
 	}),
 
@@ -58,6 +62,8 @@ export const characterStore: CharacterStore = {
 		const token = localStorage.getItem("userJWT");
 		if (token) {
 			state.setCharacter(await CharacterService.update(token, payload));
+		} else {
+			throw new Error("Not logged in!");
 		}
 	}),
 
@@ -65,6 +71,8 @@ export const characterStore: CharacterStore = {
 		const token = localStorage.getItem("userJWT");
 		if (token) {
 			state.setCharacter(await CharacterService.moveTo(token, payload));
+		} else {
+			throw new Error("Not logged in!");
 		}
 	}),
 };

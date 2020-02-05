@@ -42,7 +42,7 @@ interface MyDialogProps {
 const PlayerListDialog: FunctionComponent<MyDialogProps> = props => {
 	const {open, onClose} = props;
 
-	const handleClose = (e: {}, reason: string) => {
+	const handleClose = () => {
 		onClose();
 	};
 
@@ -106,6 +106,7 @@ const World: FunctionComponent = () => {
 
 	const loadChar = useStoreActions(state => state.character.getMine);
 	const loadWorld = useStoreActions(state => state.world.load);
+	const moveChar = useStoreActions(state => state.character.moveTo);
 	const currentWorld = useStoreState(state => state.world.current);
 	const currentChar = useStoreState(state => state.character.character);
 
@@ -129,7 +130,17 @@ const World: FunctionComponent = () => {
 		<Grid container alignItems="center" justify="center" spacing={2}>
 			<Grid item lg={9}>
 				<WorldMapCard character={currentChar} world={currentWorld} onMove={(x, y) => {
-					console.log(`MOVE@${x}.${y}`);
+					if (currentChar) {
+						if (currentChar.square.x == x && currentChar.square.y == y) {
+							console.log("Moving in place, are we?");
+						} else {
+							moveChar({
+								worldId: currentChar.square.world.id,
+								x,
+								y,
+							});
+						}
+					}
 				}}/>
 			</Grid>
 			<Grid container item lg={9} spacing={1}>
@@ -151,8 +162,8 @@ const World: FunctionComponent = () => {
 							>
 								<CardContent classes={{root: classes.infoCard}}>
 									<Typography paragraph className={classes.infoText}>
-										Location
-										: {currentWorld?.world.name} @ {currentChar?.square.x}.{currentChar?.square.y}
+										Location:&nbsp;
+										{currentWorld?.world.name} @ {currentChar?.square.x}.{currentChar?.square.y}
 									</Typography>
 								</CardContent>
 							</CardActionArea>

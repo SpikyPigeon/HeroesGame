@@ -110,24 +110,20 @@ const World: FunctionComponent = () => {
 	const currentChar = useStoreState(state => state.character.character);
 
 	useEffect(() => {
-		loadChar().catch((e: any) => {
-			console.error(e);
-			nav.navigate("/", {replace: true});
-		});
+		if (!currentChar) {
+			loadChar().catch((e: any) => {
+				console.error(e);
+				nav.navigate("/", {replace: true});
+			});
+		}
 	}, []);
 
 	useEffect(() => {
-		if (currentChar) {
+		if (currentChar && !currentWorld) {
 			console.log(currentChar);
 			loadWorld(currentChar.square.world.id).catch(console.error);
 		}
 	}, [currentChar]);
-
-	useEffect(() => {
-		if (currentChar) {
-			console.log(currentWorld);
-		}
-	}, [currentWorld]);
 
 	return <Fragment>
 		<Grid container alignItems="center" justify="center" spacing={2}>
@@ -153,7 +149,7 @@ const World: FunctionComponent = () => {
 							>
 								<CardContent classes={{root: classes.infoCard}}>
 									<Typography paragraph className={classes.infoText}>
-										Location : Isandiel @ 1.1
+										Location : {currentWorld?.world.name} @ {currentChar?.square.x}.{currentChar?.square.y}
 									</Typography>
 								</CardContent>
 							</CardActionArea>

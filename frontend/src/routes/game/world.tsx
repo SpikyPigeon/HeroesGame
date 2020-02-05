@@ -1,4 +1,5 @@
-import {createElement, Fragment, FunctionComponent, useState} from "react";
+import {createElement, Fragment, FunctionComponent, useEffect, useState} from "react";
+import {useNavigation} from "react-navi";
 import {
 	Button,
 	Card,
@@ -16,6 +17,7 @@ import {
 	Typography
 } from "@material-ui/core";
 
+import {useStoreActions, useStoreState} from "../../store";
 import {WorldMapCard} from "./world.map";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -92,6 +94,7 @@ const DeathDialog: FunctionComponent<MyDialogProps> = props => {
 
 const World: FunctionComponent = () => {
 	const classes = useStyles();
+	const nav = useNavigation();
 	const [open, setOpen] = useState({
 		players: false,
 		death: false,
@@ -100,6 +103,31 @@ const World: FunctionComponent = () => {
 		location: false,
 		players: false,
 	});
+
+	const loadChar = useStoreActions(state => state.character.getMine);
+	const loadWorld = useStoreActions(state => state.world.load);
+	const currentWorld = useStoreState(state => state.world.current);
+	const currentChar = useStoreState(state => state.character.character);
+
+	useEffect(() => {
+		loadChar().catch((e: any) => {
+			console.error(e);
+			nav.navigate("/");
+		});
+	}, []);
+
+	useEffect(() => {
+		if (currentChar) {
+			console.log(currentChar);
+			loadWorld(currentChar.square.world.id).catch(console.error);
+		}
+	}, [currentChar]);
+
+	useEffect(() => {
+		if (currentChar) {
+			console.log(currentWorld);
+		}
+	}, [currentWorld]);
 
 	return <Fragment>
 		<Grid container alignItems="center" justify="center" spacing={2}>

@@ -23,6 +23,7 @@ import {
 	Theme,
 	Typography
 } from "@material-ui/core";
+import {useStoreActions} from "../../../store";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -144,15 +145,6 @@ const Message: FunctionComponent = () => {
 			},
 		},
 	];
-
-	[...Array(10).keys()].map(value => messages.push({
-		id: value.toString(),
-		title: `Message ${value + 1}`,
-		content: "This is a Message!",
-		sender: `User ${value + 1}`,
-		receiver: "",
-		createdAt: new Date(),
-	}));
 
 	return <Grid container justify="center">
 		<Grid item lg={9}>

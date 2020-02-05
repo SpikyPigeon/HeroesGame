@@ -151,7 +151,8 @@ const World: FunctionComponent = () => {
 							>
 								<CardContent classes={{root: classes.infoCard}}>
 									<Typography paragraph className={classes.infoText}>
-										Location : {currentWorld?.world.name} @ {currentChar?.square.x}.{currentChar?.square.y}
+										Location
+										: {currentWorld?.world.name} @ {currentChar?.square.x}.{currentChar?.square.y}
 									</Typography>
 								</CardContent>
 							</CardActionArea>

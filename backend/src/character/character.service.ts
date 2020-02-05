@@ -28,7 +28,11 @@ export class CharacterService {
 
 	async findOne(id: string): Promise<CharacterEntity> {
 		const char = await this.characters.createQueryBuilder("char")
+			.leftJoinAndSelect("char.owner", "owner")
 			.leftJoinAndSelect("char.avatar", "avatar")
+			.leftJoinAndSelect("char.square", "sq")
+			.leftJoinAndSelect("sq.world", "world")
+			.leftJoinAndSelect("char.equipment", "equip")
 			.where("char.id = :id", {id})
 			.getOne();
 
@@ -90,6 +94,9 @@ export class CharacterService {
 		const character = await this.characters.createQueryBuilder("char")
 			.leftJoinAndSelect("char.owner", "owner")
 			.leftJoinAndSelect("char.avatar", "avatar")
+			.leftJoinAndSelect("char.square", "sq")
+			.leftJoinAndSelect("sq.world", "world")
+			.leftJoinAndSelect("char.equipment", "equip")
 			.where("owner.id = :user AND char.isActive = TRUE", {user: id})
 			.getOne();
 		if (character) {

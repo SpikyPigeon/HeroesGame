@@ -99,9 +99,7 @@ export class CharacterEntity implements PlayerCharacter {
 	updatedAt!: Date;
 
 	@ApiProperty()
-	@OneToOne(type => EquipmentEntity, equipment => equipment.player, {
-		eager: true,
-	})
+	@OneToOne(type => EquipmentEntity, equipment => equipment.player)
 	equipment!: EquipmentEntity;
 
 	@OneToMany(type => InventoryEntity, inventory => inventory.owner)

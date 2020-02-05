@@ -118,7 +118,6 @@ export const WorldMapCard: FunctionComponent = () => {
 	};
 
 	useEffect(() => {
-		console.log("Home rendered");
 		if (canvas.current) {
 			render(canvas.current);
 

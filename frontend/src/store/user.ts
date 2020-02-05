@@ -47,6 +47,8 @@ export const userStore: UserStore = {
 		if ("userJWT" in localStorage) {
 			localStorage.removeItem("userJWT");
 			state.user = null;
+		} else {
+			throw new Error("Not logged in!");
 		}
 	}),
 
@@ -54,6 +56,8 @@ export const userStore: UserStore = {
 		const token = localStorage.getItem("userJWT");
 		if (token) {
 			state.setUser(await UserService.modifyProfile(token, payload));
+		} else {
+			throw new Error("Not logged in!");
 		}
 	}),
 

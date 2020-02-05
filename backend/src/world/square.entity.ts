@@ -5,7 +5,6 @@ import {WorldEntity} from "./world.entity";
 
 @Entity("Square")
 export class SquareEntity implements Square {
-	@ApiProperty()
 	@PrimaryColumn()
 	worldId!: number;
 
@@ -21,6 +20,7 @@ export class SquareEntity implements Square {
 	@Column({length: 40})
 	image!: string;
 
+	@ApiProperty()
 	@ManyToOne(type => WorldEntity, world => world.squares)
 	@JoinTable()
 	world!: WorldEntity;

@@ -128,7 +128,7 @@ const World: FunctionComponent = () => {
 	return <Fragment>
 		<Grid container alignItems="center" justify="center" spacing={2}>
 			<Grid item lg={9}>
-				<WorldMapCard/>
+				<WorldMapCard character={currentChar} world={currentWorld}/>
 			</Grid>
 			<Grid container item lg={9} spacing={1}>
 				<Grid item lg={8}>

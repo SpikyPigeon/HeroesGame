@@ -1,4 +1,4 @@
-import {createElement, FunctionComponent, MouseEvent, useEffect, useRef, useState} from "react";
+import {createElement, Fragment, FunctionComponent, MouseEvent, useEffect, useRef, useState} from "react";
 import {
 	Card,
 	CardActionArea,
@@ -11,8 +11,12 @@ import {
 	Mark,
 	Slider,
 	Switch,
-	Theme
+	Theme,
+	useTheme
 } from "@material-ui/core";
+
+import {PlayerCharacter} from "heroes-common";
+import {WorldData} from "../../store/world";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -36,9 +40,16 @@ const useStyles = makeStyles((theme: Theme) =>
 	}),
 );
 
-export const WorldMapCard: FunctionComponent = () => {
+interface WorldMapProps {
+	character: PlayerCharacter | null;
+	world: WorldData | null;
+}
+
+export const WorldMapCard: FunctionComponent<WorldMapProps> = props => {
 	let canvas = useRef<HTMLCanvasElement>(null);
+	const {character, world} = props;
 	const classes = useStyles();
+	const theme = useTheme();
 	const [zoom, setZoom] = useState(1.0);
 	const [offsetX, setOffsetX] = useState(0);
 	const [offsetY, setOffsetY] = useState(0);
@@ -53,7 +64,8 @@ export const WorldMapCard: FunctionComponent = () => {
 		canvas.height = rect.height;
 
 		const ctx = canvas.getContext("2d");
-		if (ctx) {
+		if (ctx && world && character) {
+			const {x: cX, y: cY} = character.square;
 			ctx.clearRect(0, 0, rect.width, rect.height);
 
 			ctx.save();
@@ -62,8 +74,21 @@ export const WorldMapCard: FunctionComponent = () => {
 			setTransform(ctx.getTransform().inverse());
 
 			ctx.beginPath();
-			for (let y = 0; y < 32; ++y) {
-				for (let x = 0; x < 40; ++x) {
+			for (let y = cY - 1; y <= cY + 1; ++y) {
+				if (y >= 0 && y < world.world.limitY) {
+					for (let x = cX - 1; x <= cX + 1; ++x) {
+						if (x >= 0 && x < world.world.limitX) {
+							ctx.rect(x * 32, y * 32, 32, 32);
+						}
+					}
+				}
+			}
+			ctx.fillStyle = "#AAA9";
+			ctx.fill();
+
+			ctx.beginPath();
+			for (let y = 0; y < world.world.limitY; ++y) {
+				for (let x = 0; x < world.world.limitX; ++x) {
 					ctx.rect(x * 32, y * 32, 32, 32);
 				}
 			}
@@ -71,6 +96,11 @@ export const WorldMapCard: FunctionComponent = () => {
 			ctx.strokeStyle = "black";
 			ctx.lineWidth = 0.5;
 			ctx.stroke();
+
+			ctx.beginPath();
+			ctx.ellipse(cX * 32 + 16, cY * 32 + 16, 12, 12, 0, 0, Math.PI * 2);
+			ctx.fillStyle = theme.palette.secondary.main;
+			ctx.fill();
 			ctx.restore();
 		}
 	};
@@ -127,13 +157,17 @@ export const WorldMapCard: FunctionComponent = () => {
 
 		return () => {
 		};
-	}, []);
+	}, [canvas.current, world, character]);
 
 	const marks: Mark[] = [
 		{value: 0.5, label: "50%"},
 		{value: 1.0, label: "100%"},
 		{value: 1.5, label: "150%"},
 	];
+
+	if (!character || !world) {
+		return <Fragment/>;
+	}
 
 	return <Card raised={raised}>
 		<CardActionArea onMouseEnter={() => setRaised(true)} onMouseLeave={() => setRaised(false)} disableRipple>

@@ -20,6 +20,7 @@ import {
 	TextField,
 	Typography
 } from "@material-ui/core";
+import {useStoreState} from "../../store";
 
 interface CharacterInfo {
 	name: string;
@@ -104,6 +105,8 @@ const RenameCharDialog: FunctionComponent<MyDialogProps> = props => {
 const AvatarDialog: FunctionComponent<MyDialogProps> = props => {
 	const {open, onClose} = props;
 	const [avatar, setAvatar] = useState<number | boolean>(false);
+	const hero = useStoreState(state => state.character.character);
+	
 
 	return <Dialog open={open} onClose={onClose} scroll="body" maxWidth="md" fullWidth>
 		<DialogTitle>Change Character's Avatar</DialogTitle>

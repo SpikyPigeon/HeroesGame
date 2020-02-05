@@ -131,11 +131,15 @@ const World: FunctionComponent = () => {
 			<Grid item lg={9}>
 				<WorldMapCard character={currentChar} world={currentWorld} onMove={(x, y) => {
 					if (currentChar) {
-						moveChar({
-							worldId: currentChar.square.world.id,
-							x,
-							y,
-						});
+						if (currentChar.square.x == x && currentChar.square.y == y) {
+							console.log("Moving in place, are we?");
+						} else {
+							moveChar({
+								worldId: currentChar.square.world.id,
+								x,
+								y,
+							});
+						}
 					}
 				}}/>
 			</Grid>

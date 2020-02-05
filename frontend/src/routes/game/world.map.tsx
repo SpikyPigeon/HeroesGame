@@ -109,14 +109,12 @@ export const WorldMapCard: FunctionComponent<WorldMapProps> = props => {
 	const mouseDown = (e: MouseEvent<HTMLCanvasElement>) => {
 		if (e.button === 0 && navMode) {
 			setDragging(true);
-			console.log("Dragging started");
 		}
 	};
 
 	const mouseUp = (e: MouseEvent<HTMLCanvasElement>) => {
 		if (e.button === 0 && navMode) {
 			setDragging(false);
-			console.log("Dragging ended");
 		}
 	};
 

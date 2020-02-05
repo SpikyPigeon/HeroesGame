@@ -43,11 +43,12 @@ const useStyles = makeStyles((theme: Theme) =>
 interface WorldMapProps {
 	character: PlayerCharacter | null;
 	world: WorldData | null;
+	onMove: (x: number, y: number) => void;
 }
 
 export const WorldMapCard: FunctionComponent<WorldMapProps> = props => {
 	let canvas = useRef<HTMLCanvasElement>(null);
-	const {character, world} = props;
+	const {character, world, onMove} = props;
 	const classes = useStyles();
 	const theme = useTheme();
 	const [zoom, setZoom] = useState(1.0);
@@ -129,14 +130,17 @@ export const WorldMapCard: FunctionComponent<WorldMapProps> = props => {
 
 	const click = (e: MouseEvent<HTMLCanvasElement>) => {
 		e.preventDefault();
-		if (e.button === 0 && !navMode && !dragging && canvas.current) {
+		if (e.button === 0 && !navMode && !dragging && canvas.current && character) {
 			const rect = canvas.current.getBoundingClientRect();
 			const mousePos = transform.transformPoint(new DOMPoint(e.clientX - rect.left, e.clientY - rect.top));
+			const x = Math.floor(mousePos.x / 32);
+			const y = Math.floor(mousePos.y / 32);
 
-			if (mousePos.x >= 0 && mousePos.y >= 0) {
-				const x = Math.floor(mousePos.x / 32);
-				const y = Math.floor(mousePos.y / 32);
-				console.log(`SQUARE @ ${x}:${y}`);
+			if (x >= 0 && y >= 0 && x < character.square.world.limitX && y < character.square.world.limitY) {
+				const {x: cX, y: cY} = character.square;
+				if (x <= cX + 1 && x >= cX - 1 && y <= cY + 1 && y >= cY - 1) {
+					onMove(x, y);
+				}
 			}
 		}
 	};

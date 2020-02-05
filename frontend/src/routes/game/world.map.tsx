@@ -211,6 +211,12 @@ export const WorldMapCard: FunctionComponent<WorldMapProps> = props => {
 			<CardContent classes={{root: classes.mapCard}}>
 				<canvas
 					ref={canvas} className={classes.canvas}
+					style={{
+						backgroundImage: `url('/assets/worlds/${world?.world.bgImage}')`,
+						backgroundRepeat: "no-repeat",
+						backgroundSize: "cover",
+						backgroundPosition: "center",
+					}}
 					onMouseLeave={() => setDragging(false)} onClick={click}
 					onMouseDown={mouseDown} onMouseUp={mouseUp} onMouseMove={mouseMove}
 				/>

@@ -1,4 +1,4 @@
-import {createElement, Fragment, FunctionComponent, useState} from "react";
+import {createElement, Fragment, FunctionComponent, useEffect, useState} from "react";
 import {green} from "@material-ui/core/colors";
 import {useNavigation} from "react-navi";
 import {useForm} from "react-hook-form";
@@ -20,7 +20,8 @@ import {
 	TextField,
 	Typography
 } from "@material-ui/core";
-import {useStoreState} from "../../store";
+import {useStoreActions, useStoreState} from "../../store";
+import {Avatar} from "heroes-common/src";
 
 interface CharacterInfo {
 	name: string;
@@ -61,11 +62,30 @@ const DeleteCharDialog: FunctionComponent<MyDialogProps> = props => {
 const RenameCharDialog: FunctionComponent<MyDialogProps> = props => {
 	const {open, onClose} = props;
 
-	const {register, handleSubmit, errors, clearError, reset} = useForm<CharacterInfo>({
-		defaultValues: {
-			name: "Gardakhan",
-		},
-	});
+	const loadHero = useStoreActions(state => state.character.getMine);
+	const currentHero = useStoreState(state => state.character.character);
+	const updateChar = useStoreActions(state => state.character.update);
+	const nav = useNavigation();
+	const {register, handleSubmit, errors, clearError, reset, setValue} = useForm<CharacterInfo>();
+
+	useEffect(() => {
+		loadHero().catch((e: any) => {
+			console.error(e);
+			nav.navigate("/");
+		});
+	}, []);
+
+	useEffect(() => {
+		setTimeout(() => {
+			if(currentHero){
+				setValue("name", currentHero.name);
+			}
+		});
+	}, [setValue, open, currentHero]);
+
+	if(!currentHero){
+		return <Fragment/>;
+	}
 
 	const handleClose = () => {
 		clearError();
@@ -74,6 +94,7 @@ const RenameCharDialog: FunctionComponent<MyDialogProps> = props => {
 	};
 
 	const onSubmit = async (data: CharacterInfo) => {
+		await updateChar({name: data.name});
 		handleClose();
 	};
 
@@ -82,7 +103,7 @@ const RenameCharDialog: FunctionComponent<MyDialogProps> = props => {
 		<form onSubmit={handleSubmit(onSubmit)}>
 			<DialogContent>
 				<TextField margin="dense" label="Name" name="name" fullWidth error={Boolean(errors.name)}
-				           inputRef={
+				           InputLabelProps={{shrink: true}} inputRef={
 					           register({
 						           required: true,
 						           minLength: 4,
@@ -105,28 +126,45 @@ const RenameCharDialog: FunctionComponent<MyDialogProps> = props => {
 const AvatarDialog: FunctionComponent<MyDialogProps> = props => {
 	const {open, onClose} = props;
 	const [avatar, setAvatar] = useState<number | boolean>(false);
-	const hero = useStoreState(state => state.character.character);
-	
+	const [avatarList, setAvatarList] = useState<Array<Avatar>>([]);
+	const loadHero = useStoreActions(state => state.character.getMine);
+	const currentHero = useStoreState(state => state.character.character);
+	const listAvatars = useStoreActions(state => state.character.listAvatars);
+	const updateChar = useStoreActions(state => state.character.update);
+	const nav = useNavigation();
+
+	useEffect(() => {
+		loadHero().catch((e: any) => {
+			console.error(e);
+			nav.navigate("/");
+		});
+		listAvatars().then(value => setAvatarList(value)).catch(console.error);
+	}, []);
+	if(!currentHero){
+		return <Fragment/>;
+	}
 
 	return <Dialog open={open} onClose={onClose} scroll="body" maxWidth="md" fullWidth>
-		<DialogTitle>Change Character's Avatar</DialogTitle>
+		<DialogTitle>Change {currentHero.name}'s Avatar</DialogTitle>
 		<DialogContent>
-			<GridList cellHeight={128} cols={6}>
-				{[...Array(20).keys()].map(value => (
-					<GridListTile key={value}>
+			<GridList cellHeight={128} cols={6} style={{maxHeight: "75vh", overflow: "auto"}}>
+				{avatarList.map(value => (
+					<GridListTile key={value.id}>
 						<Card variant="outlined"
 						      style={{
 							      height: "100%",
-							      backgroundColor: avatar === value ? green[300] : "white",
+							      backgroundColor: avatar === value.id ? green[300] : "white",
 						      }}
 						>
 							<CardActionArea
 								style={{height: "100%"}}
-								onClick={() => setAvatar(value)}
+								onClick={() => setAvatar(value.id)}
 							>
-								<CardContent>
-									<Typography>Avatar {value + 1}</Typography>
-								</CardContent>
+								<CardMedia
+									component="img"
+									image={`/assets/avatar/${value.filename}`}
+									height={128}
+								/>
 							</CardActionArea>
 						</Card>
 					</GridListTile>
@@ -134,7 +172,14 @@ const AvatarDialog: FunctionComponent<MyDialogProps> = props => {
 			</GridList>
 		</DialogContent>
 		<DialogActions>
-			<Button type="button" color="primary" onClick={onClose}>
+			<Button type="button" color="primary" onClick={
+				async () => {
+					if(typeof avatar === "number"){
+						await updateChar({ avatarId: avatar });
+						onClose();
+					}
+				}
+			}>
 				Apply
 			</Button>
 			<Button type="button" color="secondary" onClick={onClose}>
@@ -148,11 +193,24 @@ const CharacterCard: FunctionComponent = () => {
 	const [delOpen, setDelOpen] = useState(false);
 	const [renameOpen, setRenameOpen] = useState(false);
 	const [avatarOpen, setAvatarOpen] = useState(false);
+	const currentHero = useStoreState(state => state.character.character);
+	const loadHero = useStoreActions(state => state.character.getMine);
+	const nav = useNavigation();
+
+	useEffect(() => {
+		loadHero().catch((e: any) => {
+			console.error(e);
+			nav.navigate("/", {replace: true});
+		});
+	}, []);
+	if(!currentHero){
+		return <Fragment/>;
+	}
 
 	return <Fragment>
 		<Card>
-			<CardHeader title="Gardakhan"/>
-			<CardMedia component="img" src="https://cdn.pixabay.com/photo/2017/10/06/17/00/knight-2823787__180.png"/>
+			<CardHeader title={currentHero.name}/>
+			<CardMedia component="img" src={`/assets/avatar/${currentHero.avatar.filename}`}/>
 			<CardActions>
 				<Button size="small" color="secondary" onClick={() => setDelOpen(true)}>
 					Delete

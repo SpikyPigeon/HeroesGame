@@ -6,7 +6,7 @@ import {CreateStructureInfo} from "./structure.dto";
 import {StructureEntity} from "./structure.entity";
 
 @ApiTags("world")
-@Controller()
+@Controller("structure")
 export class StructureController {
 	constructor(private readonly structures: StructureService) {
 	}

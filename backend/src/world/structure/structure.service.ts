@@ -1,5 +1,4 @@
-import {Inject, Injectable, OnModuleInit} from "@nestjs/common";
-import {ModuleRef} from "@nestjs/core";
+import {Inject, Injectable} from "@nestjs/common";
 import {Repository} from "typeorm";
 import {CreateStructureInfo} from "./structure.dto";
 import {StructureEntity} from "./structure.entity";
@@ -7,18 +6,12 @@ import {SquareService} from "../square.service";
 import {StructureType} from "heroes-common";
 
 @Injectable()
-export class StructureService implements OnModuleInit {
-	private squares!: SquareService;
-
+export class StructureService {
 	constructor(
 		@Inject("STRUCTURE_REPOSITORY")
 		private readonly structures: Repository<StructureEntity>,
-		private readonly refs: ModuleRef,
+		private readonly squares: SquareService,
 	) {
-	}
-
-	onModuleInit() {
-		this.squares = this.refs.get(SquareService, {strict: false});
 	}
 
 	async findAll(): Promise<Array<StructureEntity>> {

@@ -5,31 +5,39 @@ import {worldProviders} from "./world.provider";
 import {DatabaseModule} from "../database";
 import {SquareService} from "./square.service";
 import {SquareController} from "./square.controller";
-import {EncounterModule} from "./encounter";
-import {NpcModule} from "./npc";
-import {ShopModule} from "./shop";
-import {StructureModule} from "./structure";
 import {UserModule} from "../user";
+import {EncounterController, EncounterService} from "./encounter";
+import {StructureController, StructureService} from "./structure";
+import {ShopController, ShopService} from "./shop";
+import {NpcController, NpcService} from "./npc";
 
 @Module({
 	exports: [
+		EncounterService,
+		StructureService,
+		ShopService,
+		NpcService,
 		SquareService,
 		WorldService,
 	],
 	imports: [
 		DatabaseModule,
 		forwardRef(() => UserModule),
-		EncounterModule,
-		NpcModule,
-		ShopModule,
-		StructureModule,
 	],
 	controllers: [
+		EncounterController,
+		StructureController,
+		ShopController,
+		NpcController,
 		SquareController,
 		WorldController,
 	],
 	providers: [
 		...worldProviders,
+		EncounterService,
+		StructureService,
+		ShopService,
+		NpcService,
 		SquareService,
 		WorldService,
 	],

@@ -6,7 +6,7 @@ import {NpcInfo} from "./npc.dto";
 import {AuthGuard} from "@nestjs/passport";
 
 @ApiTags("world")
-@Controller()
+@Controller("npc")
 export class NpcController {
 	constructor(private readonly npcs: NpcService) {
 	}

@@ -7,7 +7,7 @@ import {EncounterService} from "./encounter.service";
 import {EncounterEntity} from "./encounter.entity";
 
 @ApiTags("world")
-@Controller()
+@Controller("encounter")
 export class EncounterController {
 	constructor(
 		private readonly encounters: EncounterService

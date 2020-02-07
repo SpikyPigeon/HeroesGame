@@ -11,7 +11,6 @@ import {ItemService} from "../../item";
 @Injectable()
 export class EncounterService implements OnModuleInit {
 	private monsters!: MonsterService;
-	private squares!: SquareService;
 	private items!: ItemService;
 
 	constructor(
@@ -19,13 +18,13 @@ export class EncounterService implements OnModuleInit {
 		private readonly encounters: Repository<EncounterEntity>,
 		@Inject("ENCOUNTER_DROP_REPOSITORY")
 		private readonly drops: Repository<EncounterDropEntity>,
+		private readonly squares: SquareService,
 		private readonly refs: ModuleRef,
 	) {
 	}
 
 	onModuleInit() {
 		this.monsters = this.refs.get(MonsterService, {strict: false});
-		this.squares = this.refs.get(SquareService, {strict: false});
 		this.items = this.refs.get(ItemService, {strict: false});
 	}
 

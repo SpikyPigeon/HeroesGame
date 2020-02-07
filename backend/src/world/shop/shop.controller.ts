@@ -7,7 +7,7 @@ import {ShopService} from "./shop.service";
 import {ShopEntity} from "./shop.entity";
 
 @ApiTags("world")
-@Controller()
+@Controller("shop")
 export class ShopController {
 	constructor(private readonly shops: ShopService) {
 	}

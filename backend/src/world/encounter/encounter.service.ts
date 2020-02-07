@@ -52,11 +52,14 @@ export class EncounterService implements OnModuleInit {
 	}
 
 	async findAllEncounters(): Promise<EncounterEntity[]> {
-		return await this.encounters.find();
+		return await this.encounters.find({relations: ["square", "monster", "square.world", "monster.type"]});
 	}
 
 	async findOneEncounter(id: number): Promise<EncounterEntity> {
-		return await this.encounters.findOneOrFail({where: {id}});
+		return await this.encounters.findOneOrFail({
+			relations: ["square", "monster", "square.world", "monster.type"],
+			where: {id},
+		});
 	}
 
 	async createEncounter(data: EncounterInfo): Promise<EncounterEntity> {
@@ -72,21 +75,13 @@ export class EncounterService implements OnModuleInit {
 	}
 
 	async updateEncounter(id: number, newEncounter: Partial<EncounterInfo>): Promise<EncounterEntity> {
-		const encounter = await this.findOneEncounter(id);
+		const {worldId, x, y, monsterId, ...info} = newEncounter;
+		const encounter = {...await this.findOneEncounter(id), ...info};
 		if (newEncounter.worldId && newEncounter.x && newEncounter.y) {
 			encounter.square = await this.squares.findOne(newEncounter.worldId, newEncounter.x, newEncounter.y);
 		}
 		if (newEncounter.monsterId) {
 			encounter.monster = await this.monsters.findOneMonster(newEncounter.monsterId);
-		}
-		if (newEncounter.spawnChance) {
-			encounter.spawnChance = newEncounter.spawnChance;
-		}
-		if (newEncounter.minGold) {
-			encounter.minGold = newEncounter.minGold;
-		}
-		if (newEncounter.maxGold) {
-			encounter.maxGold = newEncounter.maxGold;
 		}
 		return await this.encounters.save(encounter);
 	}

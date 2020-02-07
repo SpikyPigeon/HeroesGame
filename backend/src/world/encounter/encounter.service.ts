@@ -1,16 +1,18 @@
 import {Inject, Injectable, OnModuleInit} from "@nestjs/common";
+import {ModuleRef} from "@nestjs/core";
 import {Repository} from "typeorm";
 import {CreateDropInfo, EncounterInfo, UpdateDropInfo} from "./encounter.dto";
 import {EncounterDropEntity} from "./encounter-drop.entity";
 import {EncounterEntity} from "./encounter.entity";
 import {SquareService} from "../square.service";
 import {MonsterService} from "../../monster";
-import {ModuleRef} from "@nestjs/core";
+import {ItemService} from "../../item";
 
 @Injectable()
 export class EncounterService implements OnModuleInit {
-	private squares!: SquareService;
 	private monsters!: MonsterService;
+	private squares!: SquareService;
+	private items!: ItemService;
 
 	constructor(
 		@Inject("ENCOUNTER_REPOSITORY")
@@ -24,39 +26,29 @@ export class EncounterService implements OnModuleInit {
 	onModuleInit() {
 		this.monsters = this.refs.get(MonsterService, {strict: false});
 		this.squares = this.refs.get(SquareService, {strict: false});
+		this.items = this.refs.get(ItemService, {strict: false});
 	}
 
 	async findAllDrops(): Promise<EncounterDropEntity[]> {
-		return await this.drops.find();
+		return await this.drops.find({relations: ["item"]});
 	}
 
 	async findOneDrop(id: number): Promise<EncounterDropEntity> {
-		return await this.drops.findOneOrFail({where: {id}});
+		return await this.drops.findOneOrFail({where: {id}, relations: ["item"]});
 	}
 
 	async createDrop(data: CreateDropInfo): Promise<EncounterDropEntity> {
-		const drop = await this.drops.save(this.drops.create({
-			itemId: data.itemId,
-			encounterId: data.encounterId,
-			dropChance: data.dropChance,
+		return await this.drops.save(this.drops.create({
+			item: await this.items.findOneItem(data.itemId),
+			encounter: await this.findOneEncounter(data.encounterId),
 			minQuantity: data.minQuantity,
 			maxQuantity: data.maxQuantity,
+			dropChance: data.dropChance,
 		}));
-		await this.drops.save(drop);
-		return drop;
 	}
 
 	async updateDrop(id: number, newDrop: Partial<UpdateDropInfo>): Promise<EncounterDropEntity> {
-		const drop = await this.findOneDrop(id);
-		if (newDrop.dropChance) {
-			drop.dropChance = newDrop.dropChance;
-		}
-		if (newDrop.minQuantity) {
-			drop.minQuantity = newDrop.minQuantity;
-		}
-		if (newDrop.maxQuantity) {
-			drop.maxQuantity = newDrop.maxQuantity;
-		}
+		const drop = {...await this.findOneDrop(id), ...newDrop};
 		return await this.drops.save(drop);
 	}
 

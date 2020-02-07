@@ -19,7 +19,7 @@ export class EncounterDropEntity implements EncounterDrop {
 	@PrimaryColumn()
 	encounterId!: number;
 
-	@ManyToOne(type => EncounterEntity)
+	@ManyToOne(type => EncounterEntity, encounter => encounter.drops)
 	encounter!: EncounterEntity;
 
 	@ApiProperty()

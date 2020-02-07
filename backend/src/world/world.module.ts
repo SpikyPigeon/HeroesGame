@@ -1,15 +1,15 @@
 import {forwardRef, Module} from "@nestjs/common";
-import {WorldController} from "./world.controller";
-import {WorldService} from "./world.service";
-import {worldProviders} from "./world.provider";
-import {DatabaseModule} from "../database";
-import {SquareService} from "./square.service";
-import {SquareController} from "./square.controller";
-import {UserModule} from "../user";
 import {EncounterController, EncounterService} from "./encounter";
 import {StructureController, StructureService} from "./structure";
+import {SquareController} from "./square.controller";
 import {ShopController, ShopService} from "./shop";
+import {WorldController} from "./world.controller";
 import {NpcController, NpcService} from "./npc";
+import {worldProviders} from "./world.provider";
+import {SquareService} from "./square.service";
+import {WorldService} from "./world.service";
+import {DatabaseModule} from "../database";
+import {UserModule} from "../user";
 
 @Module({
 	exports: [

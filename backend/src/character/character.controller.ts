@@ -26,6 +26,16 @@ export class CharacterController {
 		return await this.avatars.findOne(id);
 	}
 
+	@ApiOkResponse({type: CharacterEntity, isArray: true})
+	@Get(":worldId/:x/:y")
+	async findAllAtLocation(
+		@Param("worldId") worldId: number,
+		@Param("x") x: number,
+		@Param("y") y: number,
+	) {
+		return await this.characters.findAllAtLocation(worldId, x, y);
+	}
+
 	@ApiBearerAuth()
 	@ApiOkResponse({type: CharacterEntity})
 	@UseGuards(AuthGuard("jwt"))

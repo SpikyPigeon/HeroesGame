@@ -5,6 +5,8 @@ import {
 	Card,
 	CardActionArea,
 	CardContent,
+	CardHeader,
+	CardMedia,
 	createStyles,
 	Dialog,
 	DialogActions,
@@ -19,6 +21,7 @@ import {
 
 import {useStoreActions, useStoreState} from "../../store";
 import {WorldMapCard} from "./world.map";
+import {PlayerCharacter} from "heroes-common/src";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -39,32 +42,39 @@ interface MyDialogProps {
 	onClose: () => void;
 }
 
-const PlayerListDialog: FunctionComponent<MyDialogProps> = props => {
-	const {open, onClose} = props;
+const PlayerListDialog: FunctionComponent<MyDialogProps & { players: Array<PlayerCharacter>, location: { world: string, x: number, y: number } }> = props => {
+	const {open, onClose, players, location} = props;
 
 	const handleClose = () => {
 		onClose();
 	};
 
 	return <Dialog open={open} onClose={handleClose} scroll="body" fullWidth maxWidth="md">
-		<DialogTitle>Players at Isandiel @ 1.1</DialogTitle>
+		<DialogTitle>Players at {location.world} @ {location.x}.{location.y}</DialogTitle>
 		<DialogContent>
 			<DialogContentText>
 				You have 3 PvP Attacks left today
 			</DialogContentText>
 
 			<Grid container direction="row" justify="space-evenly" alignItems="flex-start" spacing={2}>
-				{[...Array(37).keys()].map(value => (
-					<Grid item lg key={value}>
-						<Card style={{width: 128, height: 128}}>
-							<CardActionArea style={{height: "100%"}}>
-								<CardContent>
-									<Typography variant="body1">Player {value + 1}</Typography>
-								</CardContent>
-							</CardActionArea>
-						</Card>
-					</Grid>
-				))}
+				{players.map((value, id) => {
+					if (value.isActive && !value.isDead) {
+						return <Grid item lg key={id}>
+							<Card style={{width: 128}}>
+								<CardActionArea style={{height: "100%"}}>
+									<CardHeader title={value.name}/>
+									<CardMedia
+										component="img"
+										image={`/assets/avatar/${value.avatar.filename}`}
+										height={128}
+									/>
+								</CardActionArea>
+							</Card>
+						</Grid>;
+					} else {
+						return <Fragment key={id}/>;
+					}
+				})}
 			</Grid>
 		</DialogContent>
 	</Dialog>;
@@ -103,12 +113,14 @@ const World: FunctionComponent = () => {
 		location: false,
 		players: false,
 	});
+	const [charsAtLocation, setCharsAtLocation] = useState<Array<PlayerCharacter>>([]);
 
 	const loadChar = useStoreActions(state => state.character.getMine);
 	const loadWorld = useStoreActions(state => state.world.load);
 	const moveChar = useStoreActions(state => state.character.moveTo);
 	const currentWorld = useStoreState(state => state.world.current);
 	const currentChar = useStoreState(state => state.character.character);
+	const getCharsAtLocation = useStoreActions(state => state.character.findAtLocation);
 
 	useEffect(() => {
 		if (!currentChar) {
@@ -121,10 +133,19 @@ const World: FunctionComponent = () => {
 
 	useEffect(() => {
 		if (currentChar && !currentWorld) {
-			console.log(currentChar);
 			loadWorld(currentChar.square.world.id).catch(console.error);
 		}
 	}, [currentChar]);
+
+	useEffect(() => {
+		if (currentChar && currentWorld) {
+			getCharsAtLocation({
+				worldId: currentWorld.world.id,
+				x: currentChar.square.x,
+				y: currentChar.square.y,
+			}).then(value => setCharsAtLocation(value), console.error);
+		}
+	}, [currentChar, currentWorld]);
 
 	return <Fragment>
 		<Grid container alignItems="center" justify="center" spacing={2}>
@@ -187,7 +208,7 @@ const World: FunctionComponent = () => {
 							>
 								<CardContent classes={{root: classes.infoCard}}>
 									<Typography paragraph className={classes.infoText}>
-										There are 37 players here
+										There are {charsAtLocation.length} players here
 									</Typography>
 								</CardContent>
 							</CardActionArea>
@@ -201,6 +222,12 @@ const World: FunctionComponent = () => {
 			                  players: false,
 			                  death: false,
 		                  })}
+		                  players={charsAtLocation}
+		                  location={{
+			                  world: currentWorld?.world.name ?? "",
+			                  x: currentChar?.square.x ?? 0,
+			                  y: currentChar?.square.y ?? 0,
+		                  }}
 		/>
 		<DeathDialog open={open.death}
 		             onClose={() => setOpen({

@@ -1,8 +1,8 @@
 import {Inject, Injectable} from "@nestjs/common";
 import {Repository} from "typeorm";
+import {CreateSellsInfo, ShopInfo, UpdateSellsInfo} from "./shop.dto";
 import {ShopSellsEntity} from "./shop-sells.entity";
 import {ShopEntity} from "./shop.entity";
-import {CreateSellsInfo, ShopInfo, UpdateSellsInfo} from "./shop.dto";
 
 @Injectable()
 export class ShopService {
@@ -55,5 +55,4 @@ export class ShopService {
 		sell.price = newSell.price;
 		return await this.sells.save(sell);
 	}
-
 }

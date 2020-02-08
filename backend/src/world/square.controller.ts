@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Param, Put} from "@nestjs/common";
+import {Body, Controller, Get, Logger, Param, Put} from "@nestjs/common";
 import {ApiBody, ApiOkResponse, ApiTags} from "@nestjs/swagger";
 import {UpdateSquareImageInfo} from "./world.dto";
 import {SquareService} from "./square.service";
@@ -7,12 +7,15 @@ import {SquareEntity} from "./square.entity";
 @ApiTags("world")
 @Controller("/square")
 export class SquareController {
+	private readonly logger: Logger = new Logger(SquareController.name);
+
 	constructor(private readonly squares: SquareService) {
 	}
 
 	@ApiOkResponse({type: SquareEntity, isArray: true})
 	@Get(":worldId")
 	async findAll(@Param("worldId") worldId: number): Promise<Array<SquareEntity>> {
+		this.logger.log(`findAll => ${worldId}`);
 		return await this.squares.findAll(worldId);
 	}
 
@@ -23,6 +26,7 @@ export class SquareController {
 		@Param("x") x: number,
 		@Param("y") y: number,
 	): Promise<SquareEntity> {
+		this.logger.log(`findOne => ${worldId}@${x}.${y}`);
 		return await this.squares.findOne(worldId, x, y);
 	}
 
@@ -35,6 +39,7 @@ export class SquareController {
 		@Param("y") y: number,
 		@Body() newImage: UpdateSquareImageInfo,
 	): Promise<SquareEntity> {
+		this.logger.log(`setImage => ${worldId}@${x}.${y}`);
 		return await this.squares.setImage(worldId, x, y, newImage);
 	}
 }

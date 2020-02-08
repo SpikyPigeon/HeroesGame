@@ -52,12 +52,14 @@ export class EncounterService implements OnModuleInit {
 	}
 
 	async findAllEncounters(): Promise<EncounterEntity[]> {
-		return await this.encounters.find({relations: ["square", "monster", "square.world", "monster.type"]});
+		return await this.encounters.find({
+			relations: ["square", "monster", "square.world", "monster.type", "drops", "drops.item"],
+		});
 	}
 
 	async findOneEncounter(id: number): Promise<EncounterEntity> {
 		return await this.encounters.findOneOrFail({
-			relations: ["square", "monster", "square.world", "monster.type"],
+			relations: ["square", "monster", "square.world", "monster.type", "drops", "drops.item"],
 			where: {id},
 		});
 	}

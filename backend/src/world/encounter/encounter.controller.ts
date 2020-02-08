@@ -50,6 +50,16 @@ export class EncounterController {
 		return await this.encounters.findAllEncounters();
 	}
 
+	@ApiOkResponse({type: EncounterEntity, isArray: true})
+	@Get(":worldId/:x/:y")
+	async findAllAtLocation(
+		@Param("worldId") worldId: number,
+		@Param("x") x: number,
+		@Param("y") y: number,
+	): Promise<Array<EncounterEntity>> {
+		return await this.encounters.findAllAtLocation(worldId, x, y);
+	}
+
 	@ApiOkResponse({type: EncounterEntity})
 	@Get(":id")
 	async findOneEncounter(@Param() id: number): Promise<EncounterEntity> {

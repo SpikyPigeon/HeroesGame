@@ -57,6 +57,18 @@ export class EncounterService implements OnModuleInit {
 		});
 	}
 
+	async findAllAtLocation(worldId: number, x: number, y: number): Promise<Array<EncounterEntity>> {
+		return await this.encounters.createQueryBuilder("enc")
+			.leftJoinAndSelect("enc.square", "sq")
+			.leftJoinAndSelect("sq.world", "world")
+			.leftJoinAndSelect("enc.monster", "monster")
+			.leftJoinAndSelect("monster.type", "monType")
+			.leftJoinAndSelect("enc.drops", "drops")
+			.leftJoinAndSelect("drops.item", "item")
+			.where("world.id = :worldId AND sq.x = :x AND sq.y = :y", {worldId, x, y})
+			.getMany();
+	}
+
 	async findOneEncounter(id: number): Promise<EncounterEntity> {
 		return await this.encounters.findOneOrFail({
 			relations: ["square", "monster", "square.world", "monster.type", "drops", "drops.item"],

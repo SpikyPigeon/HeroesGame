@@ -60,18 +60,9 @@ const DeleteCharDialog: FunctionComponent<MyDialogProps> = props => {
 const RenameCharDialog: FunctionComponent<MyDialogProps> = props => {
 	const {open, onClose} = props;
 
-	const loadHero = useStoreActions(state => state.character.getMine);
+	const {register, handleSubmit, errors, clearError, reset, setValue} = useForm<CharacterInfo>();
 	const currentHero = useStoreState(state => state.character.character);
 	const updateChar = useStoreActions(state => state.character.update);
-	const nav = useNavigation();
-	const {register, handleSubmit, errors, clearError, reset, setValue} = useForm<CharacterInfo>();
-
-	useEffect(() => {
-		loadHero().catch((e: any) => {
-			console.error(e);
-			nav.navigate("/");
-		});
-	}, []);
 
 	useEffect(() => {
 		setTimeout(() => {
@@ -125,19 +116,15 @@ const AvatarDialog: FunctionComponent<MyDialogProps> = props => {
 	const {open, onClose} = props;
 	const [avatar, setAvatar] = useState<number | boolean>(false);
 	const [avatarList, setAvatarList] = useState<Array<Avatar>>([]);
-	const loadHero = useStoreActions(state => state.character.getMine);
-	const currentHero = useStoreState(state => state.character.character);
+
 	const listAvatars = useStoreActions(state => state.character.listAvatars);
+	const currentHero = useStoreState(state => state.character.character);
 	const updateChar = useStoreActions(state => state.character.update);
-	const nav = useNavigation();
 
 	useEffect(() => {
-		loadHero().catch((e: any) => {
-			console.error(e);
-			nav.navigate("/");
-		});
 		listAvatars().then(value => setAvatarList(value)).catch(console.error);
 	}, []);
+
 	if (!currentHero) {
 		return <Fragment/>;
 	}
@@ -191,16 +178,9 @@ const CharacterCard: FunctionComponent = () => {
 	const [delOpen, setDelOpen] = useState(false);
 	const [renameOpen, setRenameOpen] = useState(false);
 	const [avatarOpen, setAvatarOpen] = useState(false);
-	const currentHero = useStoreState(state => state.character.character);
-	const loadHero = useStoreActions(state => state.character.getMine);
-	const nav = useNavigation();
 
-	useEffect(() => {
-		loadHero().catch((e: any) => {
-			console.error(e);
-			nav.navigate("/", {replace: true});
-		});
-	}, []);
+	const currentHero = useStoreState(state => state.character.character);
+
 	if (!currentHero) {
 		return <Fragment/>;
 	}

@@ -20,7 +20,7 @@ export const monsterConfig = {
 			const {min, max} = monsterConfig.calculate.damage(strength);
 			const dmg = Math.floor(Math.random() * (max - min + 1)) + min;
 			return isCritical ? dmg * 2 : dmg;
-		}
+		},
 	},
 	calculate: {
 		exp(monsterLvl: number, playerLvl: number): number {

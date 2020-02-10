@@ -1,8 +1,8 @@
 import {Inject, Injectable} from "@nestjs/common";
 import {Repository} from "typeorm";
+import {UpdateSquareImageInfo} from "./world.dto";
 import {SquareEntity} from "./square.entity";
 import {WorldEntity} from "./world.entity";
-import {UpdateSquareImageInfo} from "./world.dto";
 
 @Injectable()
 export class SquareService {

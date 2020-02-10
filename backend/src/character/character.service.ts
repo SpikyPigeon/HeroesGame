@@ -1,11 +1,11 @@
+import {Repository, SelectQueryBuilder} from "typeorm";
 import {Inject, Injectable} from "@nestjs/common";
-import {Repository} from "typeorm";
+import {UpdateCharacterInfoDto} from "./character.dto";
+import {SquareService, WorldService} from "../world";
 import {CharacterEntity} from "./character.entity";
 import {EquipmentEntity} from "./equipment.entity";
 import {AvatarService} from "./avatar.service";
 import {UserEntity} from "../user";
-import {SquareService, WorldService} from "../world";
-import {UpdateCharacterInfoDto} from "./character.dto";
 
 @Injectable()
 export class CharacterService {
@@ -21,18 +21,12 @@ export class CharacterService {
 	}
 
 	async findAll(): Promise<Array<CharacterEntity>> {
-		return await this.characters.createQueryBuilder("char")
-			.leftJoinAndSelect("char.avatar", "avatar")
+		return await this.createQuery()
 			.getMany();
 	}
 
 	async findOne(id: string): Promise<CharacterEntity> {
-		const char = await this.characters.createQueryBuilder("char")
-			.leftJoinAndSelect("char.owner", "owner")
-			.leftJoinAndSelect("char.avatar", "avatar")
-			.leftJoinAndSelect("char.square", "sq")
-			.leftJoinAndSelect("sq.world", "world")
-			.leftJoinAndSelect("char.equipment", "equip")
+		const char = await this.createQuery()
 			.where("char.id = :id", {id})
 			.getOne();
 
@@ -41,6 +35,12 @@ export class CharacterService {
 		} else {
 			throw new Error(`There are no character with ID = ${id}`);
 		}
+	}
+
+	async findAllAtLocation(worldId: number, x: number, y: number): Promise<Array<CharacterEntity>> {
+		return await this.createQuery()
+			.where("world.id = :worldId AND sq.x = :x AND sq.y = :y", {worldId, x, y})
+			.getMany();
 	}
 
 	async create(owner: UserEntity, name: string, avatarId: number): Promise<CharacterEntity> {
@@ -91,12 +91,7 @@ export class CharacterService {
 	}
 
 	async findMine(id: string): Promise<CharacterEntity> {
-		const character = await this.characters.createQueryBuilder("char")
-			.leftJoinAndSelect("char.owner", "owner")
-			.leftJoinAndSelect("char.avatar", "avatar")
-			.leftJoinAndSelect("char.square", "sq")
-			.leftJoinAndSelect("sq.world", "world")
-			.leftJoinAndSelect("char.equipment", "equip")
+		const character = await this.createQuery()
 			.where("owner.id = :user AND char.isActive = TRUE", {user: id})
 			.getOne();
 		if (character) {
@@ -110,5 +105,36 @@ export class CharacterService {
 		return await this.equipments.save(this.equipments.create({
 			player: character,
 		}));
+	}
+
+	private createQuery(): SelectQueryBuilder<CharacterEntity> {
+		return this.characters.createQueryBuilder("char")
+			.leftJoinAndSelect("char.owner", "owner")
+			.leftJoinAndSelect("char.avatar", "avatar")
+			.leftJoinAndSelect("char.square", "sq")
+			.leftJoinAndSelect("sq.world", "world")
+			.leftJoinAndSelect("char.equipment", "equip")
+			.leftJoinAndSelect("equip.headSlot", "head")
+			.leftJoinAndSelect("head.item", "headItem")
+			.leftJoinAndSelect("equip.chestSlot", "chest")
+			.leftJoinAndSelect("chest.item", "chestItem")
+			.leftJoinAndSelect("equip.beltSlot", "belt")
+			.leftJoinAndSelect("belt.item", "beltItem")
+			.leftJoinAndSelect("equip.bootSlot", "boot")
+			.leftJoinAndSelect("boot.item", "bootItem")
+			.leftJoinAndSelect("equip.leftHandSlot", "lHand")
+			.leftJoinAndSelect("lHand.item", "lHandItem")
+			.leftJoinAndSelect("equip.rightHandSlot", "rHand")
+			.leftJoinAndSelect("rHand.item", "rHandItem")
+			.leftJoinAndSelect("equip.ring1Slot", "ring1")
+			.leftJoinAndSelect("ring1.item", "ring1Item")
+			.leftJoinAndSelect("equip.ring2Slot", "ring2")
+			.leftJoinAndSelect("ring2.item", "ring2Item")
+			.leftJoinAndSelect("equip.neckSlot", "neck")
+			.leftJoinAndSelect("neck.item", "neckItem")
+			.leftJoinAndSelect("equip.bagSlot", "bag")
+			.leftJoinAndSelect("bag.item", "bagItem")
+			.leftJoinAndSelect("equip.artifactSlot", "artifact")
+			.leftJoinAndSelect("artifact.item", "artifactItem");
 	}
 }

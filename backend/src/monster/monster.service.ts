@@ -35,11 +35,11 @@ export class MonsterService {
 	}
 
 	async findAllMonsters(): Promise<Array<MonsterEntity>> {
-		return await this.monsters.find();
+		return await this.monsters.find({relations: ["type"]});
 	}
 
 	async findOneMonster(id: number): Promise<MonsterEntity> {
-		return await this.monsters.findOneOrFail({where: {id}});
+		return await this.monsters.findOneOrFail({where: {id}, relations: ["type"]});
 	}
 
 	async createMonster(data: MonsterInfoDto): Promise<MonsterEntity> {

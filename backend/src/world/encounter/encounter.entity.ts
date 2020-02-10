@@ -1,8 +1,9 @@
-import {Check, Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Check, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {ApiProperty} from "@nestjs/swagger";
 import {Encounter} from "heroes-common";
 import {SquareEntity} from "../square.entity";
 import {MonsterEntity} from "../../monster";
+import {EncounterDropEntity} from "./encounter-drop.entity";
 
 @Entity("Encounter")
 @Check(`"minGold" > 0 AND "maxGold" > "minGold"`)
@@ -33,4 +34,8 @@ export class EncounterEntity implements Encounter {
 	@ApiProperty()
 	@Column({default: 2})
 	maxGold!: number;
+
+	@ApiProperty({type: () => EncounterDropEntity, isArray: true})
+	@OneToMany(type => EncounterDropEntity, drop => drop.encounter)
+	drops!: Array<EncounterDropEntity>;
 }

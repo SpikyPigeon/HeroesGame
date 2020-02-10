@@ -1,10 +1,10 @@
 import {createElement, FunctionComponent, useEffect} from "react";
+import {useNavigation} from "react-navi";
 import {Grid} from "@material-ui/core";
 
+import {useStoreActions} from "../../store";
 import CharacterCard from "./profile.char";
 import UserCard from "./profile.user";
-import {useStoreActions} from "../../store";
-import {useNavigation} from "react-navi";
 
 const Profile: FunctionComponent = () => {
 	const loadHero = useStoreActions(state => state.character.getMine);

@@ -217,24 +217,30 @@ const World: FunctionComponent = () => {
 											<Tooltip arrow placement="top"
 											         title={`Health : ${currentChar.currentHealth} / ${charConfig.stats.calculate.health(currentChar.vitality, 0)}`}
 											>
-												<CircularProgress variant="static" thickness={18} classes={{circle: classes.healthCircle}}
-												                  value={currentChar.currentHealth * 100 / charConfig.stats.calculate.health(currentChar.vitality, 0)}/>
+												<CircularProgress variant="static" thickness={18}
+												                  classes={{circle: classes.healthCircle}}
+												                  value={currentChar.currentHealth * 100 / charConfig.stats.calculate.health(currentChar.vitality, 0)}
+												/>
 											</Tooltip>
 										</Grid>
 										<Grid item lg={2} style={{textAlign: "center"}}>
 											<Tooltip arrow placement="top"
 											         title={`Mana : ${currentChar.currentMana} / ${charConfig.stats.calculate.mana(currentChar.intellect, 0)}`}
 											>
-												<CircularProgress variant="static" thickness={18} classes={{circle: classes.manaCircle}}
-												                  value={currentChar.currentMana * 100 / charConfig.stats.calculate.mana(currentChar.intellect, 0)}/>
+												<CircularProgress variant="static" thickness={18}
+												                  classes={{circle: classes.manaCircle}}
+												                  value={currentChar.currentMana * 100 / charConfig.stats.calculate.mana(currentChar.intellect, 0)}
+												/>
 											</Tooltip>
 										</Grid>
 										<Grid item lg={2} style={{textAlign: "center"}}>
 											<Tooltip arrow placement="top"
 											         title={`Energy : ${currentChar.currentEnergy} / ${200 + 10 * (currentChar.level - 1)}`}
 											>
-												<CircularProgress variant="static" thickness={18} classes={{circle: classes.energyCircle}}
-												                  value={currentChar.currentEnergy * 100 / (200 + 10 * (currentChar.level - 1))}/>
+												<CircularProgress variant="static" thickness={18}
+												                  classes={{circle: classes.energyCircle}}
+												                  value={currentChar.currentEnergy * 100 / (200 + 10 * (currentChar.level - 1))}
+												/>
 											</Tooltip>
 										</Grid>
 									</Grid>

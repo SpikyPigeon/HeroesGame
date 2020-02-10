@@ -23,7 +23,6 @@ import {
 	Theme,
 	Typography
 } from "@material-ui/core";
-import {useStoreActions} from "../../../store";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({

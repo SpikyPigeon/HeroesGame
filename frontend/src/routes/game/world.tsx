@@ -19,9 +19,9 @@ import {
 	Typography
 } from "@material-ui/core";
 
+import {Encounter, PlayerCharacter} from "heroes-common";
 import {useStoreActions, useStoreState} from "../../store";
 import {WorldMapCard} from "./world.map";
-import {PlayerCharacter} from "heroes-common/src";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -114,6 +114,7 @@ const World: FunctionComponent = () => {
 		players: false,
 	});
 	const [charsAtLocation, setCharsAtLocation] = useState<Array<PlayerCharacter>>([]);
+	const [encounters, setEncounters] = useState<Array<Encounter>>([]);
 
 	const loadChar = useStoreActions(state => state.character.getMine);
 	const loadWorld = useStoreActions(state => state.world.load);
@@ -121,6 +122,7 @@ const World: FunctionComponent = () => {
 	const currentWorld = useStoreState(state => state.world.current);
 	const currentChar = useStoreState(state => state.character.character);
 	const getCharsAtLocation = useStoreActions(state => state.character.findAtLocation);
+	const getEncounters = useStoreActions(state => state.world.loadEncounters);
 
 	useEffect(() => {
 		if (!currentChar) {
@@ -144,6 +146,12 @@ const World: FunctionComponent = () => {
 				x: currentChar.square.x,
 				y: currentChar.square.y,
 			}).then(value => setCharsAtLocation(value), console.error);
+
+			getEncounters({
+				worldId: currentWorld.world.id,
+				x: currentChar.square.x,
+				y: currentChar.square.y,
+			}).then(value => setEncounters(value), console.error);
 		}
 	}, [currentChar, currentWorld]);
 

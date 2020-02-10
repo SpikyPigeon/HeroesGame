@@ -1,6 +1,7 @@
 import {action, Action, thunk, Thunk} from "easy-peasy";
-import {Square, World} from "heroes-common";
+import {Encounter, Square, World} from "heroes-common";
 import {WorldService} from "./context";
+import {LocationInfo} from "./index";
 
 export interface WorldData {
 	world: World;
@@ -12,6 +13,7 @@ export interface WorldStore {
 	setCurrent: Action<WorldStore, WorldData | null>;
 
 	load: Thunk<WorldStore, number>;
+	loadEncounters: Thunk<WorldStore, LocationInfo, any, {}, Promise<Array<Encounter>>>;
 }
 
 export const worldStore: WorldStore = {
@@ -26,5 +28,9 @@ export const worldStore: WorldStore = {
 			world: await WorldService.getWorld(payload),
 			squares: await WorldService.getSquares(payload),
 		});
+	}),
+
+	loadEncounters: thunk(async (state, payload): Promise<Array<Encounter>> => {
+		return await WorldService.getEncounters(payload.worldId, payload.x, payload.y);
 	}),
 };

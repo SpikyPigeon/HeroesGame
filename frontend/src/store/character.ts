@@ -1,12 +1,7 @@
 import {action, Action, thunk, Thunk} from "easy-peasy";
 import {Avatar, CharacterInfo, MoveCharacterInfo, PlayerCharacter, UpdateCharacterInfo} from "heroes-common";
 import {CharacterService} from "./context";
-
-interface LocationInfo {
-	worldId: number;
-	x: number;
-	y: number;
-}
+import {LocationInfo} from "./index";
 
 export interface CharacterStore {
 	character: PlayerCharacter | null;

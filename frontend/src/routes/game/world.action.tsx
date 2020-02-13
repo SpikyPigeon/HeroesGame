@@ -1,9 +1,9 @@
 import {Card, CardActionArea, CardContent, CardHeader, CardMedia, Grid} from "@material-ui/core";
-import {createElement, FunctionComponent, useEffect, useState} from "react";
-import {useList, useTimeoutFn} from "react-use";
+import {createElement, FunctionComponent, useEffect} from "react";
+import {useList} from "react-use";
 
-import {LocationInfo, useStoreActions, useStoreState} from "../../store";
-import {Encounter, Monster, config} from "heroes-common";
+import {useStoreActions, useStoreState} from "../../store";
+import {config, Encounter, Monster} from "heroes-common";
 
 type MonsterFight = Monster & { health: number };
 
@@ -14,65 +14,51 @@ interface WorldActionProps {
 export const WorldAction: FunctionComponent<WorldActionProps> = ({encounters}) => {
 	const updateChar = useStoreActions(state => state.character.update);
 	const character = useStoreState(state => state.character.character);
-	const [charLocation, setCharLocation] = useState<LocationInfo | null>(null);
 	const [monsters, monstersMod] = useList<MonsterFight>([]);
 
 	const spawnMonsters = () => {
-		if (encounters.length > 0) {
+		const {monster} = config;
+
+		for (let i = 0; i < 12; ++i) {
+			let m: MonsterFight | null = null;
 			encounters.forEach(value => {
-				const {monster} = config;
-				if (monster.generate.hasSpawned(value.spawnChance)) {
-					monstersMod.push({
+				if (!m && monster.generate.hasSpawned(value.spawnChance)) {
+					m = {
 						health: monster.calculate.health(value.monster.vitality),
 						...value.monster,
-					});
+					};
 				}
 			});
+
+			if (m) {
+				monstersMod.push(m);
+			}
 		}
 	};
 
-	const [spawningReady, spawningCancel, spawningReset] = useTimeoutFn(() => {
-		spawnMonsters();
-		spawningReset();
-	}, 5 * 1000);
-
 	useEffect(() => {
-		if (character) {
-			if (!charLocation || (charLocation && (
-				charLocation.worldId !== character.square.world.id ||
-				charLocation.x !== character.square.x ||
-				charLocation.y !== character.square.y))) {
-				setCharLocation({
-					worldId: character.square.world.id,
-					x: character.square.x,
-					y: character.square.y,
-				});
-			}
-		}
-	}, [character]);
-
-	useEffect(() => {
-		if (charLocation) {
-			monstersMod.clear();
-			spawningReset();
+		monstersMod.clear();
+		if (encounters.length > 0) {
 			spawnMonsters();
 		}
-
-		return () => monstersMod.clear();
-	}, [charLocation]);
+	}, [encounters]);
 
 	if (!character) {
 		return null;
 	}
 
 	return <Card>
-		<CardContent>
-			<Grid container direction="row" justify="space-evenly" spacing={2}>
+		<CardContent style={{padding: 3}}>
+			<Grid container direction="row" justify="flex-start" spacing={1}>
 				{monsters.map((value, index) => (
-					<Grid item lg={3} key={index}>
-						<Card>
+					<Grid item lg={2} key={index}>
+						<Card variant="outlined">
 							<CardActionArea>
-								<CardHeader title={value.name}/>
+								<CardHeader title={value.name} titleTypographyProps={{
+									align: "center",
+									variant: "subtitle1",
+									noWrap: true,
+								}}/>
 								<CardMedia
 									component="img"
 									image={`/assets/monsters/${value.picture}`}

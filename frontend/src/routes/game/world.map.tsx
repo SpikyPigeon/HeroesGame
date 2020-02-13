@@ -175,20 +175,21 @@ export const WorldMapCard: FunctionComponent<WorldMapProps> = props => {
 		<CardActionArea onMouseEnter={() => setRaised(true)} onMouseLeave={() => setRaised(false)} disableRipple>
 			<CardHeader title="World" action={
 				<FormGroup row>
-					<FormControlLabel label="Zoom" labelPlacement="start"
-					                  classes={{root: classes.zoomGroup, label: classes.zoomLabel}}
-					                  control={
-						                  <Slider
-							                  color="secondary" min={0.5} max={1.5} step={0.1}
-							                  marks={marks} valueLabelDisplay="off" value={zoom}
-							                  onChange={(e, value) => {
-								                  if (typeof value === "number" && canvas.current) {
-									                  setZoom(value);
-									                  render(canvas.current);
-								                  }
-							                  }}
-						                  />
-					                  }
+					<FormControlLabel
+						label="Zoom" labelPlacement="start"
+						classes={{root: classes.zoomGroup, label: classes.zoomLabel}}
+						control={
+							<Slider
+								color="secondary" min={0.5} max={1.5} step={0.1}
+								marks={marks} valueLabelDisplay="off" value={zoom}
+								onChange={(e, value) => {
+									if (typeof value === "number" && canvas.current) {
+										setZoom(value);
+										render(canvas.current);
+									}
+								}}
+							/>
+						}
 					/>
 					<FormControlLabel
 						label="Navigation Mode"

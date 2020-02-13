@@ -4,7 +4,7 @@ export const characterConfig = {
 		startPoints: 10,
 
 		calculate: {
-			damage(strength: number, totalMod: number): {min: number, max: number} {
+			damage(strength: number, totalMod: number): { min: number, max: number } {
 				return {
 					min: strength * 2 + totalMod,
 					max: strength * 4 + totalMod,

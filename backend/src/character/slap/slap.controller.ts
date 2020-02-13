@@ -46,6 +46,9 @@ export class SlapController {
 		return await this.slaps.countSlapped(id);
 	}
 
-	
+	@Get("count/slapper/:id")
+	async countSlapper(@Param("id") id: string): Promise<number>{
+		return await this.slaps.countSlapper(id);
+	}
 
 }

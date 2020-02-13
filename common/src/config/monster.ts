@@ -4,10 +4,6 @@ export const monsterConfig = {
 			return Math.random() <= chance;
 		},
 
-		quantity(min: number, max: number): number {
-			return Math.floor(Math.random() * (max - min + 1)) + min;
-		},
-
 		isCritical(dexterity: number): boolean {
 			return Math.random() <= monsterConfig.calculate.criticalChance(dexterity) / 100;
 		},

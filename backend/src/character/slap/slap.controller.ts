@@ -51,4 +51,13 @@ export class SlapController {
 		return await this.slaps.countSlapper(id);
 	}
 
+	@ApiBearerAuth()
+	//@ApiOkResponse({type: boolean})
+	@UseGuards(AuthGuard("jmt"))
+	@Get("slappable/:slappedId")
+	async checkSlappable(@Request() req: any, @Param("slappedId") slappedId: string): Promise<boolean>{
+		const {id} = await this.characters.findMine((req.user as UserEntity).id);
+		return await this.slaps.checkSlappable(id, slappedId);
+	}
+
 }

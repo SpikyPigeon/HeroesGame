@@ -28,11 +28,12 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface MonsterCardProps {
+	index: number;
 	monster: MonsterFight;
-	onFight: (monster: MonsterFight) => void;
+	onFight: (index: number) => void;
 }
 
-const MonsterCard: FunctionComponent<MonsterCardProps> = ({monster, onFight}) => {
+const MonsterCard: FunctionComponent<MonsterCardProps> = ({index, monster, onFight}) => {
 	const [raised, setRaised] = useState(false);
 	const classes = useStyles();
 
@@ -43,7 +44,7 @@ const MonsterCard: FunctionComponent<MonsterCardProps> = ({monster, onFight}) =>
 		<CardActionArea
 			onMouseEnter={() => setRaised(true)}
 			onMouseLeave={() => setRaised(false)}
-			onClick={() => onFight(monster)}
+			onClick={() => onFight(index)}
 		>
 			<CardHeader title={monster.name}
 			            titleTypographyProps={{
@@ -98,10 +99,33 @@ export const WorldAction: FunctionComponent<WorldActionProps> = ({encounters}) =
 		}
 	};
 
-	const fight = (monster: MonsterFight) => {
-		console.log(`FIGHT ${monster.name}`);
-		monster.health -= 10;
-		update();
+	const fight = (index: number) => {
+		const monster = monsters[index];
+		if (character) {
+			const charAtk = config.character.generate.damage;
+			const charCrit = config.character.generate.isCritical;
+			const charDog = config.character.generate.isDodge;
+			const monAtk = config.monster.generate.damage;
+			const monCrit = config.monster.generate.isCritical;
+			const monDog = config.monster.generate.isDodge;
+			const monExp = config.monster.calculate.exp(monster.level, character.level);
+
+			if (!monDog(monster.dexterity)) {
+				monster.health -= charAtk(character.strength, 0, 0, charCrit(character.dexterity, 0));
+				if (monster.health <= 0) {
+					updateChar({
+						experience: character.experience + monExp,
+					}).catch(console.error);
+					monstersMod.removeAt(index);
+				} else if (!charDog(character.dexterity, 0)) {
+					updateChar({
+						currentHealth: character.currentHealth - monAtk(monster.strength, monCrit(monster.dexterity)),
+					}).catch(console.error);
+				}
+			}
+
+			update();
+		}
 	};
 
 	useEffect(() => {
@@ -120,7 +144,7 @@ export const WorldAction: FunctionComponent<WorldActionProps> = ({encounters}) =
 			<Grid container direction="row" justify="flex-start" spacing={1}>
 				{monsters.map((value, index) => (
 					<Grid item lg={2} key={index}>
-						<MonsterCard monster={value} onFight={fight}/>
+						<MonsterCard index={index} monster={value} onFight={fight}/>
 					</Grid>
 				))}
 			</Grid>

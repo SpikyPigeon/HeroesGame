@@ -41,10 +41,10 @@ export class InventoryService implements OnModuleInit {
 		return await this.inventories.findOneOrFail(id);
 	}
 
-
-
-	/*async update(quantity: number): Promise<InventoryEntity>{
-
-	}*/
+	async update(id: string, quantity: number): Promise<InventoryEntity>{
+		const inv = await this.findOne(id);
+		inv.quantity = quantity;
+		return await this.inventories.save(inv);
+	}
 
 }

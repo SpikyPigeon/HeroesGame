@@ -23,7 +23,7 @@ import {
 } from "@material-ui/core";
 
 import {config, Encounter, PlayerCharacter} from "heroes-common";
-import {useStoreActions, useStoreState} from "../../store";
+import {LocationInfo, useStoreActions, useStoreState} from "../../store";
 import {WorldAction} from "./world.action";
 import {WorldMapCard} from "./world.map";
 
@@ -129,6 +129,7 @@ const World: FunctionComponent = () => {
 	});
 	const [charsAtLocation, setCharsAtLocation] = useState<Array<PlayerCharacter>>([]);
 	const [encounters, setEncounters] = useState<Array<Encounter>>([]);
+	const [location, setLocation] = useState<LocationInfo | null>(null);
 
 	const loadChar = useStoreActions(state => state.character.getMine);
 	const loadWorld = useStoreActions(state => state.world.load);
@@ -150,26 +151,29 @@ const World: FunctionComponent = () => {
 	}, []);
 
 	useEffect(() => {
-		if (currentChar && !currentWorld) {
-			loadWorld(currentChar.square.world.id).catch(console.error);
+		if (currentChar) {
+			const {square} = currentChar;
+
+			if (!currentWorld) {
+				loadWorld(currentChar.square.world.id).catch(console.error);
+			}
+
+			if (!location || location.worldId !== square.world.id || location.x !== square.x || location.y !== square.y) {
+				setLocation({
+					worldId: square.world.id,
+					x: square.x,
+					y: square.y,
+				});
+			}
 		}
 	}, [currentChar]);
 
 	useEffect(() => {
-		if (currentChar && currentWorld) {
-			getCharsAtLocation({
-				worldId: currentWorld.world.id,
-				x: currentChar.square.x,
-				y: currentChar.square.y,
-			}).then(value => setCharsAtLocation(value), console.error);
-
-			getEncounters({
-				worldId: currentWorld.world.id,
-				x: currentChar.square.x,
-				y: currentChar.square.y,
-			}).then(value => setEncounters(value), console.error);
+		if (location) {
+			getCharsAtLocation(location).then(value => setCharsAtLocation(value), console.error);
+			getEncounters(location).then(value => setEncounters(value), console.error);
 		}
-	}, [currentChar, currentWorld]);
+	}, [location]);
 
 	if (!currentChar) {
 		return null;

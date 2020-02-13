@@ -1,7 +1,7 @@
 import {Controller, Get, Logger, Param, Post, Request, UseGuards} from "@nestjs/common";
 import {SlapService} from "./slap.service";
 import {CharacterService} from "../character.service";
-import {ApiBearerAuth, ApiOkResponse, ApiProperty, ApiTags} from "@nestjs/swagger";
+import {ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiProperty, ApiTags} from "@nestjs/swagger";
 import {SlapEntity} from "./slap.entity";
 import {AuthGuard} from "@nestjs/passport";
 import {UserEntity} from "../../user";
@@ -25,7 +25,7 @@ export class SlapController {
 	}
 
 	@ApiBearerAuth()
-	@ApiOkResponse({type: SlapEntity})
+	@ApiCreatedResponse({type: SlapEntity})
 	@UseGuards(AuthGuard("jmt"))
 	@Post(":slapped")
 	async create(@Request() req: any, @Param("slapped") slappedId: string): Promise<SlapEntity> {

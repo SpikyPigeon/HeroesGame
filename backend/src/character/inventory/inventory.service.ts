@@ -51,6 +51,4 @@ export class InventoryService implements OnModuleInit {
 		await this.inventories.delete(id);
 	}
 
-	
-
 }

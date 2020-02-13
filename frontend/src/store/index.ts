@@ -3,6 +3,12 @@ import {characterStore, CharacterStore} from "./character";
 import {worldStore, WorldStore} from "./world";
 import {userStore, UserStore} from "./user";
 
+export interface LocationInfo {
+	worldId: number;
+	x: number;
+	y: number;
+}
+
 export interface AppStore {
 	character: CharacterStore;
 	world: WorldStore;

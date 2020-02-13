@@ -1,4 +1,5 @@
 import {createElement, Fragment, FunctionComponent, useEffect, useState} from "react";
+import {blue, green, red} from "@material-ui/core/colors";
 import {useNavigation} from "react-navi";
 import {
 	Button,
@@ -7,6 +8,7 @@ import {
 	CardContent,
 	CardHeader,
 	CardMedia,
+	CircularProgress,
 	createStyles,
 	Dialog,
 	DialogActions,
@@ -16,12 +18,14 @@ import {
 	Grid,
 	makeStyles,
 	Theme,
+	Tooltip,
 	Typography
 } from "@material-ui/core";
 
+import {config, Encounter, PlayerCharacter} from "heroes-common";
 import {useStoreActions, useStoreState} from "../../store";
+import {WorldAction} from "./world.action";
 import {WorldMapCard} from "./world.map";
-import {PlayerCharacter} from "heroes-common/src";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -33,6 +37,15 @@ const useStyles = makeStyles((theme: Theme) =>
 		},
 		infoText: {
 			margin: 0,
+		},
+		healthCircle: {
+			color: red["800"],
+		},
+		manaCircle: {
+			color: blue["800"],
+		},
+		energyCircle: {
+			color: green["800"],
 		},
 	}),
 );
@@ -112,8 +125,10 @@ const World: FunctionComponent = () => {
 	const [raised, setRaised] = useState({
 		location: false,
 		players: false,
+		status: false,
 	});
 	const [charsAtLocation, setCharsAtLocation] = useState<Array<PlayerCharacter>>([]);
+	const [encounters, setEncounters] = useState<Array<Encounter>>([]);
 
 	const loadChar = useStoreActions(state => state.character.getMine);
 	const loadWorld = useStoreActions(state => state.world.load);
@@ -121,6 +136,9 @@ const World: FunctionComponent = () => {
 	const currentWorld = useStoreState(state => state.world.current);
 	const currentChar = useStoreState(state => state.character.character);
 	const getCharsAtLocation = useStoreActions(state => state.character.findAtLocation);
+	const getEncounters = useStoreActions(state => state.world.loadEncounters);
+
+	const {character: charConfig} = config;
 
 	useEffect(() => {
 		if (!currentChar) {
@@ -144,8 +162,18 @@ const World: FunctionComponent = () => {
 				x: currentChar.square.x,
 				y: currentChar.square.y,
 			}).then(value => setCharsAtLocation(value), console.error);
+
+			getEncounters({
+				worldId: currentWorld.world.id,
+				x: currentChar.square.x,
+				y: currentChar.square.y,
+			}).then(value => setEncounters(value), console.error);
 		}
 	}, [currentChar, currentWorld]);
+
+	if (!currentChar) {
+		return null;
+	}
 
 	return <Fragment>
 		<Grid container alignItems="center" justify="center" spacing={2}>
@@ -166,19 +194,72 @@ const World: FunctionComponent = () => {
 			</Grid>
 			<Grid container item lg={9} spacing={1}>
 				<Grid item lg={8}>
-					<Card style={{height: "100%"}}/>
+					<WorldAction encounters={encounters}/>
 				</Grid>
 				<Grid container item lg={4} direction="column" spacing={1}>
+					<Grid item lg>
+						<Card raised={raised.status}>
+							<CardActionArea
+								onMouseEnter={() => setRaised({
+									location: false,
+									players: false,
+									status: true,
+								})}
+								onMouseLeave={() => setRaised({
+									location: false,
+									players: false,
+									status: false,
+								})}
+							>
+								<CardContent classes={{root: classes.infoCard}}>
+									<Grid container justify="space-evenly" direction="row">
+										<Grid item lg={2} style={{textAlign: "center"}}>
+											<Tooltip arrow placement="top"
+											         title={`Health : ${currentChar.currentHealth} / ${charConfig.stats.calculate.health(currentChar.vitality, 0)}`}
+											>
+												<CircularProgress variant="static" thickness={18}
+												                  classes={{circle: classes.healthCircle}}
+												                  value={currentChar.currentHealth * 100 / charConfig.stats.calculate.health(currentChar.vitality, 0)}
+												/>
+											</Tooltip>
+										</Grid>
+										<Grid item lg={2} style={{textAlign: "center"}}>
+											<Tooltip arrow placement="top"
+											         title={`Mana : ${currentChar.currentMana} / ${charConfig.stats.calculate.mana(currentChar.intellect, 0)}`}
+											>
+												<CircularProgress variant="static" thickness={18}
+												                  classes={{circle: classes.manaCircle}}
+												                  value={currentChar.currentMana * 100 / charConfig.stats.calculate.mana(currentChar.intellect, 0)}
+												/>
+											</Tooltip>
+										</Grid>
+										<Grid item lg={2} style={{textAlign: "center"}}>
+											<Tooltip arrow placement="top"
+											         title={`Energy : ${currentChar.currentEnergy} / ${200 + 10 * (currentChar.level - 1)}`}
+											>
+												<CircularProgress variant="static" thickness={18}
+												                  classes={{circle: classes.energyCircle}}
+												                  value={currentChar.currentEnergy * 100 / (200 + 10 * (currentChar.level - 1))}
+												/>
+											</Tooltip>
+										</Grid>
+									</Grid>
+								</CardContent>
+							</CardActionArea>
+						</Card>
+					</Grid>
 					<Grid item lg>
 						<Card raised={raised.location}>
 							<CardActionArea
 								onMouseEnter={() => setRaised({
 									location: true,
 									players: false,
+									status: false,
 								})}
 								onMouseLeave={() => setRaised({
 									location: false,
 									players: false,
+									status: false,
 								})}
 							>
 								<CardContent classes={{root: classes.infoCard}}>
@@ -196,10 +277,12 @@ const World: FunctionComponent = () => {
 								onMouseEnter={() => setRaised({
 									location: false,
 									players: true,
+									status: false,
 								})}
 								onMouseLeave={() => setRaised({
 									location: false,
 									players: false,
+									status: false,
 								})}
 								onClick={() => setOpen({
 									players: true,

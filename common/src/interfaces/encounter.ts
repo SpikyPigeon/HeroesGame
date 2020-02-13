@@ -1,5 +1,6 @@
-import {Square} from "./square";
+import {EncounterDrop} from "./encounter-drop";
 import {Monster} from "./monster";
+import {Square} from "./square";
 
 export interface Encounter {
 	id: number;
@@ -8,4 +9,5 @@ export interface Encounter {
 	spawnChance: number;
 	minGold: number;
 	maxGold: number;
+	drops: Array<EncounterDrop>;
 }

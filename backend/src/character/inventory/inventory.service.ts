@@ -47,4 +47,10 @@ export class InventoryService implements OnModuleInit {
 		return await this.inventories.save(inv);
 	}
 
+	async delete(id: string){
+		await this.inventories.delete(id);
+	}
+
+	
+
 }

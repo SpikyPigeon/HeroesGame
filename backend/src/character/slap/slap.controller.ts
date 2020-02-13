@@ -1,10 +1,11 @@
 import {Controller, Get, Logger, Param, Post, Request, UseGuards} from "@nestjs/common";
 import {SlapService} from "./slap.service";
 import {CharacterService} from "../character.service";
-import {ApiBearerAuth, ApiOkResponse} from "@nestjs/swagger";
+import {ApiBearerAuth, ApiBody, ApiOkResponse} from "@nestjs/swagger";
 import {SlapEntity} from "./slap.entity";
 import {AuthGuard} from "@nestjs/passport";
 import {UserEntity} from "../../user";
+import {CharacterEntity} from "../character.entity";
 
 @Controller()
 export class SlapController {
@@ -27,6 +28,11 @@ export class SlapController {
 		return await this.slaps.findAll();
 	}
 
-	
+	@ApiOkResponse({type: SlapEntity, isArray: true})
+	//@ApiBody({type: CharacterEntity})
+	@Get(":id")
+	async findAllWithCharacter(@Param("id") id: string): Promise<Array<SlapEntity>>{
+		return await this.slaps.findAllWithCharacter(id);
+	}
 
 }

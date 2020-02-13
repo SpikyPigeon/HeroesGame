@@ -193,10 +193,10 @@ const World: FunctionComponent = () => {
 				}}/>
 			</Grid>
 			<Grid container item lg={9} spacing={1}>
-				<Grid item lg={8}>
+				<Grid item lg={9}>
 					<WorldAction encounters={encounters}/>
 				</Grid>
-				<Grid item lg={4}>
+				<Grid item lg={3}>
 					<Card raised={raised.status} style={{marginBottom: "0.6rem"}}>
 						<CardActionArea
 							onMouseEnter={() => setRaised({

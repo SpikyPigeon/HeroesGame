@@ -35,4 +35,12 @@ export class SlapController {
 		return await this.slaps.findAllWithCharacter(id);
 	}
 
+	//@ApiOkResponse({type: number})
+	@Get("count")
+	async countAll(): Promise<number>{
+		return await this.slaps.countAll();
+	}
+
+	
+
 }

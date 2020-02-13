@@ -57,7 +57,9 @@ export class SlapService {
 		const yesterday = new Date().setDate(today.getDate() - 1);
 		const count = await this.slaps.count({
 			where: {
-				createdAt: MoreThanOrEqual(yesterday)
+				createdAt: MoreThanOrEqual(yesterday),
+				slapper: slapperID,
+				slapped: slappedID
 			}
 		});
 		return count < 3;

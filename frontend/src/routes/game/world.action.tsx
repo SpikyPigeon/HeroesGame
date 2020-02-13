@@ -1,63 +1,11 @@
-import {createElement, FunctionComponent} from "react";
-import {ThunkCreator} from "easy-peasy";
-import {Card} from "@material-ui/core";
+import {Card, CardActionArea, CardContent, CardHeader, CardMedia, Grid} from "@material-ui/core";
+import {createElement, FunctionComponent, useEffect, useState} from "react";
+import {useList, useTimeoutFn} from "react-use";
 
-import {Avatar, config, Encounter, Monster, PlayerCharacter, Square, UpdateCharacterInfo, User} from "heroes-common";
-import {useStoreActions, useStoreState} from "../../store";
+import {LocationInfo, useStoreActions, useStoreState} from "../../store";
+import {Encounter, Monster, config} from "heroes-common";
 
-class PlayerCharacterAction implements PlayerCharacter {
-	avatar: Avatar;
-	createdAt: Date;
-	currentEnergy: number;
-	currentHealth: number;
-	currentMana: number;
-	dexterity: number;
-	experience: number;
-	gem: number;
-	gold: number;
-	id: string;
-	intellect: number;
-	isActive: boolean;
-	isDead: boolean;
-	level: number;
-	name: string;
-	owner: User;
-	square: Square;
-	strength: number;
-	updatedAt: Date;
-	vitality: number;
-
-	private readonly update: ThunkCreator<Partial<UpdateCharacterInfo>, any>;
-
-	constructor(info: PlayerCharacter, updateChar: ThunkCreator<Partial<UpdateCharacterInfo>, any>) {
-		this.avatar = info.avatar;
-		this.createdAt = info.createdAt;
-		this.currentEnergy = info.currentEnergy;
-		this.currentHealth = info.currentHealth;
-		this.currentMana = info.currentMana;
-		this.dexterity = info.dexterity;
-		this.experience = info.experience;
-		this.gem = info.gem;
-		this.gold = info.gold;
-		this.id = info.id;
-		this.intellect = info.intellect;
-		this.isActive = info.isActive;
-		this.isDead = info.isDead;
-		this.level = info.level;
-		this.name = info.name;
-		this.owner = info.owner;
-		this.square = info.square;
-		this.strength = info.strength;
-		this.updatedAt = info.updatedAt;
-		this.vitality = info.vitality;
-
-		this.update = updateChar;
-	}
-
-	async attack(target: Monster) {
-		const {character} = config;
-	}
-}
+type MonsterFight = Monster & { health: number };
 
 interface WorldActionProps {
 	encounters: Array<Encounter>;
@@ -66,14 +14,75 @@ interface WorldActionProps {
 export const WorldAction: FunctionComponent<WorldActionProps> = ({encounters}) => {
 	const updateChar = useStoreActions(state => state.character.update);
 	const character = useStoreState(state => state.character.character);
+	const [charLocation, setCharLocation] = useState<LocationInfo | null>(null);
+	const [monsters, monstersMod] = useList<MonsterFight>([]);
+
+	const spawnMonsters = () => {
+		if (encounters.length > 0) {
+			encounters.forEach(value => {
+				const {monster} = config;
+				if (monster.generate.hasSpawned(value.spawnChance)) {
+					monstersMod.push({
+						health: monster.calculate.health(value.monster.vitality),
+						...value.monster,
+					});
+				}
+			});
+		}
+	};
+
+	const [spawningReady, spawningCancel, spawningReset] = useTimeoutFn(() => {
+		spawnMonsters();
+		spawningReset();
+	}, 5 * 1000);
+
+	useEffect(() => {
+		if (character) {
+			if (!charLocation || (charLocation && (
+				charLocation.worldId !== character.square.world.id ||
+				charLocation.x !== character.square.x ||
+				charLocation.y !== character.square.y))) {
+				setCharLocation({
+					worldId: character.square.world.id,
+					x: character.square.x,
+					y: character.square.y,
+				});
+			}
+		}
+	}, [character]);
+
+	useEffect(() => {
+		if (charLocation) {
+			monstersMod.clear();
+			spawningReset();
+			spawnMonsters();
+		}
+
+		return () => monstersMod.clear();
+	}, [charLocation]);
 
 	if (!character) {
 		return null;
 	}
 
-	const action = new PlayerCharacterAction(character, updateChar);
-
 	return <Card>
-
+		<CardContent>
+			<Grid container direction="row" justify="space-evenly" spacing={2}>
+				{monsters.map((value, index) => (
+					<Grid item lg={3} key={index}>
+						<Card>
+							<CardActionArea>
+								<CardHeader title={value.name}/>
+								<CardMedia
+									component="img"
+									image={`/assets/monsters/${value.picture}`}
+									height={128}
+								/>
+							</CardActionArea>
+						</Card>
+					</Grid>
+				))}
+			</Grid>
+		</CardContent>
 	</Card>;
 };

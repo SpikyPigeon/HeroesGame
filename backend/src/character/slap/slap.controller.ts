@@ -30,24 +30,28 @@ export class SlapController {
 	@Post(":slapped")
 	async create(@Request() req: any, @Param("slapped") slappedId: string): Promise<SlapEntity> {
 		const {id} = await this.characters.findMine((req.user as UserEntity).id);
+		this.logger.log(`create`);
 		return await this.slaps.create(id, slappedId);
 	}
 
 	@ApiOkResponse({type: SlapEntity, isArray: true})
 	@Get()
 	async findAll(): Promise<Array<SlapEntity>> {
+		this.logger.log(`findAll`);
 		return await this.slaps.findAll();
 	}
 
 	@ApiOkResponse({type: SlapEntity, isArray: true})
 	@Get(":id")
 	async findAllWithCharacter(@Param("id") id: string): Promise<Array<SlapEntity>> {
+		this.logger.log(`findAllWithCharacter => ${id}`);
 		return await this.slaps.findAllWithCharacter(id);
 	}
 
 	@ApiOkResponse({type: SlapCountDto})
 	@Get("count")
 	async countAll(): Promise<SlapCountDto> {
+		this.logger.log(`countAll`);
 		return {
 			count: await this.slaps.countAll()
 		};
@@ -56,12 +60,14 @@ export class SlapController {
 	@ApiOkResponse({type: SlapCountDto})
 	@Get("count/slapped/:id")
 	async countSlapped(@Param("id") id: string): Promise<SlapCountDto> {
+		this.logger.log(`countSlapped => ${id}`);
 		return {count: await this.slaps.countSlapped(id)};
 	}
 
 	@ApiOkResponse({type: SlapCountDto})
 	@Get("count/slapper/:id")
 	async countSlapper(@Param("id") id: string): Promise<SlapCountDto> {
+		this.logger.log(`countSlapper => ${id}`);
 		return {count: await this.slaps.countSlapper(id)};
 	}
 
@@ -71,6 +77,7 @@ export class SlapController {
 	@Get("slappable/:slappedId")
 	async checkSlappable(@Request() req: any, @Param("slappedId") slappedId: string): Promise<SlappableDto> {
 		const {id} = await this.characters.findMine((req.user as UserEntity).id);
+		this.logger.log(`checkSlappable => ${id} ${slappedId}`);
 		return {slappable: await this.slaps.checkSlappable(id, slappedId)};
 	}
 }

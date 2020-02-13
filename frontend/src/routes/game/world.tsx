@@ -196,107 +196,101 @@ const World: FunctionComponent = () => {
 				<Grid item lg={8}>
 					<WorldAction encounters={encounters}/>
 				</Grid>
-				<Grid container item lg={4} direction="column" spacing={1}>
-					<Grid item lg>
-						<Card raised={raised.status}>
-							<CardActionArea
-								onMouseEnter={() => setRaised({
-									location: false,
-									players: false,
-									status: true,
-								})}
-								onMouseLeave={() => setRaised({
-									location: false,
-									players: false,
-									status: false,
-								})}
-							>
-								<CardContent classes={{root: classes.infoCard}}>
-									<Grid container justify="space-evenly" direction="row">
-										<Grid item lg={2} style={{textAlign: "center"}}>
-											<Tooltip arrow placement="top"
-											         title={`Health : ${currentChar.currentHealth} / ${charConfig.stats.calculate.health(currentChar.vitality, 0)}`}
-											>
-												<CircularProgress variant="static" thickness={18}
-												                  classes={{circle: classes.healthCircle}}
-												                  value={currentChar.currentHealth * 100 / charConfig.stats.calculate.health(currentChar.vitality, 0)}
-												/>
-											</Tooltip>
-										</Grid>
-										<Grid item lg={2} style={{textAlign: "center"}}>
-											<Tooltip arrow placement="top"
-											         title={`Mana : ${currentChar.currentMana} / ${charConfig.stats.calculate.mana(currentChar.intellect, 0)}`}
-											>
-												<CircularProgress variant="static" thickness={18}
-												                  classes={{circle: classes.manaCircle}}
-												                  value={currentChar.currentMana * 100 / charConfig.stats.calculate.mana(currentChar.intellect, 0)}
-												/>
-											</Tooltip>
-										</Grid>
-										<Grid item lg={2} style={{textAlign: "center"}}>
-											<Tooltip arrow placement="top"
-											         title={`Energy : ${currentChar.currentEnergy} / ${200 + 10 * (currentChar.level - 1)}`}
-											>
-												<CircularProgress variant="static" thickness={18}
-												                  classes={{circle: classes.energyCircle}}
-												                  value={currentChar.currentEnergy * 100 / (200 + 10 * (currentChar.level - 1))}
-												/>
-											</Tooltip>
-										</Grid>
+				<Grid item lg={4}>
+					<Card raised={raised.status} style={{marginBottom: "0.6rem"}}>
+						<CardActionArea
+							onMouseEnter={() => setRaised({
+								location: false,
+								players: false,
+								status: true,
+							})}
+							onMouseLeave={() => setRaised({
+								location: false,
+								players: false,
+								status: false,
+							})}
+						>
+							<CardContent classes={{root: classes.infoCard}}>
+								<Grid container justify="space-evenly" direction="row">
+									<Grid item lg={2} style={{textAlign: "center"}}>
+										<Tooltip arrow placement="top"
+										         title={`Health : ${currentChar.currentHealth} / ${charConfig.stats.calculate.health(currentChar.vitality, 0)}`}
+										>
+											<CircularProgress variant="static" thickness={18}
+											                  classes={{circle: classes.healthCircle}}
+											                  value={currentChar.currentHealth * 100 / charConfig.stats.calculate.health(currentChar.vitality, 0)}
+											/>
+										</Tooltip>
 									</Grid>
-								</CardContent>
-							</CardActionArea>
-						</Card>
-					</Grid>
-					<Grid item lg>
-						<Card raised={raised.location}>
-							<CardActionArea
-								onMouseEnter={() => setRaised({
-									location: true,
-									players: false,
-									status: false,
-								})}
-								onMouseLeave={() => setRaised({
-									location: false,
-									players: false,
-									status: false,
-								})}
-							>
-								<CardContent classes={{root: classes.infoCard}}>
-									<Typography paragraph className={classes.infoText}>
-										Location:&nbsp;
-										{currentWorld?.world.name} @ {currentChar?.square.x}.{currentChar?.square.y}
-									</Typography>
-								</CardContent>
-							</CardActionArea>
-						</Card>
-					</Grid>
-					<Grid item lg>
-						<Card raised={raised.players}>
-							<CardActionArea
-								onMouseEnter={() => setRaised({
-									location: false,
-									players: true,
-									status: false,
-								})}
-								onMouseLeave={() => setRaised({
-									location: false,
-									players: false,
-									status: false,
-								})}
-								onClick={() => setOpen({
-									players: true,
-									death: false,
-								})}
-							>
-								<CardContent classes={{root: classes.infoCard}}>
-									<Typography paragraph className={classes.infoText}>
-										There are {charsAtLocation.length} players here
-									</Typography>
-								</CardContent>
-							</CardActionArea>
-						</Card>
-					</Grid>
+									<Grid item lg={2} style={{textAlign: "center"}}>
+										<Tooltip arrow placement="top"
+										         title={`Mana : ${currentChar.currentMana} / ${charConfig.stats.calculate.mana(currentChar.intellect, 0)}`}
+										>
+											<CircularProgress variant="static" thickness={18}
+											                  classes={{circle: classes.manaCircle}}
+											                  value={currentChar.currentMana * 100 / charConfig.stats.calculate.mana(currentChar.intellect, 0)}
+											/>
+										</Tooltip>
+									</Grid>
+									<Grid item lg={2} style={{textAlign: "center"}}>
+										<Tooltip arrow placement="top"
+										         title={`Energy : ${currentChar.currentEnergy} / ${200 + 10 * (currentChar.level - 1)}`}
+										>
+											<CircularProgress variant="static" thickness={18}
+											                  classes={{circle: classes.energyCircle}}
+											                  value={currentChar.currentEnergy * 100 / (200 + 10 * (currentChar.level - 1))}
+											/>
+										</Tooltip>
+									</Grid>
+								</Grid>
+							</CardContent>
+						</CardActionArea>
+					</Card>
+					<Card raised={raised.location} style={{marginBottom: "0.6rem"}}>
+						<CardActionArea
+							onMouseEnter={() => setRaised({
+								location: true,
+								players: false,
+								status: false,
+							})}
+							onMouseLeave={() => setRaised({
+								location: false,
+								players: false,
+								status: false,
+							})}
+						>
+							<CardContent classes={{root: classes.infoCard}}>
+								<Typography paragraph className={classes.infoText}>
+									Location:&nbsp;
+									{currentWorld?.world.name} @ {currentChar?.square.x}.{currentChar?.square.y}
+								</Typography>
+							</CardContent>
+						</CardActionArea>
+					</Card>
+					<Card raised={raised.players}>
+						<CardActionArea
+							onMouseEnter={() => setRaised({
+								location: false,
+								players: true,
+								status: false,
+							})}
+							onMouseLeave={() => setRaised({
+								location: false,
+								players: false,
+								status: false,
+							})}
+							onClick={() => setOpen({
+								players: true,
+								death: false,
+							})}
+						>
+							<CardContent classes={{root: classes.infoCard}}>
+								<Typography paragraph className={classes.infoText}>
+									There are {charsAtLocation.length} players here
+								</Typography>
+							</CardContent>
+						</CardActionArea>
+					</Card>
 				</Grid>
 			</Grid>
 		</Grid>

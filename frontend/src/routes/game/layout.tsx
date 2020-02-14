@@ -150,6 +150,7 @@ const GameLayout: FunctionComponent = props => {
 	const [profileEl, setProfileEl] = useState<null | HTMLElement>(null);
 	const logout = useStoreActions(state => state.user.logout);
 
+	const character = useStoreState(state => state.character.character);
 	const user = useStoreState(state => state.user.user);
 
 	const handleSocialClose = () => setSocialEl(null);
@@ -190,15 +191,15 @@ const GameLayout: FunctionComponent = props => {
 				</div>
 
 				<Typography variant="subtitle2" noWrap style={{marginRight: "1rem"}}>
-					Exp : {store.getState().character.character?.experience ?? 0}
+					Exp : {character?.experience ?? 0}
 				</Typography>
 
 				<Typography variant="subtitle2" noWrap style={{marginRight: "1rem"}}>
-					Gold : {store.getState().character.character?.gold ?? 0}
+					Gold : {character?.gold ?? 0}
 				</Typography>
 
 				<Typography variant="subtitle2" noWrap style={{marginRight: "1rem"}}>
-					Gem : {store.getState().character.character?.gem ?? 0}
+					Gem : {character?.gem ?? 0}
 				</Typography>
 
 				<IconButton color="inherit" onClick={e => setProfileEl(e.currentTarget)}>

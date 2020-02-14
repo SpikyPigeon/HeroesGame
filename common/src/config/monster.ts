@@ -20,7 +20,8 @@ export const monsterConfig = {
 	},
 	calculate: {
 		exp(monsterLvl: number, playerLvl: number): number {
-			return 100 + (monsterLvl - playerLvl) * 15;
+			const value = 100 + (monsterLvl - playerLvl) * 15;
+			return value > 0 ? value : 0;
 		},
 
 		damage(strength: number): { min: number, max: number } {

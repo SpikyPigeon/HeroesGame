@@ -3,7 +3,7 @@ import {blue, green, red} from "@material-ui/core/colors";
 import {useNavigation} from "react-navi";
 import {useMount} from "react-use";
 import {
-	Button,
+	Button, ButtonGroup,
 	Card,
 	CardActionArea,
 	CardContent,
@@ -27,6 +27,7 @@ import {config, Encounter, PlayerCharacter} from "heroes-common";
 import {LocationInfo, useStoreActions, useStoreState} from "../../store";
 import {WorldAction} from "./world.action";
 import {WorldMapCard} from "./world.map";
+import {AddSharp, RemoveSharp} from "@material-ui/icons";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -116,12 +117,125 @@ const DeathDialog: FunctionComponent<MyDialogProps> = props => {
 	</Dialog>;
 };
 
+const LevelUpDIalog: FunctionComponent<MyDialogProps & { character: PlayerCharacter | null }> = props => {
+	const charStats = config.character.stats;
+	const {open, onClose, character} = props;
+	const [str, setStr] = useState<number>(character?.strength ?? 0);
+	const [dex, setDex] = useState<number>(character?.dexterity ?? 0);
+	const [vit, setVit] = useState<number>(character?.vitality ?? 0);
+	const [int, setInt] = useState<number>(character?.intellect ?? 0);
+
+	const updateChar = useStoreActions(state => state.character.update);
+
+	const onSubmit = () => {
+		updateChar({
+			strength: str,
+			dexterity: dex,
+			vitality: vit,
+			intellect: int,
+			experience: (character?.experience ?? 1000) - 1000,
+			currentHealth: charStats.calculate.health(vit, 0),
+			currentMana: charStats.calculate.mana(int ,0),
+			currentEnergy: 200 + (character?.level ?? 1) * 10,
+			level: (character?.level ?? 1) + 1,
+		});
+		onClose();
+	};
+
+	if (!character) {
+		return null;
+	}
+
+	const getPointsLeft = () => charStats.levelPoints - (str - character.strength) - (dex - character.dexterity) - (vit - character.vitality) - (int - character.intellect);
+
+	return <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth disableBackdropClick disableEscapeKeyDown>
+		<DialogTitle style={{textAlign: "center"}}>Level Up!</DialogTitle>
+		<DialogContent>
+			<Grid container direction="column" justify="space-evenly" alignContent="stretch">
+				<Grid item lg>
+					<Grid item>
+						<Typography align="center" gutterBottom>Stat Points Left :</Typography>
+					</Grid>
+					<Grid item>
+						<Typography align="center" variant="h4"> {getPointsLeft()}</Typography>
+					</Grid>
+				</Grid>
+				<Grid item lg>
+					<Typography variant="h6" gutterBottom>Strength</Typography>
+					<ButtonGroup variant="contained" color="primary" fullWidth>
+						<Button onClick={() => setStr(str - 1)} disabled={str === character.strength}>
+							<RemoveSharp/>
+						</Button>
+						<Button disabled style={{color: "black"}}>
+							{str}
+						</Button>
+						<Button onClick={() => setStr(str + 1)} disabled={getPointsLeft() === 0}>
+							<AddSharp/>
+						</Button>
+					</ButtonGroup>
+				</Grid>
+				<Grid item lg>
+					<Typography variant="h6" gutterBottom>Dexterity</Typography>
+					<ButtonGroup variant="contained" color="primary" fullWidth>
+						<Button onClick={() => setDex(dex - 1)} disabled={dex === character.dexterity}>
+							<RemoveSharp/>
+						</Button>
+						<Button disabled style={{color: "black"}}>
+							{dex}
+						</Button>
+						<Button onClick={() => setDex(dex + 1)} disabled={getPointsLeft() === 0}>
+							<AddSharp/>
+						</Button>
+					</ButtonGroup>
+				</Grid>
+				<Grid item lg>
+					<Typography variant="h6" gutterBottom>Vitality</Typography>
+					<ButtonGroup variant="contained" color="primary" fullWidth>
+						<Button onClick={() => setVit(vit - 1)} disabled={vit === character.vitality}>
+							<RemoveSharp/>
+						</Button>
+						<Button disabled style={{color: "black"}}>
+							{vit}
+						</Button>
+						<Button onClick={() => setVit(vit + 1)} disabled={getPointsLeft() === 0}>
+							<AddSharp/>
+						</Button>
+					</ButtonGroup>
+				</Grid>
+				<Grid item lg>
+					<Typography variant="h6" gutterBottom>Intellect</Typography>
+					<ButtonGroup variant="contained" color="primary" fullWidth>
+						<Button onClick={() => setInt(int - 1)} disabled={int === character.intellect}>
+							<RemoveSharp/>
+						</Button>
+						<Button disabled style={{color: "black"}}>
+							{int}
+						</Button>
+						<Button onClick={() => setInt(int + 1)} disabled={getPointsLeft() === 0}>
+							<AddSharp/>
+						</Button>
+					</ButtonGroup>
+				</Grid>
+			</Grid>
+		</DialogContent>
+		<DialogActions>
+			<Button color="secondary" variant="contained" fullWidth
+			        disabled={getPointsLeft() > 0}
+			        onClick={onSubmit}
+			>
+				Level Up
+			</Button>
+		</DialogActions>
+	</Dialog>;
+};
+
 const World: FunctionComponent = () => {
 	const classes = useStyles();
 	const nav = useNavigation();
 	const [open, setOpen] = useState({
 		players: false,
 		death: false,
+		level: false,
 	});
 	const [raised, setRaised] = useState({
 		location: false,
@@ -169,6 +283,7 @@ const World: FunctionComponent = () => {
 				setOpen({
 					players: false,
 					death: true,
+					level: false,
 				});
 			}
 
@@ -176,6 +291,15 @@ const World: FunctionComponent = () => {
 				setOpen({
 					players: false,
 					death: false,
+					level: false,
+				});
+			}
+
+			if (currentChar.experience >= 1000) {
+				setOpen({
+					players: false,
+					death: false,
+					level: true,
 				});
 			}
 		}
@@ -301,6 +425,7 @@ const World: FunctionComponent = () => {
 							onClick={() => setOpen({
 								players: true,
 								death: false,
+								level: false,
 							})}
 						>
 							<CardContent classes={{root: classes.infoCard}}>
@@ -317,6 +442,7 @@ const World: FunctionComponent = () => {
 		                  onClose={() => setOpen({
 			                  players: false,
 			                  death: false,
+			                  level: false,
 		                  })}
 		                  players={charsAtLocation}
 		                  location={{
@@ -326,10 +452,25 @@ const World: FunctionComponent = () => {
 		                  }}
 		/>
 		<DeathDialog open={open.death}
-		             onClose={() => updateChar({
-			             currentHealth: charConfig.stats.calculate.health(currentChar.vitality, 0),
-			             experience: currentChar.experience - Math.ceil(currentChar.experience * 0.1),
-		             })}
+		             onClose={() => {
+			             updateChar({
+				             currentHealth: charConfig.stats.calculate.health(currentChar.vitality, 0),
+				             experience: currentChar.experience - Math.ceil(currentChar.experience * 0.1),
+			             });
+			             setOpen({
+				             players: false,
+				             death: false,
+				             level: false,
+			             });
+		             }}
+		/>
+		<LevelUpDIalog open={open.level}
+		               onClose={() => setOpen({
+			               players: false,
+			               death: false,
+			               level: false,
+		               })}
+		               character={currentChar}
 		/>
 	</Fragment>;
 };

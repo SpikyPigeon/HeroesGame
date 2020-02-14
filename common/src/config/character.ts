@@ -2,6 +2,7 @@ export const characterConfig = {
 	stats: {
 		start: 10,
 		startPoints: 10,
+		levelPoints: 5,
 
 		calculate: {
 			damage(strength: number, totalMod: number): { min: number, max: number } {

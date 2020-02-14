@@ -20,7 +20,8 @@ import {
 	Typography,
 	Zoom
 } from "@material-ui/core";
-import {useStoreActions, useStoreState} from "../../store";
+
+import {store, useStoreActions, useStoreState} from "../../store";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -149,6 +150,7 @@ const GameLayout: FunctionComponent = props => {
 	const [profileEl, setProfileEl] = useState<null | HTMLElement>(null);
 	const logout = useStoreActions(state => state.user.logout);
 
+	const character = useStoreState(state => state.character.character);
 	const user = useStoreState(state => state.user.user);
 
 	const handleSocialClose = () => setSocialEl(null);
@@ -187,6 +189,23 @@ const GameLayout: FunctionComponent = props => {
 						<AppMenuLink text="Party" href="/game/social/party" onClick={handleSocialClose}/>
 					</Menu>
 				</div>
+
+				<Typography variant="subtitle2" noWrap style={{marginRight: "1rem"}}>
+					Level : {character?.level ?? 0}
+				</Typography>
+
+				<Typography variant="subtitle2" noWrap style={{marginRight: "1rem"}}>
+					Exp : {character?.experience ?? 0}
+				</Typography>
+
+				<Typography variant="subtitle2" noWrap style={{marginRight: "1rem"}}>
+					Gold : {character?.gold ?? 0}
+				</Typography>
+
+				<Typography variant="subtitle2" noWrap style={{marginRight: "1rem"}}>
+					Gem : {character?.gem ?? 0}
+				</Typography>
+
 				<IconButton color="inherit" onClick={e => setProfileEl(e.currentTarget)}>
 					<PersonSharp/>
 				</IconButton>
@@ -198,8 +217,6 @@ const GameLayout: FunctionComponent = props => {
 					onClose={handleProfileClose}
 				>
 					<AppMenuLink text="Profile" href="/game/profile" onClick={handleProfileClose}/>
-					{user.isAdmin &&
-					<AppMenuLink text="Admin Stuff" href="/game/profile" onClick={handleProfileClose}/>}
 					<AppMenuLink text="Logout" href="/" onClick={() => {
 						logout();
 						handleProfileClose();

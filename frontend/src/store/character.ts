@@ -1,7 +1,6 @@
 import {action, Action, thunk, Thunk} from "easy-peasy";
 import {Avatar, CharacterInfo, MoveCharacterInfo, PlayerCharacter, UpdateCharacterInfo} from "heroes-common";
 import {CharacterService} from "./context";
-import {LocationInfo} from "./index";
 
 export interface CharacterStore {
 	character: PlayerCharacter | null;
@@ -10,7 +9,6 @@ export interface CharacterStore {
 	getAvatar: Thunk<CharacterStore, number, any, {}, Promise<Avatar>>;
 
 	setCharacter: Action<CharacterStore, PlayerCharacter | null>;
-	findAtLocation: Thunk<CharacterStore, LocationInfo, any, {}, Promise<Array<PlayerCharacter>>>;
 	getMine: Thunk<CharacterStore>;
 	userHasChar: Thunk<CharacterStore, void, any, {}, Promise<boolean>>;
 	create: Thunk<CharacterStore, CharacterInfo>;
@@ -31,10 +29,6 @@ export const characterStore: CharacterStore = {
 
 	setCharacter: action((state, payload) => {
 		state.character = payload;
-	}),
-
-	findAtLocation: thunk(async (state, payload): Promise<Array<PlayerCharacter>> => {
-		return await CharacterService.findAtLocation(payload.worldId, payload.x, payload.y);
 	}),
 
 	getMine: thunk(async state => {

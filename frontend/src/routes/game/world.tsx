@@ -133,11 +133,10 @@ const World: FunctionComponent = () => {
 
 	const loadChar = useStoreActions(state => state.character.getMine);
 	const loadWorld = useStoreActions(state => state.world.load);
+	const loadSquare = useStoreActions(state => state.world.loadSquareContent);
 	const moveChar = useStoreActions(state => state.character.moveTo);
 	const currentWorld = useStoreState(state => state.world.current);
 	const currentChar = useStoreState(state => state.character.character);
-	const getCharsAtLocation = useStoreActions(state => state.character.findAtLocation);
-	const getEncounters = useStoreActions(state => state.world.loadEncounters);
 
 	const {character: charConfig} = config;
 
@@ -170,8 +169,10 @@ const World: FunctionComponent = () => {
 
 	useEffect(() => {
 		if (location) {
-			getCharsAtLocation(location).then(value => setCharsAtLocation(value), console.error);
-			getEncounters(location).then(value => setEncounters(value), console.error);
+			loadSquare(location).then(content => {
+				setCharsAtLocation(content.players);
+				setEncounters(content.encounters);
+			}, console.error);
 		}
 	}, [location]);
 

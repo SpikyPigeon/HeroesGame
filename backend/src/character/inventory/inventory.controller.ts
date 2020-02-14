@@ -15,21 +15,21 @@ export class InventoryController {
 	@ApiCreatedResponse({type: InventoryEntity})
 	@UseGuards(AuthGuard("jwt"))
 	@Post()
-	async create(rollId: string, ownerId: string, quantity: number): Promise<InventoryEntity>{
+	async create(rollId: string, ownerId: string, quantity: number): Promise<InventoryEntity> {
 		this.logger.log(`create`);
 		return await this.inventories.create(rollId, ownerId, quantity);
 	}
 
 	@ApiOkResponse({type: InventoryEntity, isArray: true})
 	@Get("owner/:id")
-	async findAllWithCharacter(@Param("id") ownerId: string): Promise<Array<InventoryEntity>>{
+	async findAllWithCharacter(@Param("id") ownerId: string): Promise<Array<InventoryEntity>> {
 		this.logger.log(`findAllWithCharacter => ${ownerId}`);
 		return await this.inventories.findAllWithCharacter(ownerId);
 	}
 
 	@ApiOkResponse({type: InventoryEntity})
 	@Get(":id")
-	async findOne(@Param("id") id: string): Promise<InventoryEntity>{
+	async findOne(@Param("id") id: string): Promise<InventoryEntity> {
 		this.logger.log(`findOne => ${id}`);
 		return await this.inventories.findOne(id);
 	}
@@ -38,7 +38,7 @@ export class InventoryController {
 	@ApiOkResponse({type: InventoryEntity})
 	@UseGuards(AuthGuard("jwt"))
 	@Put(":id/:qty")
-	async update(@Param("id") id: string, @Param("qty") quantity: number): Promise<InventoryEntity>{
+	async update(@Param("id") id: string, @Param("qty") quantity: number): Promise<InventoryEntity> {
 		this.logger.log(`update => ${id}`);
 		return await this.inventories.update(id, quantity);
 	}
@@ -46,7 +46,7 @@ export class InventoryController {
 	@ApiBearerAuth()
 	@UseGuards(AuthGuard("jwt"))
 	@Delete(":id")
-	async delete(@Param("id") id: string){
+	async delete(@Param("id") id: string) {
 		this.logger.log(`delete => ${id}`);
 		return await this.inventories.delete(id);
 	}

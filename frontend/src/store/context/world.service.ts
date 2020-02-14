@@ -1,4 +1,4 @@
-import {Encounter, Square, World} from "heroes-common";
+import {Square, SquareContent, World} from "heroes-common";
 import {Context} from "./index";
 
 export class WorldService {
@@ -12,8 +12,8 @@ export class WorldService {
 		return response.data;
 	}
 
-	static async getEncounters(world: number, x: number, y: number): Promise<Array<Encounter>> {
-		const response = await Context.get<Array<Encounter>>(`/world/encounter/${world}/${x}/${y}`);
+	static async loadSquareContent(world: number, x: number, y: number): Promise<SquareContent> {
+		const response = await Context.get<SquareContent>(`/world/square/${world}/${x}/${y}/content`);
 		return response.data;
 	}
 }

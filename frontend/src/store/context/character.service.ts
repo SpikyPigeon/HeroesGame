@@ -27,11 +27,6 @@ export class CharacterService {
 		}
 	}
 
-	static async findAtLocation(worldId: number, x: number, y: number): Promise<Array<PlayerCharacter>> {
-		const response = await Context.get<Array<PlayerCharacter>>(`/character/${worldId}/${x}/${y}`);
-		return response.data;
-	}
-
 	static async userHasChar(token: string): Promise<boolean> {
 		try {
 			const response = await Context.get<PlayerCharacter>("/character/me", {

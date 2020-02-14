@@ -128,7 +128,6 @@ const LevelUpDIalog: FunctionComponent<MyDialogProps & { character: PlayerCharac
 	const updateChar = useStoreActions(state => state.character.update);
 
 	const onSubmit = () => {
-		console.log("LEVEL UP!");
 		updateChar({
 			strength: str,
 			dexterity: dex,

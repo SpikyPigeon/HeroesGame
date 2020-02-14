@@ -191,6 +191,10 @@ const GameLayout: FunctionComponent = props => {
 				</div>
 
 				<Typography variant="subtitle2" noWrap style={{marginRight: "1rem"}}>
+					Level : {character?.level ?? 0}
+				</Typography>
+
+				<Typography variant="subtitle2" noWrap style={{marginRight: "1rem"}}>
 					Exp : {character?.experience ?? 0}
 				</Typography>
 

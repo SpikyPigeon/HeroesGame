@@ -20,7 +20,8 @@ import {
 	Typography,
 	Zoom
 } from "@material-ui/core";
-import {useStoreActions, useStoreState} from "../../store";
+
+import {store, useStoreActions, useStoreState} from "../../store";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -187,6 +188,19 @@ const GameLayout: FunctionComponent = props => {
 						<AppMenuLink text="Party" href="/game/social/party" onClick={handleSocialClose}/>
 					</Menu>
 				</div>
+
+				<Typography variant="subtitle2" noWrap style={{marginRight: "1rem"}}>
+					Exp : {store.getState().character.character?.experience ?? 0}
+				</Typography>
+
+				<Typography variant="subtitle2" noWrap style={{marginRight: "1rem"}}>
+					Gold : {store.getState().character.character?.gold ?? 0}
+				</Typography>
+
+				<Typography variant="subtitle2" noWrap style={{marginRight: "1rem"}}>
+					Gem : {store.getState().character.character?.gem ?? 0}
+				</Typography>
+
 				<IconButton color="inherit" onClick={e => setProfileEl(e.currentTarget)}>
 					<PersonSharp/>
 				</IconButton>

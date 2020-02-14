@@ -1,6 +1,7 @@
 import {createElement, Fragment, FunctionComponent, useEffect, useState} from "react";
 import {blue, green, red} from "@material-ui/core/colors";
 import {useNavigation} from "react-navi";
+import {useMount} from "react-use";
 import {
 	Button,
 	Card,
@@ -141,14 +142,12 @@ const World: FunctionComponent = () => {
 
 	const {character: charConfig} = config;
 
-	useEffect(() => {
-		if (!currentChar) {
-			loadChar().catch((e: any) => {
-				console.error(e);
-				nav.navigate("/", {replace: true});
-			});
-		}
-	}, []);
+	useMount(() => {
+		loadChar().catch((e: any) => {
+			console.error(e);
+			nav.navigate("/", {replace: true});
+		});
+	});
 
 	useEffect(() => {
 		if (currentChar) {
@@ -330,7 +329,7 @@ const World: FunctionComponent = () => {
 		             onClose={() => updateChar({
 			             currentHealth: charConfig.stats.calculate.health(currentChar.vitality, 0),
 			             experience: currentChar.experience - Math.ceil(currentChar.experience * 0.1),
-		             }).catch(console.error)}
+		             })}
 		/>
 	</Fragment>;
 };

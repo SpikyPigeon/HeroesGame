@@ -115,12 +115,12 @@ export const WorldAction: FunctionComponent<WorldActionProps> = ({encounters}) =
 				if (monster.health <= 0) {
 					updateChar({
 						experience: character.experience + monExp,
-					}).catch(console.error);
+					});
 					monstersMod.removeAt(index);
 				} else if (!charDog(character.dexterity, 0)) {
 					updateChar({
 						currentHealth: character.currentHealth - monAtk(monster.strength, monCrit(monster.dexterity)),
-					}).catch(console.error);
+					});
 				}
 			}
 

@@ -21,6 +21,14 @@ export class NpcService {
 		return await this.npcs.findOneOrFail({where: {id}});
 	}
 
+	async findAllAtLocation(worldId: number, x: number, y: number): Promise<Array<NpcEntity>> {
+		return await this.npcs.createQueryBuilder("npc")
+			.leftJoinAndSelect("npc.square", "sq")
+			.leftJoinAndSelect("sq.world", "world")
+			.where("world.id = :worldId AND sq.x = :x AND sq.y = :y", {worldId, x, y})
+			.getMany();
+	}
+
 	async create(worldId: number, x: number, y: number, name: string, description: string): Promise<NpcEntity> {
 		return await this.npcs.save(this.npcs.create({
 			square: await this.squares.findOne(worldId, x, y),

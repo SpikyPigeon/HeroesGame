@@ -1,5 +1,6 @@
 import {Repository, SelectQueryBuilder} from "typeorm";
-import {Inject, Injectable} from "@nestjs/common";
+import {Inject, Injectable, OnModuleInit} from "@nestjs/common";
+import {ModuleRef} from "@nestjs/core";
 import {UpdateCharacterInfoDto} from "./character.dto";
 import {SquareService, WorldService} from "../world";
 import {CharacterEntity} from "./character.entity";
@@ -8,16 +9,23 @@ import {AvatarService} from "./avatar.service";
 import {UserEntity} from "../user";
 
 @Injectable()
-export class CharacterService {
+export class CharacterService implements OnModuleInit {
+	private squares!: SquareService;
+	private worlds!: WorldService;
+
 	constructor(
 		@Inject("CHARACTER_REPOSITORY")
 		private readonly characters: Repository<CharacterEntity>,
 		@Inject("EQUIPMENT_REPOSITORY")
 		private readonly equipments: Repository<EquipmentEntity>,
 		private readonly avatars: AvatarService,
-		private readonly squares: SquareService,
-		private readonly worlds: WorldService,
+		private readonly refs: ModuleRef,
 	) {
+	}
+
+	onModuleInit() {
+		this.squares = this.refs.get(SquareService, {strict: false});
+		this.worlds = this.refs.get(WorldService, {strict: false});
 	}
 
 	async findAll(): Promise<Array<CharacterEntity>> {

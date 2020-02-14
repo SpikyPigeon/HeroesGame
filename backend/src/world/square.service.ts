@@ -8,7 +8,7 @@ import {WorldEntity} from "./world.entity";
 export class SquareService {
 	constructor(
 		@Inject("SQUARE_REPOSITORY")
-		private readonly squares: Repository<SquareEntity>
+		private readonly squares: Repository<SquareEntity>,
 	) {
 	}
 

@@ -18,7 +18,6 @@ import {UserModule} from "../user";
 		DatabaseModule,
 		InventoryModule,
 		SlapModule,
-		forwardRef(() => WorldModule),
 		forwardRef(() => UserModule),
 	],
 	controllers: [

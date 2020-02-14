@@ -22,6 +22,14 @@ export class StructureService {
 		return await this.structures.findOneOrFail({where: {structureId}});
 	}
 
+	async findAllAtLocation(worldId: number, x: number, y: number): Promise<Array<StructureEntity>> {
+		return await this.structures.createQueryBuilder("str")
+			.leftJoinAndSelect("str.square", "sq")
+			.leftJoinAndSelect("sq.world", "world")
+			.where("world.id = :worldId AND sq.x = :x AND sq.y = :y", {worldId, x, y})
+			.getMany();
+	}
+
 	async create(worldId: number, x: number, y: number, name: string, description: string, type: StructureType): Promise<StructureEntity> {
 		const structure = await this.structures.save(this.structures.create({
 			square: await this.squares.findOne(worldId, x, y),

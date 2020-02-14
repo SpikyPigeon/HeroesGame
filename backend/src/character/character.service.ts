@@ -70,6 +70,16 @@ export class CharacterService implements OnModuleInit {
 		if (data.avatarId) {
 			character.avatar = await this.avatars.findOne(data.avatarId);
 		}
+
+		if (character.currentHealth <= 0) {
+			character.currentHealth = 0;
+			character.isDead = true;
+		}
+
+		if (character.currentHealth > 0 && character.isDead) {
+			character.isDead = false;
+		}
+
 		return await this.characters.save(character);
 	}
 

@@ -9,10 +9,10 @@ export interface CharacterStore {
 	getAvatar: Thunk<CharacterStore, number, any, {}, Promise<Avatar>>;
 
 	setCharacter: Action<CharacterStore, PlayerCharacter | null>;
+	update: Action<CharacterStore, Partial<UpdateCharacterInfo>>;
 	getMine: Thunk<CharacterStore>;
 	userHasChar: Thunk<CharacterStore, void, any, {}, Promise<boolean>>;
 	create: Thunk<CharacterStore, CharacterInfo>;
-	update: Thunk<CharacterStore, Partial<UpdateCharacterInfo>>;
 	moveTo: Thunk<CharacterStore, MoveCharacterInfo>;
 }
 
@@ -29,6 +29,26 @@ export const characterStore: CharacterStore = {
 
 	setCharacter: action((state, payload) => {
 		state.character = payload;
+	}),
+
+	update: action((state, payload) => {
+		if (state.character) {
+			state.character = {...state.character, ...payload};
+
+			if (state.character.currentHealth <= 0) {
+				state.character.currentHealth = 0;
+				state.character.isDead = true;
+			}
+
+			if (state.character.currentHealth > 0 && state.character.isDead) {
+				state.character.isDead = false;
+			}
+
+			const token = localStorage.getItem("userJWT");
+			if (token) {
+				CharacterService.update(token, payload).catch(console.error);
+			}
+		}
 	}),
 
 	getMine: thunk(async state => {
@@ -58,14 +78,14 @@ export const characterStore: CharacterStore = {
 		}
 	}),
 
-	update: thunk(async (state, payload) => {
+	/*update: thunk(async (state, payload) => {
 		const token = localStorage.getItem("userJWT");
 		if (token) {
 			state.setCharacter(await CharacterService.update(token, payload));
 		} else {
 			throw new Error("Not logged in!");
 		}
-	}),
+	}),*/
 
 	moveTo: thunk(async (state, payload) => {
 		const token = localStorage.getItem("userJWT");

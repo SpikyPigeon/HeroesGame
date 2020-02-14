@@ -1,6 +1,7 @@
 import {createElement, Fragment, FunctionComponent, useEffect, useState} from "react";
 import {blue, green, red} from "@material-ui/core/colors";
 import {useNavigation} from "react-navi";
+import {useMount} from "react-use";
 import {
 	Button,
 	Card,
@@ -132,6 +133,7 @@ const World: FunctionComponent = () => {
 	const [location, setLocation] = useState<LocationInfo | null>(null);
 
 	const loadChar = useStoreActions(state => state.character.getMine);
+	const updateChar = useStoreActions(state => state.character.update);
 	const loadWorld = useStoreActions(state => state.world.load);
 	const loadSquare = useStoreActions(state => state.world.loadSquareContent);
 	const moveChar = useStoreActions(state => state.character.moveTo);
@@ -140,14 +142,12 @@ const World: FunctionComponent = () => {
 
 	const {character: charConfig} = config;
 
-	useEffect(() => {
-		if (!currentChar) {
-			loadChar().catch((e: any) => {
-				console.error(e);
-				nav.navigate("/", {replace: true});
-			});
-		}
-	}, []);
+	useMount(() => {
+		loadChar().catch((e: any) => {
+			console.error(e);
+			nav.navigate("/", {replace: true});
+		});
+	});
 
 	useEffect(() => {
 		if (currentChar) {
@@ -162,6 +162,20 @@ const World: FunctionComponent = () => {
 					worldId: square.world.id,
 					x: square.x,
 					y: square.y,
+				});
+			}
+
+			if (currentChar.isDead) {
+				setOpen({
+					players: false,
+					death: true,
+				});
+			}
+
+			if (!currentChar.isDead && open.death) {
+				setOpen({
+					players: false,
+					death: false,
 				});
 			}
 		}
@@ -312,9 +326,9 @@ const World: FunctionComponent = () => {
 		                  }}
 		/>
 		<DeathDialog open={open.death}
-		             onClose={() => setOpen({
-			             players: false,
-			             death: false,
+		             onClose={() => updateChar({
+			             currentHealth: charConfig.stats.calculate.health(currentChar.vitality, 0),
+			             experience: currentChar.experience - Math.ceil(currentChar.experience * 0.1),
 		             })}
 		/>
 	</Fragment>;

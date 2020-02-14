@@ -30,24 +30,24 @@ export class InventoryService implements OnModuleInit {
 		}));
 	}
 
-	async findAllWithCharacter(ownerId: string): Promise<Array<InventoryEntity>>{
+	async findAllWithCharacter(ownerId: string): Promise<Array<InventoryEntity>> {
 		return await this.inventories.createQueryBuilder("inventory")
 			.leftJoinAndSelect("inventory.owner", "owner")
 			.where("owner.id = inventory.ownerId", {ownerId})
 			.getMany();
 	}
 
-	async findOne(id: string): Promise<InventoryEntity>{
+	async findOne(id: string): Promise<InventoryEntity> {
 		return await this.inventories.findOneOrFail(id);
 	}
 
-	async update(id: string, quantity: number): Promise<InventoryEntity>{
+	async update(id: string, quantity: number): Promise<InventoryEntity> {
 		const inv = await this.findOne(id);
 		inv.quantity = quantity;
 		return await this.inventories.save(inv);
 	}
 
-	async delete(id: string){
+	async delete(id: string) {
 		await this.inventories.delete(id);
 	}
 

@@ -22,7 +22,6 @@ import {
 } from "@material-ui/core";
 import {useStoreActions, useStoreState} from "../../store";
 
-
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
 		appBar: {
@@ -155,7 +154,7 @@ const GameLayout: FunctionComponent = props => {
 	const handleSocialClose = () => setSocialEl(null);
 	const handleProfileClose = () => setProfileEl(null);
 
-	if(!user){
+	if (!user) {
 		return <Fragment/>;
 	}
 
@@ -199,7 +198,8 @@ const GameLayout: FunctionComponent = props => {
 					onClose={handleProfileClose}
 				>
 					<AppMenuLink text="Profile" href="/game/profile" onClick={handleProfileClose}/>
-					{user.isAdmin && <AppMenuLink text="Admin Stuff" href="/game/profile" onClick={handleProfileClose}/>}
+					{user.isAdmin &&
+					<AppMenuLink text="Admin Stuff" href="/game/profile" onClick={handleProfileClose}/>}
 					<AppMenuLink text="Logout" href="/" onClick={() => {
 						logout();
 						handleProfileClose();

@@ -5077,17 +5077,17 @@ react-transition-group@^4.3.0:
     prop-types "^15.6.2"
 
 react-use@^13.24.0:
-  version "13.24.0"
-  resolved "https://registry.yarnpkg.com/react-use/-/react-use-13.24.0.tgz#f4574e26cfaaad65e3f04c0d5ff80c1836546236"
-  integrity sha512-p8GsZuMdz8OeIGzuYLm6pzJysKOhNyQjCUG6SHrQGk6o6ghy/RVGSqnmxVacNbN9166S0+9FsM1N1yH9GzWlgg==
+  version "13.26.0"
+  resolved "https://registry.yarnpkg.com/react-use/-/react-use-13.26.0.tgz#61559001c7ac193d3427578878dcbdc84ad0457e"
+  integrity sha512-PM11qqLAMjJRihmky+TqJc1SIZyHYTZNZo3D5LN65amxYpkbSg5DFNWh9QOrsFN1kzG+jWh5WDyHNNkzgdHhTw==
   dependencies:
     "@types/js-cookie" "2.2.4"
     "@xobotyi/scrollbar-width" "1.8.2"
     copy-to-clipboard "^3.2.0"
+    fast-deep-equal "^3.1.1"
     fast-shallow-equal "^1.0.0"
     js-cookie "^2.2.1"
     nano-css "^5.2.1"
-    react-fast-compare "^2.0.4"
     resize-observer-polyfill "^1.5.1"
     screenfull "^5.0.0"
     set-harmonic-interval "^1.0.1"
@@ -5928,9 +5928,9 @@ terser-webpack-plugin@^1.4.3:
     worker-farm "^1.7.0"
 
 terser-webpack-plugin@^2.3.4:
-  version "2.3.4"
-  resolved "https://registry.yarnpkg.com/terser-webpack-plugin/-/terser-webpack-plugin-2.3.4.tgz#ac045703bd8da0936ce910d8fb6350d0e1dee5fe"
-  integrity sha512-Nv96Nws2R2nrFOpbzF6IxRDpIkkIfmhvOws+IqMvYdFLO7o6wAILWFKONFgaYy8+T4LVz77DQW0f7wOeDEAjrg==
+  version "2.3.5"
+  resolved "https://registry.yarnpkg.com/terser-webpack-plugin/-/terser-webpack-plugin-2.3.5.tgz#5ad971acce5c517440ba873ea4f09687de2f4a81"
+  integrity sha512-WlWksUoq+E4+JlJ+h+U+QUzXpcsMSSNXkDy9lBVkSqDn1w23Gg29L/ary9GeJVYCGiNJJX7LnVc4bwL1N3/g1w==
   dependencies:
     cacache "^13.0.1"
     find-cache-dir "^3.2.0"

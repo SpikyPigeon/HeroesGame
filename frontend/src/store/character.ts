@@ -78,15 +78,6 @@ export const characterStore: CharacterStore = {
 		}
 	}),
 
-	/*update: thunk(async (state, payload) => {
-		const token = localStorage.getItem("userJWT");
-		if (token) {
-			state.setCharacter(await CharacterService.update(token, payload));
-		} else {
-			throw new Error("Not logged in!");
-		}
-	}),*/
-
 	moveTo: thunk(async (state, payload) => {
 		const token = localStorage.getItem("userJWT");
 		if (token) {

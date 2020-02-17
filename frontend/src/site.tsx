@@ -83,7 +83,7 @@ const Site: FunctionComponent = () => {
 					<SnackbarProvider
 						classes={{containerAnchorOriginTopRight: classes.snackContainer}}
 						dense={true}
-						maxSnack={9}
+						maxSnack={5}
 						anchorOrigin={{
 							vertical: "top",
 							horizontal: "right",

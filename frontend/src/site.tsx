@@ -84,6 +84,7 @@ const Site: FunctionComponent = () => {
 						classes={{containerAnchorOriginTopRight: classes.snackContainer}}
 						dense={true}
 						maxSnack={5}
+						transitionDuration={75}
 						anchorOrigin={{
 							vertical: "top",
 							horizontal: "right",

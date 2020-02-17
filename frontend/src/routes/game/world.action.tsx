@@ -1,4 +1,4 @@
-import {createElement, FunctionComponent, useEffect, useState} from "react";
+import {createElement, FunctionComponent, useEffect, useState, Fragment} from "react";
 import {red} from "@material-ui/core/colors";
 import {useList, useUpdate} from "react-use";
 import {
@@ -11,11 +11,12 @@ import {
 	Grid,
 	LinearProgress,
 	makeStyles,
-	Theme
+	Theme, Typography
 } from "@material-ui/core";
 
 import {useStoreActions, useStoreState} from "../../store";
 import {config, Encounter, Monster} from "heroes-common";
+import {Structure} from "heroes-common/src";
 
 type MonsterFight = Monster & { health: number };
 
@@ -26,6 +27,64 @@ const useStyles = makeStyles((theme: Theme) =>
 		},
 	}),
 );
+
+interface StructureCardProps {
+	structures: Array<Structure>;
+}
+
+export const StructureCard: FunctionComponent<StructureCardProps> = ({structures}) => {
+	const [raised, setRaised] = useState(false);
+
+	if (structures.length < 1) {
+		return null;
+	} else {
+		return <Fragment>
+			{structures.map((value, index) => (
+				<Card key={index} style={{minHeight: 100, marginBottom: 8}}>
+					<CardContent style={{padding: 3}}>
+						<Grid container>
+							<Grid item lg={3}>
+								<CardHeader title={value.name}
+								            titleTypographyProps={{
+									            align: "left",
+									            variant: "h5",
+								            }}
+								/>
+							</Grid>
+							<Grid item lg={5}>
+								<Typography align="left">
+									{value.description}
+								</Typography>
+							</Grid>
+							{value.shop && <Grid item lg={4}>
+								<Card raised={raised} square>
+									<CardActionArea
+										onMouseEnter={() => setRaised(true)}
+										onMouseLeave={() => setRaised(false)}
+									>
+										<CardHeader title={"Shop Name"}
+										            titleTypographyProps={{
+											            align: "center",
+											            variant: "h6",
+										            }}
+										/>
+										<Typography align="center">
+											{"Shop description"}
+										</Typography>
+										<Typography align="center" variant="body2">
+											{"Click to shop!"}
+										</Typography>
+									</CardActionArea>
+								</Card>
+							</Grid>}
+
+						</Grid>
+					</CardContent>
+				</Card>
+			))}
+		</Fragment>;
+	}
+};
 
 interface MonsterCardProps {
 	index: number;

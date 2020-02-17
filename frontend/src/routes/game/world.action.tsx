@@ -133,6 +133,7 @@ interface WorldActionProps {
 }
 
 export const WorldAction: FunctionComponent<WorldActionProps> = ({encounters}) => {
+	const addSnack = useStoreActions(state => state.notification.enqueue);
 	const updateChar = useStoreActions(state => state.character.update);
 	const character = useStoreState(state => state.character.character);
 	const [monsters, monstersMod] = useList<MonsterFight>([]);
@@ -170,15 +171,31 @@ export const WorldAction: FunctionComponent<WorldActionProps> = ({encounters}) =
 			const monExp = config.monster.calculate.exp(monster.level, character.level);
 
 			if (!monDog(monster.dexterity)) {
-				monster.health -= charAtk(character.strength, 0, 0, charCrit(character.dexterity, 0));
+				const isCrit = charCrit(character.dexterity, 0);
+				const atk = charAtk(character.strength, 0, 0, isCrit);
+				monster.health -= atk;
+				addSnack({
+					message: `You dealt ${atk} Damage! ${isCrit ? "CRITICAL" : ""}`,
+					options: {
+						variant: "success",
+					},
+				});
 				if (monster.health <= 0) {
 					updateChar({
 						experience: character.experience + monExp,
 					});
 					monstersMod.removeAt(index);
 				} else if (!charDog(character.dexterity, 0)) {
+					const isCrit = monCrit(monster.dexterity);
+					const dmg = monAtk(monster.strength, isCrit);
+					addSnack({
+						message: `Monster dealt ${dmg} Damage! ${isCrit ? "CRITICAL" : ""}`,
+						options: {
+							variant: "error",
+						},
+					});
 					updateChar({
-						currentHealth: character.currentHealth - monAtk(monster.strength, monCrit(monster.dexterity)),
+						currentHealth: character.currentHealth - dmg,
 					});
 				}
 			}

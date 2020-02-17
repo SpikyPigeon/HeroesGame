@@ -26,6 +26,7 @@ export class StructureService {
 		return await this.structures.createQueryBuilder("str")
 			.leftJoinAndSelect("str.square", "sq")
 			.leftJoinAndSelect("sq.world", "world")
+			.leftJoinAndSelect("str.shop", "shop")
 			.where("world.id = :worldId AND sq.x = :x AND sq.y = :y", {worldId, x, y})
 			.getMany();
 	}

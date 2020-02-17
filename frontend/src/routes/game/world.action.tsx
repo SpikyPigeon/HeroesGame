@@ -1,4 +1,4 @@
-import {createElement, FunctionComponent, useEffect, useState} from "react";
+import {createElement, FunctionComponent, useEffect, useState, Fragment} from "react";
 import {red} from "@material-ui/core/colors";
 import {useList, useUpdate} from "react-use";
 import {
@@ -35,50 +35,54 @@ interface StructureCardProps {
 export const StructureCard: FunctionComponent<StructureCardProps> = ({structures}) => {
 	const [raised, setRaised] = useState(false);
 
-	if(structures.length < 1){
+	if (structures.length < 1) {
 		return null;
-	}
-	else{
-		return <Card style={{minHeight: 100, marginBottom: 8}}>
-			<CardContent style={{padding: 3}}>
-				<Grid container>
-					<Grid item lg={3}>
-						<CardHeader title={structures[0].name}
-						            titleTypographyProps={{
-							            align: "left",
-							            variant: "h5",
-						            }}
-						/>
-					</Grid>
-					<Grid item lg={5}>
-						<Typography align="left">
-							{structures[0].description}
-						</Typography>
-					</Grid>
-					<Grid item lg={4}>
-						<Card raised={raised} square>
-							<CardActionArea
-								onMouseEnter={() => setRaised(true)}
-								onMouseLeave={() => setRaised(false)}
-							>
-								<CardHeader title={"Shop Name"}
+	} else {
+		return <Fragment>
+			{structures.map((value, index) => (
+				<Card key={index} style={{minHeight: 100, marginBottom: 8}}>
+					<CardContent style={{padding: 3}}>
+						<Grid container>
+							<Grid item lg={3}>
+								<CardHeader title={value.name}
 								            titleTypographyProps={{
-								            	align: "center",
-									            variant: "h6",
+									            align: "left",
+									            variant: "h5",
 								            }}
 								/>
-								<Typography align="center">
-									{"Shop description"}
+							</Grid>
+							<Grid item lg={5}>
+								<Typography align="left">
+									{value.description}
 								</Typography>
-								<Typography align="center" variant="body2">
-									{"Click to shop!"}
-								</Typography>
-							</CardActionArea>
-						</Card>
-					</Grid>
-				</Grid>
-			</CardContent>
-		</Card>;
+							</Grid>
+							{value.shop && <Grid item lg={4}>
+								<Card raised={raised} square>
+									<CardActionArea
+										onMouseEnter={() => setRaised(true)}
+										onMouseLeave={() => setRaised(false)}
+									>
+										<CardHeader title={"Shop Name"}
+										            titleTypographyProps={{
+											            align: "center",
+											            variant: "h6",
+										            }}
+										/>
+										<Typography align="center">
+											{"Shop description"}
+										</Typography>
+										<Typography align="center" variant="body2">
+											{"Click to shop!"}
+										</Typography>
+									</CardActionArea>
+								</Card>
+							</Grid>}
+
+						</Grid>
+					</CardContent>
+				</Card>
+			))}
+		</Fragment>;
 	}
 };
 

@@ -257,6 +257,7 @@ const World: FunctionComponent = () => {
 	const moveChar = useStoreActions(state => state.character.moveTo);
 	const currentWorld = useStoreState(state => state.world.current);
 	const currentChar = useStoreState(state => state.character.character);
+	const addSnack = useStoreActions(state => state.notification.enqueue);
 
 	const {character: charConfig} = config;
 

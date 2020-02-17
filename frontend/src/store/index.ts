@@ -1,4 +1,5 @@
 import {createStore, createTypedHooks} from "easy-peasy";
+import {notificationStore, NotificationStore} from "./notification";
 import {characterStore, CharacterStore} from "./character";
 import {worldStore, WorldStore} from "./world";
 import {userStore, UserStore} from "./user";
@@ -10,12 +11,14 @@ export interface LocationInfo {
 }
 
 export interface AppStore {
+	notification: NotificationStore;
 	character: CharacterStore;
 	world: WorldStore;
 	user: UserStore;
 }
 
 export const store = createStore<AppStore>({
+	notification: notificationStore,
 	character: characterStore,
 	world: worldStore,
 	user: userStore,

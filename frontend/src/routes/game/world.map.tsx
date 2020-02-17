@@ -58,6 +58,17 @@ export const WorldMapCard: FunctionComponent<WorldMapProps> = props => {
 	const [navMode, setNavMode] = useState(false);
 	const [raised, setRaised] = useState(false);
 	const [transform, setTransform] = useState<DOMMatrix>(new DOMMatrix());
+	const [images, setImages] = useState({
+		"cabin.png": new Image(32, 32),
+		"camp.png": new Image(32, 32),
+		"castle1.png": new Image(32, 32),
+		"castle2.png": new Image(32, 32),
+		"cave.png": new Image(32, 32),
+		"dungeon.png": new Image(32, 32),
+		"house.png": new Image(32, 32),
+		"old-tower.png": new Image(32, 32),
+		"temple.png": new Image(32, 32),
+	});
 
 	const render = (canvas: HTMLCanvasElement) => {
 		const rect = canvas.getBoundingClientRect();
@@ -73,6 +84,16 @@ export const WorldMapCard: FunctionComponent<WorldMapProps> = props => {
 			ctx.scale(zoom, zoom);
 			ctx.translate(offsetX, offsetY);
 			setTransform(ctx.getTransform().inverse());
+
+			for(let sq of world.squares) {
+				const {x, y, image} = sq;
+				if (image && Reflect.has(images, image)) {
+					const img: HTMLImageElement = Reflect.get(images, image);
+					if (img.complete) {
+						ctx.drawImage(img, x * 32, y * 32);
+					}
+				}
+			}
 
 			ctx.beginPath();
 			for (let y = cY - 1; y <= cY + 1; ++y) {
@@ -151,6 +172,16 @@ export const WorldMapCard: FunctionComponent<WorldMapProps> = props => {
 
 	useEffect(() => {
 		if (canvas.current) {
+			Object.keys(images).forEach(name => {
+				const img: HTMLImageElement = Reflect.get(images, name);
+				img.src = `/assets/squares/${name}`;
+				img.onload = () => {
+					if (canvas.current) {
+						render(canvas.current);
+					}
+				};
+			});
+
 			render(canvas.current);
 
 			window.addEventListener("resize", onResize);

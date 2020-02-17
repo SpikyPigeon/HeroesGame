@@ -17,8 +17,13 @@ export class SquareEntity implements Square {
 	y!: number;
 
 	@ApiProperty()
-	@Column({length: 40})
-	image!: string;
+	@Column({
+		type: "varchar",
+		length: 40,
+		nullable: true,
+		default: null
+	})
+	image!: string | null;
 
 	@ApiProperty()
 	@ManyToOne(type => WorldEntity, world => world.squares)

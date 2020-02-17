@@ -19,6 +19,12 @@ export class UserStart1580397123258 implements MigrationInterface {
 
 	public async down(runner: QueryRunner): Promise<any> {
 		return await runner.query(`
+            DELETE FROM "CharacterEquipment"
+            WHERE "playerId" = (SELECT id FROM "PlayerCharacter" WHERE "ownerId" = 'b637df5e-c4a7-4e71-a01e-0817b56a077e');
+            DELETE FROM "PlayerCharacter" WHERE "ownerId" = 'b637df5e-c4a7-4e71-a01e-0817b56a077e';
+			DELETE FROM "CharacterEquipment"
+			WHERE "playerId" = (SELECT id FROM "PlayerCharacter" WHERE "ownerId" = 'fc451518-83d3-4a67-8d0c-3bf74223d74c'); 
+			DELETE FROM "PlayerCharacter" WHERE "ownerId" = 'fc451518-83d3-4a67-8d0c-3bf74223d74c';
             DELETE FROM "User" WHERE id = 'b637df5e-c4a7-4e71-a01e-0817b56a077e';
             DELETE FROM "User" WHERE id = 'fc451518-83d3-4a67-8d0c-3bf74223d74c';
             DELETE FROM "Bank" WHERE id = '88cbe428-093e-4ca7-b625-86bfa96a47b2';

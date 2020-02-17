@@ -22,7 +22,6 @@ export class CharacterService {
 
 			return response.data;
 		} catch (e) {
-			console.error(e);
 			return null;
 		}
 	}

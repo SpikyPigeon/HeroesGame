@@ -246,6 +246,7 @@ const World: FunctionComponent = () => {
 	const [charsAtLocation, setCharsAtLocation] = useState<Array<PlayerCharacter>>([]);
 	const [encounters, setEncounters] = useState<Array<Encounter>>([]);
 	const [location, setLocation] = useState<LocationInfo | null>(null);
+	const [playing, setPlaying] = useState(false);
 
 	const loadChar = useStoreActions(state => state.character.getMine);
 	const updateChar = useStoreActions(state => state.character.update);
@@ -260,7 +261,6 @@ const World: FunctionComponent = () => {
 	useMount(() => {
 		loadChar().then(() => {
 			if (!store.getState().character.character) {
-				console.log("No hero?");
 				nav.navigate("/hero", {replace: true}).catch(console.error);
 			}
 		}, (e: any) => {
@@ -272,6 +272,7 @@ const World: FunctionComponent = () => {
 	useEffect(() => {
 		if (currentChar) {
 			const {square} = currentChar;
+			setPlaying(true);
 
 			if (!currentWorld) {
 				loadWorld(currentChar.square.world.id).catch(console.error);
@@ -308,6 +309,10 @@ const World: FunctionComponent = () => {
 					level: true,
 				});
 			}
+		}
+
+		if (!currentChar && playing) {
+			nav.navigate("/hero", {replace: true}).catch(console.error);
 		}
 	}, [currentChar]);
 

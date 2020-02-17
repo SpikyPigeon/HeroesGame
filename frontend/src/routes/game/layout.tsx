@@ -21,7 +21,7 @@ import {
 	Zoom
 } from "@material-ui/core";
 
-import {store, useStoreActions, useStoreState} from "../../store";
+import {useStoreActions, useStoreState} from "../../store";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -148,8 +148,8 @@ const GameLayout: FunctionComponent = props => {
 	const classes = useStyles();
 	const [socialEl, setSocialEl] = useState<null | HTMLElement>(null);
 	const [profileEl, setProfileEl] = useState<null | HTMLElement>(null);
-	const logout = useStoreActions(state => state.user.logout);
 
+	const logout = useStoreActions(state => state.user.logout);
 	const character = useStoreState(state => state.character.character);
 	const user = useStoreState(state => state.user.user);
 
@@ -157,7 +157,7 @@ const GameLayout: FunctionComponent = props => {
 	const handleProfileClose = () => setProfileEl(null);
 
 	if (!user) {
-		return <Fragment/>;
+		return null;
 	}
 
 	return <Fragment>

@@ -3,7 +3,8 @@ import {blue, green, red} from "@material-ui/core/colors";
 import {useNavigation} from "react-navi";
 import {useMount} from "react-use";
 import {
-	Button, ButtonGroup,
+	Button,
+	ButtonGroup,
 	Card,
 	CardActionArea,
 	CardContent,
@@ -24,7 +25,7 @@ import {
 } from "@material-ui/core";
 
 import {config, Encounter, PlayerCharacter} from "heroes-common";
-import {LocationInfo, useStoreActions, useStoreState} from "../../store";
+import {LocationInfo, store, useStoreActions, useStoreState} from "../../store";
 import {WorldAction} from "./world.action";
 import {WorldMapCard} from "./world.map";
 import {AddSharp, RemoveSharp} from "@material-ui/icons";
@@ -135,7 +136,7 @@ const LevelUpDIalog: FunctionComponent<MyDialogProps & { character: PlayerCharac
 			intellect: int,
 			experience: (character?.experience ?? 1000) - 1000,
 			currentHealth: charStats.calculate.health(vit, 0),
-			currentMana: charStats.calculate.mana(int ,0),
+			currentMana: charStats.calculate.mana(int, 0),
 			currentEnergy: 200 + (character?.level ?? 1) * 10,
 			level: (character?.level ?? 1) + 1,
 		});
@@ -245,6 +246,7 @@ const World: FunctionComponent = () => {
 	const [charsAtLocation, setCharsAtLocation] = useState<Array<PlayerCharacter>>([]);
 	const [encounters, setEncounters] = useState<Array<Encounter>>([]);
 	const [location, setLocation] = useState<LocationInfo | null>(null);
+	const [playing, setPlaying] = useState(false);
 
 	const loadChar = useStoreActions(state => state.character.getMine);
 	const updateChar = useStoreActions(state => state.character.update);
@@ -257,15 +259,20 @@ const World: FunctionComponent = () => {
 	const {character: charConfig} = config;
 
 	useMount(() => {
-		loadChar().catch((e: any) => {
+		loadChar().then(() => {
+			if (!store.getState().character.character) {
+				nav.navigate("/hero", {replace: true}).catch(console.error);
+			}
+		}, (e: any) => {
 			console.error(e);
-			nav.navigate("/", {replace: true});
+			nav.navigate("/", {replace: true}).catch(console.error);
 		});
 	});
 
 	useEffect(() => {
 		if (currentChar) {
 			const {square} = currentChar;
+			setPlaying(true);
 
 			if (!currentWorld) {
 				loadWorld(currentChar.square.world.id).catch(console.error);
@@ -302,6 +309,10 @@ const World: FunctionComponent = () => {
 					level: true,
 				});
 			}
+		}
+
+		if (!currentChar && playing) {
+			nav.navigate("/hero", {replace: true}).catch(console.error);
 		}
 	}, [currentChar]);
 

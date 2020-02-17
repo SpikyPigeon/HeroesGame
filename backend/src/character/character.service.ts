@@ -35,7 +35,7 @@ export class CharacterService implements OnModuleInit {
 
 	async findOne(id: string): Promise<CharacterEntity> {
 		const char = await this.createQuery()
-			.where("char.id = :id", {id})
+			.where("char.id = :id AND char.isActive = TRUE", {id})
 			.getOne();
 
 		if (char) {
@@ -47,7 +47,7 @@ export class CharacterService implements OnModuleInit {
 
 	async findAllAtLocation(worldId: number, x: number, y: number): Promise<Array<CharacterEntity>> {
 		return await this.createQuery()
-			.where("world.id = :worldId AND sq.x = :x AND sq.y = :y", {worldId, x, y})
+			.where("world.id = :worldId AND sq.x = :x AND sq.y = :y AND char.isActive = TRUE", {worldId, x, y})
 			.getMany();
 	}
 

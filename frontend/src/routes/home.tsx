@@ -1,6 +1,8 @@
 import {createElement, Fragment, FunctionComponent, useState} from "react";
+import io from "socket.io-client";
 import {useNavigation} from "react-navi";
 import {useForm} from "react-hook-form";
+import {useMount} from "react-use";
 import {
 	Button,
 	Card,
@@ -20,8 +22,10 @@ import {
 	Theme,
 	Typography
 } from "@material-ui/core";
+
 import {useStoreActions, useStoreState} from "../store";
 import {CreateUserInfo} from "heroes-common";
+import Socket = SocketIOClient.Socket;
 
 interface LoginCredential {
 	email: string;
@@ -137,6 +141,8 @@ const Home: FunctionComponent = () => {
 	const nav = useNavigation();
 	const classes = useStyles();
 
+	let socket: Socket | null = null;
+
 	const user = {
 		logout: useStoreActions(state => state.user.logout),
 		login: useStoreActions(state => state.user.login),
@@ -158,6 +164,18 @@ const Home: FunctionComponent = () => {
 			console.error(e);
 		}
 	};
+
+	useMount(() => {
+		socket = io("/chat");
+
+		socket.on("connect", () => {
+			console.log(socket?.id ?? undefined);
+
+			socket?.on("test", () => console.log("TEST!"));
+
+			socket?.emit("echo", {message: "Hello!"}, (data: any) => console.log(data));
+		});
+	});
 
 	return <Content>
 		<Grid container spacing={5} justify="space-evenly" alignItems="center" style={{height: "100%"}}>

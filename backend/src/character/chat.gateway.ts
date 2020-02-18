@@ -1,14 +1,13 @@
+import {Client, Server} from "socket.io";
+import {Logger} from "@nestjs/common";
 import {
 	MessageBody,
-	OnGatewayConnection, OnGatewayDisconnect,
+	OnGatewayConnection,
+	OnGatewayDisconnect,
 	SubscribeMessage,
 	WebSocketGateway,
-	WebSocketServer,
-	WsResponse
+	WebSocketServer
 } from "@nestjs/websockets";
-import {Logger, UseGuards} from "@nestjs/common";
-import {AuthGuard} from "@nestjs/passport";
-import {Server, Client} from "socket.io";
 
 @WebSocketGateway({namespace: "chat"})
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -22,16 +21,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	handleConnection(client: Client) {
 		this.logger.log(`CONNECTED => ${client.id}`);
+		this.server.emit("test");
 	}
 
 	handleDisconnect(client: Client) {
 		this.logger.log(`DISCONNECTED => ${client.id}`);
 	}
 
-	@UseGuards(AuthGuard("jwt"))
 	@SubscribeMessage("echo")
-	async sendBack(@MessageBody() data: string): Promise<WsResponse<string>> {
+	async sendBack(@MessageBody() data: any): Promise<any> {
 		this.logger.log(`sendBack => ${data}`);
-		return {data: `ECHO : ${data}`, event: "echo"};
+		return data;
 	}
 }

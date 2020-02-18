@@ -1,5 +1,6 @@
 import {createElement, Fragment, FunctionComponent, useEffect, useState} from "react";
 import {blue, green, red} from "@material-ui/core/colors";
+import {AddSharp, RemoveSharp} from "@material-ui/icons";
 import {useNavigation} from "react-navi";
 import {useMount} from "react-use";
 import {
@@ -24,12 +25,11 @@ import {
 	Typography
 } from "@material-ui/core";
 
-import {config, Encounter, PlayerCharacter} from "heroes-common";
+import {config, Encounter, PlayerCharacter, Structure} from "heroes-common";
 import {LocationInfo, store, useStoreActions, useStoreState} from "../../store";
-import {WorldAction, StructureCard} from "./world.action";
+import {FeatureCard} from "./world.feature";
+import {WorldAction} from "./world.combat";
 import {WorldMapCard} from "./world.map";
-import {AddSharp, RemoveSharp} from "@material-ui/icons";
-import {Structure} from "heroes-common/src";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -257,6 +257,7 @@ const World: FunctionComponent = () => {
 	const moveChar = useStoreActions(state => state.character.moveTo);
 	const currentWorld = useStoreState(state => state.world.current);
 	const currentChar = useStoreState(state => state.character.character);
+	const addSnack = useStoreActions(state => state.notification.enqueue);
 
 	const {character: charConfig} = config;
 
@@ -351,7 +352,7 @@ const World: FunctionComponent = () => {
 			</Grid>
 			<Grid container item lg={9} spacing={1}>
 				<Grid item lg={9}>
-					<StructureCard structures={structures}/>
+					<FeatureCard structures={structures}/>
 					<WorldAction encounters={encounters}/>
 				</Grid>
 				<Grid item lg={3}>

@@ -131,6 +131,7 @@ const RegisterDialog: FunctionComponent<RegisterDialogProps> = props => {
 };
 
 const Home: FunctionComponent = () => {
+	const addSnack = useStoreActions(state => state.notification.enqueue);
 	const {register, handleSubmit, errors} = useForm<LoginCredential>();
 	const [registerOpen, setRegisterOpen] = useState(false);
 	const nav = useNavigation();
@@ -147,6 +148,13 @@ const Home: FunctionComponent = () => {
 			await user.login(data);
 			await nav.navigate("/hero");
 		} catch (e) {
+			addSnack({
+				message: "Failed to login!",
+				options: {
+					variant: "error",
+				},
+			});
+
 			console.error(e);
 		}
 	};

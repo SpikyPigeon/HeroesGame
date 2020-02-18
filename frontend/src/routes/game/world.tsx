@@ -261,6 +261,16 @@ const World: FunctionComponent = () => {
 
 	const {character: charConfig} = config;
 
+	const loadContent = () => {
+		if (location) {
+			loadSquare(location).then(content => {
+				setCharsAtLocation(content.players);
+				setEncounters(content.encounters);
+				setStructures(content.structures);
+			}, console.error);
+		}
+	};
+
 	useMount(() => {
 		loadChar().then(() => {
 			if (!store.getState().character.character) {
@@ -320,13 +330,7 @@ const World: FunctionComponent = () => {
 	}, [currentChar]);
 
 	useEffect(() => {
-		if (location) {
-			loadSquare(location).then(content => {
-				setCharsAtLocation(content.players);
-				setEncounters(content.encounters);
-				setStructures(content.structures);
-			}, console.error);
-		}
+		loadContent();
 	}, [location]);
 
 	if (!currentChar) {
@@ -469,6 +473,7 @@ const World: FunctionComponent = () => {
 		/>
 		<DeathDialog open={open.death}
 		             onClose={() => {
+			             loadContent();
 			             updateChar({
 				             currentHealth: charConfig.stats.calculate.health(currentChar.vitality, 0),
 				             experience: currentChar.experience - Math.ceil(currentChar.experience * 0.1),

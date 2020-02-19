@@ -5,4 +5,5 @@ export interface Square {
 	x: number;
 	y: number;
 	image: string | null;
+	icon: string | null;
 }

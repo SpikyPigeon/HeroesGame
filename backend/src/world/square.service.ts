@@ -49,9 +49,14 @@ export class SquareService {
 		return await this.squares.save(squares);
 	}
 
-	async setImage(worldId: number, x: number, y: number, newImage: UpdateSquareImageInfo): Promise<SquareEntity> {
+	async setImage(worldId: number, x: number, y: number, newImage: Partial<UpdateSquareImageInfo>): Promise<SquareEntity> {
 		const square = await this.findOne(worldId, x, y);
-		square.image = newImage.filename;
+		if(newImage.filenameImage){
+			square.image = newImage.filenameImage;
+		}
+		if(newImage.filenameIcon){
+			square.icon = newImage.filenameIcon;
+		}
 		return await this.squares.save(square);
 	}
 }

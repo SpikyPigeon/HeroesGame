@@ -87,7 +87,7 @@ export class WorldStart1580826352901 implements MigrationInterface {
                    (1, 19, 10), (1, 19, 11), (1, 19, 12), (1, 19, 13), (1, 19, 14),
                    (1, 19, 15), (1, 19, 16), (1, 19, 17), (1, 19, 18), (1, 19, 19);
                    
-                   UPDATE "Square" SET image = 'cabin.png'
+                   UPDATE "Square" SET icon = 'cabin.png'
                    WHERE "worldId" = 1 AND x = 2 AND y = 2;`)
 	}
 

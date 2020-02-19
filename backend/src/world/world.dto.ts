@@ -35,7 +35,10 @@ export class UpdateWorldInfo {
 
 export class UpdateSquareImageInfo {
 	@ApiProperty()
-	filename: string = "";
+	filenameImage: string = "";
+
+	@ApiProperty()
+	filenameIcon: string = "";
 }
 
 export class SquareContentDto implements SquareContent {

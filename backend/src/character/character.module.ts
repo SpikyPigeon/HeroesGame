@@ -1,13 +1,13 @@
 import {forwardRef, Module} from "@nestjs/common";
 import {CharacterController} from "./character.controller";
-import {CharacterService} from "./character.service";
 import {characterProviders} from "./character.provider";
-import {DatabaseModule} from "../database";
+import {CharacterService} from "./character.service";
 import {AvatarService} from "./avatar.service";
 import {InventoryModule} from "./inventory";
-import {SlapModule} from "./slap";
-import {WorldModule} from "../world";
+import {DatabaseModule} from "../database";
+import {ChatGateway} from "./chat.gateway";
 import {UserModule} from "../user";
+import {SlapModule} from "./slap";
 
 @Module({
 	exports: [
@@ -25,6 +25,7 @@ import {UserModule} from "../user";
 	],
 	providers: [
 		...characterProviders,
+		ChatGateway,
 		AvatarService,
 		CharacterService,
 	],

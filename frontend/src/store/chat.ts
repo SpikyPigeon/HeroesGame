@@ -1,7 +1,8 @@
 import {action, Action, thunk, Thunk} from "easy-peasy";
 import io from "socket.io-client";
+
+import {ChatMessagePayload, ChatResponsePayload} from "heroes-common/src";
 import Socket = SocketIOClient.Socket;
-import {ChatResponsePayload} from "heroes-common";
 
 export interface ChatStore {
 	socket: Socket | null;
@@ -13,7 +14,8 @@ export interface ChatStore {
 	addMessage: Action<ChatStore, ChatResponsePayload>;
 
 	connect: Thunk<ChatStore>;
-	disconnect: Action<ChatStore>;
+	disconnect: Thunk<ChatStore>;
+	send: Thunk<ChatStore, string>;
 }
 
 export const chatStore: ChatStore = {
@@ -34,13 +36,34 @@ export const chatStore: ChatStore = {
 
 	connect: thunk(state => {
 		state.disconnect();
-		state.setSocket(io("/chat"));
+		const socket = io("/chat");
+		state.setSocket(socket);
+
+		socket.on("connect", () => {
+			socket.on("message-added", (payload: ChatResponsePayload) => {
+				state.addMessage(payload);
+			});
+		});
 	}),
 
-	disconnect: action(state => {
-		if (state.socket) {
-			state.socket.disconnect();
-			state.socket = null;
+	disconnect: thunk((state, payload, {getState}) => {
+		const socket = getState().socket;
+		if (socket) {
+			socket.disconnect();
+			state.setSocket(null);
 		}
-	})
+	}),
+
+	send: thunk((state, payload, {getState}) => {
+		const token = localStorage.getItem("userJWT");
+		const socket = getState().socket;
+		if (socket && token) {
+			const msg: ChatMessagePayload = {
+				token,
+				content: payload,
+			};
+
+			socket.emit("send-message", msg);
+		}
+	}),
 };

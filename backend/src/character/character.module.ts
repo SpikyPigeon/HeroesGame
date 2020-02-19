@@ -5,7 +5,6 @@ import {CharacterService} from "./character.service";
 import {AvatarService} from "./avatar.service";
 import {InventoryModule} from "./inventory";
 import {DatabaseModule} from "../database";
-import {ChatGateway} from "./chat.gateway";
 import {UserModule} from "../user";
 import {SlapModule} from "./slap";
 
@@ -25,7 +24,6 @@ import {SlapModule} from "./slap";
 	],
 	providers: [
 		...characterProviders,
-		ChatGateway,
 		AvatarService,
 		CharacterService,
 	],

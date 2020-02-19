@@ -35,3 +35,6 @@ export * from "./login-response";
 export * from "./login-info";
 export * from "./move-character-info";
 export * from "./square-content";
+
+export * from "./socket-payload";
+export * from "./chat-payload";

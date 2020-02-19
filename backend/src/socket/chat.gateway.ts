@@ -6,8 +6,11 @@ import {
 	OnGatewayDisconnect,
 	SubscribeMessage,
 	WebSocketGateway,
-	WebSocketServer
+	WebSocketServer, WsException, WsResponse
 } from "@nestjs/websockets";
+
+import {SocketService} from "./socket.service";
+import {ChatPayload} from "heroes-common";
 
 @WebSocketGateway({namespace: "chat"})
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -16,7 +19,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@WebSocketServer()
 	private readonly server!: Server;
 
-	constructor() {
+	constructor(private readonly sockets: SocketService) {
 	}
 
 	handleConnection(client: Client) {
@@ -29,8 +32,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	@SubscribeMessage("echo")
-	async sendBack(@MessageBody() data: any): Promise<any> {
-		this.logger.log(`sendBack => ${data}`);
-		return data;
+	async sendBack(@MessageBody() payload: ChatPayload): Promise<WsResponse<string>> {
+		try {
+			const user = await this.sockets.validatePayload(payload);
+			this.logger.log(`sendBack => ${user.email}`);
+			return {
+				event: "echo",
+				data: `ECHO@${payload.world}:${payload.x}.${payload.y} => ${payload.content}`,
+			};
+		} catch(e) {
+			throw new WsException(e);
+		}
 	}
 }

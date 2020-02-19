@@ -58,11 +58,12 @@ export class ItemService {
 		return await this.items.findOneOrFail(id);
 	}
 
-	async createItem(name: string, description: string, categoryId: number): Promise<ItemEntity> {
+	async createItem(name: string, description: string, categoryId: number, image: string): Promise<ItemEntity> {
 		return await this.items.save(this.items.create({
 			category: await this.findOneCategory(categoryId),
 			description,
 			name,
+			image,
 		}));
 	}
 

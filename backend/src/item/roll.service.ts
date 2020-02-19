@@ -13,11 +13,11 @@ export class RollService {
 	}
 
 	async findAll(): Promise<Array<RollEntity>> {
-		return await this.rolls.find();
+		return await this.rolls.find({relations: ["item", "item.category"]});
 	}
 
 	async findOne(id: string): Promise<RollEntity> {
-		return await this.rolls.findOneOrFail(id);
+		return await this.rolls.findOneOrFail(id, {relations: ["item", "item.category"]});
 	}
 
 	async create(itemId: number): Promise<RollEntity> {

@@ -14,6 +14,14 @@ export class AuthService {
 	) {
 	}
 
+	async verifyToken(token: string): Promise<AuthPayload> {
+		try {
+			return await this.jwt.verifyAsync<AuthPayload>(token);
+		} catch(e) {
+			throw new Error(e);
+		}
+	}
+
 	async validateUser(email: string, password: string): Promise<UserEntity | undefined> {
 		this.logger.log(`Searching for user email ${email}`);
 

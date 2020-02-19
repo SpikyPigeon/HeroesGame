@@ -5,6 +5,7 @@ import {routes} from "./app.routing";
 
 import {CharacterModule} from "./character";
 import {MonsterModule} from "./monster";
+import {SocketModule} from "./socket";
 import {WorldModule} from "./world";
 import {ItemModule} from "./item";
 import {BankModule} from "./bank";
@@ -19,6 +20,7 @@ import {UserModule} from "./user";
 		MonsterModule,
 		ItemModule,
 		WorldModule,
+		SocketModule,
 	],
 })
 export class AppModule {

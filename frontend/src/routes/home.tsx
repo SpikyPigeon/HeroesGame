@@ -168,12 +168,21 @@ const Home: FunctionComponent = () => {
 	useMount(() => {
 		socket = io("/chat");
 
+		socket.on("error", (e: any) => console.error(e));
+
 		socket.on("connect", () => {
 			console.log(socket?.id ?? undefined);
 
 			socket?.on("test", () => console.log("TEST!"));
+			socket?.on("echo", (data: string) => console.log(data));
 
-			socket?.emit("echo", {message: "Hello!"}, (data: any) => console.log(data));
+			socket?.emit("echo", {
+				token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtpbmdAbnVtc2dpbC5jbyIsInN1YiI6ImI2MzdkZjVlLWM0YTctNGU3MS1hMDFlLTA4MTdiNTZhMDc3ZSIsImlhdCI6MTU4MjA0MzUzMiwiZXhwIjoxNTgyMzAyNzMyfQ.MEPyKCP9P0kcLIOxbnp-9uACt8wQREiUes7Jpa7iCAs",
+				world: 1,
+				x: 10,
+				y: 12,
+				content: "Hello World!",
+			});
 		});
 	});
 

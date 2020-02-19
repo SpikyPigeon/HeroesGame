@@ -3,6 +3,7 @@ import {notificationStore, NotificationStore} from "./notification";
 import {characterStore, CharacterStore} from "./character";
 import {worldStore, WorldStore} from "./world";
 import {userStore, UserStore} from "./user";
+import {chatStore, ChatStore} from "./chat";
 
 export interface LocationInfo {
 	worldId: number;
@@ -15,6 +16,7 @@ export interface AppStore {
 	character: CharacterStore;
 	world: WorldStore;
 	user: UserStore;
+	chat: ChatStore;
 }
 
 export const store = createStore<AppStore>({
@@ -22,6 +24,7 @@ export const store = createStore<AppStore>({
 	character: characterStore,
 	world: worldStore,
 	user: userStore,
+	chat: chatStore,
 });
 
 store.dispatch.user.getCurrent();

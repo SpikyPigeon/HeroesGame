@@ -67,9 +67,11 @@ export class SquareController {
 		@Param("worldId") worldId: number,
 		@Param("x") x: number,
 		@Param("y") y: number,
-		@Body() newImage: UpdateSquareImageInfo,
+		@Body() newImage: Partial<UpdateSquareImageInfo>,
 	): Promise<SquareEntity> {
 		this.logger.log(`setImage => ${worldId}@${x}.${y}`);
 		return await this.squares.setImage(worldId, x, y, newImage);
 	}
+
+
 }

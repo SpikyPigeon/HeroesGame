@@ -15,18 +15,13 @@ export const FeatureCard: FunctionComponent<FeatureCardProps> = ({structures}) =
 	} else {
 		return <Fragment>
 			{structures.map((value, index) => (
-				<Card key={index} style={{minHeight: 100, marginBottom: 8}}>
+				<Card key={index} style={{minHeight: 70, marginBottom: 8, textAlign: "center"}}>
 					<CardContent style={{padding: 3}}>
 						<CardHeader title={value.name}
 						            titleTypographyProps={{
 							            align: "left",
 							            variant: "h5",
 						            }}
-						/>
-						<CardMedia
-							component="img"
-							image={`/assets/structures/${value.description}`}
-							height={200}
 						/>
 					</CardContent>
 				</Card>

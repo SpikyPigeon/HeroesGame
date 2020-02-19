@@ -58,7 +58,7 @@ export const WorldMapCard: FunctionComponent<WorldMapProps> = props => {
 	const [navMode, setNavMode] = useState(false);
 	const [raised, setRaised] = useState(false);
 	const [transform, setTransform] = useState<DOMMatrix>(new DOMMatrix());
-	const [images, setImages] = useState({
+	const [icons, setIcons] = useState({
 		"cabin.png": new Image(32, 32),
 		"camp.png": new Image(32, 32),
 		"castle1.png": new Image(32, 32),
@@ -86,9 +86,9 @@ export const WorldMapCard: FunctionComponent<WorldMapProps> = props => {
 			setTransform(ctx.getTransform().inverse());
 
 			for(let sq of world.squares) {
-				const {x, y, image} = sq;
-				if (image && Reflect.has(images, image)) {
-					const img: HTMLImageElement = Reflect.get(images, image);
+				const {x, y, icon} = sq;
+				if (icon && Reflect.has(icons, icon)) {
+					const img: HTMLImageElement = Reflect.get(icons, icon);
 					if (img.complete) {
 						ctx.drawImage(img, x * 32, y * 32);
 					}
@@ -172,8 +172,8 @@ export const WorldMapCard: FunctionComponent<WorldMapProps> = props => {
 
 	useEffect(() => {
 		if (canvas.current) {
-			Object.keys(images).forEach(name => {
-				const img: HTMLImageElement = Reflect.get(images, name);
+			Object.keys(icons).forEach(name => {
+				const img: HTMLImageElement = Reflect.get(icons, name);
 				img.src = `/assets/squares/${name}`;
 				img.onload = () => {
 					if (canvas.current) {
@@ -244,7 +244,7 @@ export const WorldMapCard: FunctionComponent<WorldMapProps> = props => {
 				<canvas
 					ref={canvas} className={classes.canvas}
 					style={{
-						backgroundImage: `url('/assets/worlds/${world?.world.bgImage}')`,
+						backgroundImage: character.square.image ? `url('/assets/worlds/${character.square.image}')`:`url('/assets/worlds/${world?.world.bgImage}')`,
 						backgroundRepeat: "no-repeat",
 						backgroundSize: "cover",
 						backgroundPosition: "center",

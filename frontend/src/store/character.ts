@@ -1,6 +1,7 @@
 import {action, Action, thunk, Thunk} from "easy-peasy";
 import {Avatar, CharacterInfo, MoveCharacterInfo, PlayerCharacter, UpdateCharacterInfo} from "heroes-common";
 import {CharacterService} from "./context";
+import {CharacterInventory} from "heroes-common/src";
 
 export interface CharacterStore {
 	character: PlayerCharacter | null;
@@ -14,6 +15,8 @@ export interface CharacterStore {
 	userHasChar: Thunk<CharacterStore, void, any, {}, Promise<boolean>>;
 	create: Thunk<CharacterStore, CharacterInfo>;
 	moveTo: Thunk<CharacterStore, MoveCharacterInfo>;
+
+	findInventory: Thunk<CharacterStore, string, any, {}, Promise<Array<CharacterInventory>>>;
 }
 
 export const characterStore: CharacterStore = {
@@ -85,5 +88,9 @@ export const characterStore: CharacterStore = {
 		} else {
 			throw new Error("Not logged in!");
 		}
+	}),
+
+	findInventory: thunk(async (state, payload) =>{
+		return await CharacterService.findInventory(payload);
 	}),
 };

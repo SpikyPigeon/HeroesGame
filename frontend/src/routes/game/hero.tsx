@@ -15,6 +15,8 @@ import {
 } from "@material-ui/core";
 import {useStoreActions, useStoreState} from "../../store";
 import {useNavigation} from "react-navi";
+import {useList} from "react-use";
+import {CharacterInventory, ItemRoll} from "heroes-common/src";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -51,32 +53,54 @@ const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = props => {
 	</Card>
 };
 
-const InventorySlot: FunctionComponent = () => {
+interface InventorySlotProps {
+	roll?: ItemRoll;
+	quantity?: number;
+}
+
+const InventorySlot: FunctionComponent<InventorySlotProps> = ({roll, quantity}) => {
 	const classes = useStyles();
 
-	return <Card variant="outlined" classes={{root: classes.itemSlotCard}}>
-		<CardActionArea classes={{root: classes.itemSlotAction}}>
-			<CardContent>
-				<Typography>Slot</Typography>
-			</CardContent>
-		</CardActionArea>
-	</Card>;
+	if(!roll || !quantity){
+		return <Card variant="outlined" classes={{root: classes.itemSlotCard}}>
+			<CardActionArea classes={{root: classes.itemSlotAction}}>
+				<CardContent>
+					<Typography>Slot</Typography>
+				</CardContent>
+			</CardActionArea>
+		</Card>;
+	}
+	else{
+		return <Card variant="outlined" classes={{root: classes.itemSlotCard}}>
+			<CardActionArea classes={{root: classes.itemSlotAction}}>
+				<CardContent>
+					<CardMedia
+						component="img"
+						image={`/assets/items/${roll?.item.image}`}
+						height={128}
+					/>
+				</CardContent>
+			</CardActionArea>
+		</Card>;
+	}
 };
 
 const Hero: FunctionComponent = () => {
 	const classes = useStyles();
 	const currentHero = useStoreState(state => state.character.character);
 	const loadHero = useStoreActions(state => state.character.getMine);
+	const loadItems = useStoreActions(state => state.character.findInventory);
 	const nav = useNavigation();
-	/*if(!currentHero){
-		nav.navigate("/");
-		return <Fragment/>;
-	}*/
+	const [items, itemMod] = useList<CharacterInventory>([]);
+
 	useEffect(() => {
 		const req = async () => {
 			await loadHero();
 			if (!currentHero) {
 				await nav.navigate("/");
+			}
+			else{
+				itemMod.push(...await loadItems(currentHero.id));
 			}
 		};
 		req().catch(console.error);
@@ -156,11 +180,21 @@ const Hero: FunctionComponent = () => {
 				<CardHeader title="Inventory"/>
 				<CardContent>
 					<GridList cols={10} cellHeight={128}>
-						{[...Array(10).keys()].map(value => (
-							<GridListTile key={value}>
-								<InventorySlot/>
-							</GridListTile>
-						))}
+						{[...Array(10).keys()].map(value => {
+							if(items.length - 1 >= value){
+								return <GridListTile key={value}>
+									<InventorySlot
+										roll={items[value].roll}
+										quantity={items[value].quantity}
+									/>
+								</GridListTile>
+							}
+							else{
+								return <GridListTile key={value}>
+									<InventorySlot/>
+								</GridListTile>;
+							}
+						})}
 					</GridList>
 				</CardContent>
 			</Card>

@@ -1,4 +1,4 @@
-import {Avatar, CharacterInfo, MoveCharacterInfo, PlayerCharacter, UpdateCharacterInfo} from "heroes-common";
+import {Avatar, CharacterInfo, MoveCharacterInfo, PlayerCharacter, UpdateCharacterInfo, CharacterInventory} from "heroes-common";
 import {Context} from "./index";
 
 export class CharacterService {
@@ -65,6 +65,11 @@ export class CharacterService {
 				Authorization: `Bearer ${token}`,
 			},
 		});
+		return response.data;
+	}
+
+	static async findInventory(id: string): Promise<Array<CharacterInventory>>{
+		const response = await Context.get<Array<CharacterInventory>>(`/character/inventory/owner/${id}`);
 		return response.data;
 	}
 }

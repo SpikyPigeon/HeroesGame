@@ -117,4 +117,11 @@ export class ItemEntity implements Item {
 	@ApiProperty()
 	@Column({default: 1})
 	stackLimit!: number;
+
+	@ApiProperty()
+	@Column({
+		length: 40,
+		nullable: true
+	})
+	image!: string;
 }

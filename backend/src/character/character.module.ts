@@ -3,7 +3,7 @@ import {CharacterController} from "./character.controller";
 import {characterProviders} from "./character.provider";
 import {CharacterService} from "./character.service";
 import {AvatarService} from "./avatar.service";
-import {InventoryModule} from "./inventory";
+import {InventoryController, InventoryService} from "./inventory";
 import {DatabaseModule} from "../database";
 import {UserModule} from "../user";
 import {SlapModule} from "./slap";
@@ -12,20 +12,22 @@ import {SlapModule} from "./slap";
 	exports: [
 		AvatarService,
 		CharacterService,
+		InventoryService,
 	],
 	imports: [
 		DatabaseModule,
-		InventoryModule,
 		SlapModule,
 		forwardRef(() => UserModule),
 	],
 	controllers: [
+		InventoryController,
 		CharacterController,
 	],
 	providers: [
 		...characterProviders,
 		AvatarService,
 		CharacterService,
+		InventoryService,
 	],
 })
 export class CharacterModule {

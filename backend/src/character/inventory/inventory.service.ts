@@ -33,7 +33,7 @@ export class InventoryService implements OnModuleInit {
 	async findAllWithCharacter(ownerId: string): Promise<Array<InventoryEntity>> {
 		return await this.inventories.createQueryBuilder("inventory")
 			.leftJoinAndSelect("inventory.owner", "owner")
-			.where("owner.id = inventory.ownerId", {ownerId})
+			.where("owner.id = :ownerId", {ownerId})
 			.getMany();
 	}
 

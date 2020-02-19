@@ -1,10 +1,11 @@
 import {Controller, Delete, Get, Logger, Param, Post, Put, UseGuards} from "@nestjs/common";
 import {InventoryService} from "./inventory.service";
-import {ApiBearerAuth, ApiCreatedResponse, ApiOkResponse} from "@nestjs/swagger";
+import {ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiTags} from "@nestjs/swagger";
 import {InventoryEntity} from "./inventory.entity";
 import {AuthGuard} from "@nestjs/passport";
 
-@Controller()
+@ApiTags("user")
+@Controller("inventory")
 export class InventoryController {
 	private readonly logger: Logger = new Logger(InventoryController.name);
 

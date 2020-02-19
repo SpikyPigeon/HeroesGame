@@ -21,6 +21,9 @@ export class CreateItemInfoDto implements CreateItemInfo {
 
 	@ApiProperty()
 	categoryId: number = 0;
+
+	@ApiProperty()
+	image: string = "";
 }
 
 export class UpdateItemInfoDto implements UpdateItemInfo {
@@ -83,4 +86,7 @@ export class UpdateItemInfoDto implements UpdateItemInfo {
 
 	@ApiProperty({required: false})
 	special: Object = {};
+
+	@ApiProperty({required: false})
+	image: string = "";
 }

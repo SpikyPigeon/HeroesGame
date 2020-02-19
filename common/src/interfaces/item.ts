@@ -28,4 +28,5 @@ export interface Item {
 	createdAt: Date;
 	updatedAt: Date;
 	stackLimit: number;
+	image: string;
 }

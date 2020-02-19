@@ -69,7 +69,7 @@ export class ItemController {
 	@Post()
 	async createItem(@Body() data: CreateItemInfoDto): Promise<ItemEntity> {
 		this.logger.log(`createItem`);
-		return await this.items.createItem(data.name, data.description, data.categoryId);
+		return await this.items.createItem(data.name, data.description, data.categoryId, data.image);
 	}
 
 	@ApiBearerAuth()

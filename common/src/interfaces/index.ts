@@ -37,4 +37,6 @@ export * from "./move-character-info";
 export * from "./square-content";
 
 export * from "./socket-payload";
-export * from "./chat-payload";
+export * from "./chat-response-payload";
+export * from "./chat-message-payload";
+export * from "./chat-move-payload";

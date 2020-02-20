@@ -51,10 +51,10 @@ export class SquareService {
 
 	async setImage(worldId: number, x: number, y: number, newImage: Partial<UpdateSquareImageInfo>): Promise<SquareEntity> {
 		const square = await this.findOne(worldId, x, y);
-		if(newImage.filenameImage){
+		if (newImage.filenameImage) {
 			square.image = newImage.filenameImage;
 		}
-		if(newImage.filenameIcon){
+		if (newImage.filenameIcon) {
 			square.icon = newImage.filenameIcon;
 		}
 		return await this.squares.save(square);

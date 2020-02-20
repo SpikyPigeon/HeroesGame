@@ -2,8 +2,8 @@ import {Injectable, Logger, OnModuleInit} from "@nestjs/common";
 import {ModuleRef} from "@nestjs/core";
 
 import {SocketPayload} from "heroes-common";
-import {UserService, AuthService, UserEntity} from "../user";
-import {CharacterService} from "../character";
+import {AuthService, UserEntity, UserService} from "../user";
+import {CharacterEntity, CharacterService} from "../character";
 
 @Injectable()
 export class SocketService implements OnModuleInit {
@@ -26,8 +26,12 @@ export class SocketService implements OnModuleInit {
 			const auth = await this.auth.verifyToken(payload.token);
 			this.logger.log(`validatePayload => ${auth.email}`);
 			return await this.users.findOneById(auth.sub);
-		} catch(e) {
+		} catch (e) {
 			throw new Error(e);
 		}
+	}
+
+	async getCharacter(user: string): Promise<CharacterEntity> {
+		return await this.characters.findMine(user);
 	}
 }

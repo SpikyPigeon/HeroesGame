@@ -85,7 +85,7 @@ export const WorldMapCard: FunctionComponent<WorldMapProps> = props => {
 			ctx.translate(offsetX, offsetY);
 			setTransform(ctx.getTransform().inverse());
 
-			for(let sq of world.squares) {
+			for (let sq of world.squares) {
 				const {x, y, icon} = sq;
 				if (icon && Reflect.has(icons, icon)) {
 					const img: HTMLImageElement = Reflect.get(icons, icon);
@@ -244,7 +244,7 @@ export const WorldMapCard: FunctionComponent<WorldMapProps> = props => {
 				<canvas
 					ref={canvas} className={classes.canvas}
 					style={{
-						backgroundImage: character.square.image ? `url('/assets/worlds/${character.square.image}')`:`url('/assets/worlds/${world?.world.bgImage}')`,
+						backgroundImage: character.square.image ? `url('/assets/worlds/${character.square.image}')` : `url('/assets/worlds/${world?.world.bgImage}')`,
 						backgroundRepeat: "no-repeat",
 						backgroundSize: "cover",
 						backgroundPosition: "center",

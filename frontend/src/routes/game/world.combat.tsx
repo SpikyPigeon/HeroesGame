@@ -1,4 +1,4 @@
-import {createElement, FunctionComponent, useEffect, useState, Fragment} from "react";
+import {createElement, FunctionComponent, useEffect, useState} from "react";
 import {red} from "@material-ui/core/colors";
 import {useList, useUpdate} from "react-use";
 import {
@@ -11,7 +11,7 @@ import {
 	Grid,
 	LinearProgress,
 	makeStyles,
-	Theme, Typography
+	Theme
 } from "@material-ui/core";
 
 import {useStoreActions, useStoreState} from "../../store";

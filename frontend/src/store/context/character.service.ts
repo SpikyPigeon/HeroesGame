@@ -1,5 +1,12 @@
-import {Avatar, CharacterInfo, MoveCharacterInfo, PlayerCharacter, UpdateCharacterInfo, CharacterInventory} from "heroes-common";
 import {Context} from "./index";
+import {
+	Avatar,
+	CharacterInfo,
+	CharacterInventory,
+	MoveCharacterInfo,
+	PlayerCharacter,
+	UpdateCharacterInfo
+} from "heroes-common";
 
 export class CharacterService {
 	static async listAllAvatars(): Promise<Array<Avatar>> {
@@ -68,7 +75,7 @@ export class CharacterService {
 		return response.data;
 	}
 
-	static async findInventory(id: string): Promise<Array<CharacterInventory>>{
+	static async findInventory(id: string): Promise<Array<CharacterInventory>> {
 		const response = await Context.get<Array<CharacterInventory>>(`/character/inventory/owner/${id}`);
 		return response.data;
 	}

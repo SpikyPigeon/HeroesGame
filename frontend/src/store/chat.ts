@@ -1,8 +1,9 @@
-import {action, Action, thunk, Thunk} from "easy-peasy";
+import {action, Action, thunk, Thunk, thunkOn, ThunkOn} from "easy-peasy";
 import io from "socket.io-client";
 
-import {ChatMessagePayload, ChatResponsePayload} from "heroes-common/src";
+import {ChatMessagePayload, ChatMovePayload, ChatResponsePayload} from "heroes-common/src";
 import Socket = SocketIOClient.Socket;
+import {AppStore} from "./index";
 
 export interface ChatStore {
 	socket: Socket | null;
@@ -16,6 +17,7 @@ export interface ChatStore {
 	connect: Thunk<ChatStore>;
 	disconnect: Thunk<ChatStore>;
 	send: Thunk<ChatStore, string>;
+	onMove: ThunkOn<ChatStore, any, AppStore>;
 }
 
 export const chatStore: ChatStore = {
@@ -66,4 +68,23 @@ export const chatStore: ChatStore = {
 			socket.emit("send-message", msg);
 		}
 	}),
+
+	onMove: thunkOn(
+		(actions, storeActions) => storeActions.character.moveTo,
+		(actions, payload, {getState}) => {
+			console.log("store.character.moveTo fired");
+			const token = localStorage.getItem("userJWT");
+			const socket = getState().socket;
+			if (socket && token) {
+				const data: ChatMovePayload = {
+					token,
+					world: payload.payload.worldId,
+					x: payload.payload.x,
+					y: payload.payload.y,
+				};
+				socket.emit("move-to", data);
+				actions.clearMessages();
+			}
+		},
+	),
 };

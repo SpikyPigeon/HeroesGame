@@ -60,12 +60,18 @@ interface InventorySlotProps {
 
 const InventorySlot: FunctionComponent<InventorySlotProps> = ({roll, quantity}) => {
 	const classes = useStyles();
-
-	if(!roll || !quantity){
+	console.log(roll);
+	console.log(quantity);
+	if(roll && quantity){
+		console.log("titties");
 		return <Card variant="outlined" classes={{root: classes.itemSlotCard}}>
 			<CardActionArea classes={{root: classes.itemSlotAction}}>
 				<CardContent>
-					<Typography>Slot</Typography>
+					<CardMedia
+						component="img"
+						image={`/assets/items/${roll.item.image}`}
+						height={128}
+					/>
 				</CardContent>
 			</CardActionArea>
 		</Card>;
@@ -74,11 +80,7 @@ const InventorySlot: FunctionComponent<InventorySlotProps> = ({roll, quantity}) 
 		return <Card variant="outlined" classes={{root: classes.itemSlotCard}}>
 			<CardActionArea classes={{root: classes.itemSlotAction}}>
 				<CardContent>
-					<CardMedia
-						component="img"
-						image={`/assets/items/${roll?.item.image}`}
-						height={128}
-					/>
+					<Typography>Slot</Typography>
 				</CardContent>
 			</CardActionArea>
 		</Card>;
@@ -181,7 +183,8 @@ const Hero: FunctionComponent = () => {
 				<CardContent>
 					<GridList cols={10} cellHeight={128}>
 						{[...Array(10).keys()].map(value => {
-							if(items.length - 1 >= value){
+							if(value <= items.length - 1){
+								console.log("I'm in your bag! " + value);
 								return <GridListTile key={value}>
 									<InventorySlot
 										roll={items[value].roll}

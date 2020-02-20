@@ -36,7 +36,7 @@ export const chatStore: ChatStore = {
 		state.messages = [...state.messages, payload];
 	}),
 
-	connect: thunk((state, payload, {getStoreState}) => {
+	connect: thunk((state, payload, {getStoreState, getStoreActions}) => {
 		state.disconnect();
 		const socket = io("/chat");
 		state.setSocket(socket);
@@ -55,6 +55,18 @@ export const chatStore: ChatStore = {
 				socket.emit("move-to", data);
 			}
 			socket.on("message-added", (payload: ChatResponsePayload) => {
+				const store = getStoreState();
+				if (store.user.user && token) {
+					const user = store.user.user;
+					if (user.id !== payload.userId) {
+						getStoreActions().notification.enqueue({
+							message: "New Chat message received",
+							options: {
+								variant: "success",
+							},
+						});
+					}
+				}
 				state.addMessage(payload);
 			});
 		});

@@ -17,6 +17,7 @@ export interface CharacterStore {
 	moveTo: Thunk<CharacterStore, MoveCharacterInfo>;
 
 	findInventory: Thunk<CharacterStore, string, any, {}, Promise<Array<CharacterInventory>>>;
+	updateInventory: Thunk<CharacterStore, { id: string; quantity: number; }, any, {}, Promise<CharacterInventory>>;
 }
 
 export const characterStore: CharacterStore = {
@@ -92,5 +93,14 @@ export const characterStore: CharacterStore = {
 
 	findInventory: thunk(async (state, payload) => {
 		return await CharacterService.findInventory(payload);
+	}),
+
+	updateInventory: thunk(async (state, payload) => {
+		const token = localStorage.getItem("userJWT");
+		if (token) {
+			return await CharacterService.updateInventory(token, payload.id, payload.quantity);
+		} else {
+			throw new Error("Not logged in!");
+		}
 	}),
 };

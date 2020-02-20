@@ -79,4 +79,13 @@ export class CharacterService {
 		const response = await Context.get<Array<CharacterInventory>>(`/character/inventory/owner/${id}`);
 		return response.data;
 	}
+
+	static async updateInventory(token: string, id: string, quantity: number): Promise<CharacterInventory>{
+		const response = await Context.put<CharacterInventory>(`/character/inventory/${id}/${quantity}`, null, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
+		return response.data;
+	}
 }

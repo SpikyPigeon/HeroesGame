@@ -1,5 +1,6 @@
-import {createElement, Fragment, FunctionComponent, useEffect, useState} from "react";
+import {createElement, forwardRef, Fragment, FunctionComponent, MouseEvent, useEffect, useState} from "react";
 import {
+	Badge,
 	Card,
 	CardActionArea,
 	CardContent,
@@ -9,12 +10,12 @@ import {
 	Grid,
 	GridList,
 	GridListTile,
-	makeStyles,
+	makeStyles, Menu, MenuItem,
 	Theme,
 	Typography
 } from "@material-ui/core";
 import {useStoreActions, useStoreState} from "../../store";
-import {useNavigation} from "react-navi";
+import {useLinkProps, useNavigation} from "react-navi";
 import {useList} from "react-use";
 import {CharacterInventory, ItemRoll} from "heroes-common/src";
 
@@ -34,6 +35,29 @@ const useStyles = makeStyles((theme: Theme) =>
 interface EquipmentSlotProps {
 	name: string;
 }
+
+interface AppMenuLinkProps {
+	text: string;
+	href: string;
+	onClick: () => void;
+}
+
+const AppMenuLink = forwardRef<any, AppMenuLinkProps>((props, ref) => {
+	const {text, href} = props;
+	const {onClick, ...linkProps} = useLinkProps({href});
+
+	return <MenuItem
+		ref={ref}
+		component="a"
+		onClick={(e: MouseEvent<HTMLAnchorElement>) => {
+			props.onClick();
+			onClick(e);
+		}}
+		{...linkProps}
+	>
+		{text}
+	</MenuItem>;
+});
 
 const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = props => {
 	const {name} = props;
@@ -60,23 +84,48 @@ interface InventorySlotProps {
 
 const InventorySlot: FunctionComponent<InventorySlotProps> = ({roll, quantity}) => {
 	const classes = useStyles();
-	console.log(roll);
-	console.log(quantity);
-	if(roll && quantity){
-		console.log("titties");
-		return <Card variant="outlined" classes={{root: classes.itemSlotCard}}>
-			<CardActionArea classes={{root: classes.itemSlotAction}}>
-				<CardContent>
-					<CardMedia
-						component="img"
-						image={`/assets/items/${roll.item.image}`}
-						height={128}
-					/>
-				</CardContent>
-			</CardActionArea>
-		</Card>;
-	}
-	else{
+	const [itemEl, setItemEl] = useState<null | HTMLElement>(null);
+	const handleItemClose = () => setItemEl(null);
+
+	if (roll && quantity) {
+		return <Fragment>
+			<Card variant="outlined" classes={{root: classes.itemSlotCard}}>
+				<Menu
+					keepMounted
+					anchorEl={itemEl}
+					open={Boolean(itemEl)}
+					onClose={handleItemClose}
+				>
+					{(roll.item.category.id == 5 || roll.item.category.parent?.id == 5) &&
+					<AppMenuLink text="Equip" href="/game/hero" onClick={handleItemClose}/>}
+					{roll.item.category.id == 2 &&
+					<AppMenuLink text="Inbibe" href="/game/hero" onClick={handleItemClose}/>}
+					{roll.item.category.id == 22 &&
+					<AppMenuLink text="Eat" href="/game/hero" onClick={handleItemClose}/>}
+					<AppMenuLink text="Discard" href="/game/hero" onClick={handleItemClose}/>
+				</Menu>
+				<CardActionArea classes={{root: classes.itemSlotAction}} onClick={e => setItemEl(e.currentTarget)}>
+					<CardContent>
+						<Badge
+							anchorOrigin={{
+								vertical: 'top',
+								horizontal: 'right',
+							}}
+							color='primary'
+							invisible={false}
+							badgeContent={quantity}
+						>
+							<CardMedia
+								component="img"
+								image={`/assets/items/${roll.item.image}`}
+								height={128}
+							/>
+						</Badge>
+					</CardContent>
+				</CardActionArea>
+			</Card>
+		</Fragment>;
+	} else {
 		return <Card variant="outlined" classes={{root: classes.itemSlotCard}}>
 			<CardActionArea classes={{root: classes.itemSlotAction}}>
 				<CardContent>
@@ -100,8 +149,7 @@ const Hero: FunctionComponent = () => {
 			await loadHero();
 			if (!currentHero) {
 				await nav.navigate("/");
-			}
-			else{
+			} else {
 				itemMod.push(...await loadItems(currentHero.id));
 			}
 		};
@@ -183,7 +231,7 @@ const Hero: FunctionComponent = () => {
 				<CardContent>
 					<GridList cols={10} cellHeight={128}>
 						{[...Array(10).keys()].map(value => {
-							if(value <= items.length - 1){
+							if (value <= items.length - 1) {
 								console.log("I'm in your bag! " + value);
 								return <GridListTile key={value}>
 									<InventorySlot
@@ -191,8 +239,7 @@ const Hero: FunctionComponent = () => {
 										quantity={items[value].quantity}
 									/>
 								</GridListTile>
-							}
-							else{
+							} else {
 								return <GridListTile key={value}>
 									<InventorySlot/>
 								</GridListTile>;

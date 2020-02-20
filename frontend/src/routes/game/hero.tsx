@@ -224,7 +224,7 @@ const Hero: FunctionComponent = () => {
 				</CardContent>
 			</Card>
 		</Grid>
-
+		
 		<Grid item lg={9}>
 			<Card>
 				<CardHeader title="Inventory"/>

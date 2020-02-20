@@ -17,7 +17,23 @@ import {
 import {useStoreActions, useStoreState} from "../../store";
 import {useLinkProps, useNavigation} from "react-navi";
 import {useList} from "react-use";
-import {CharacterInventory, ItemRoll} from "heroes-common/src";
+import {CharacterInventory, Item, ItemRoll} from "heroes-common/src";
+
+enum ItemType {
+	Consumable,
+	Equipment,
+	Other,
+}
+
+function getItemType(item: Item): ItemType {
+	if (item.category.parent?.name === "Consumable" || item.category.name === "Consumable") {
+		return ItemType.Consumable;
+	}
+	if (item.category.name === "Equipment" || item.category.parent?.name === "Equipment" || item.category.parent?.parent?.name === "Equipment") {
+		return ItemType.Equipment;
+	}
+	return ItemType.Other;
+}
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -87,9 +103,11 @@ const InventorySlot: FunctionComponent<InventorySlotProps> = ({slot, onUse}) => 
 	const [itemEl, setItemEl] = useState<null | HTMLElement>(null);
 	const handleItemClose = () => setItemEl(null);
 	const handleUse = () => {
-		if(onUse && slot){
+		if (onUse && slot) {
 			onUse(slot);
+			console.log(slot);
 		}
+
 		handleItemClose();
 	};
 
@@ -102,12 +120,10 @@ const InventorySlot: FunctionComponent<InventorySlotProps> = ({slot, onUse}) => 
 					open={Boolean(itemEl)}
 					onClose={handleItemClose}
 				>
-					{(slot.roll.item.category.id == 5 || slot.roll.item.category.parent?.id == 5) &&
+					{getItemType(slot.roll.item) == ItemType.Equipment &&
 					<AppMenuLink text="Equip" href="/game/hero" onClick={handleUse}/>}
-					{slot.roll.item.category.id == 2 &&
-					<AppMenuLink text="Inbibe" href="/game/hero" onClick={handleUse}/>}
-					{slot.roll.item.category.id == 22 &&
-					<AppMenuLink text="Eat" href="/game/hero" onClick={handleUse}/>}
+					{getItemType(slot.roll.item) == ItemType.Consumable &&
+					<AppMenuLink text="Use" href="/game/hero" onClick={handleUse}/>}
 					<AppMenuLink text="Discard" href="/game/hero" onClick={handleItemClose}/>
 				</Menu>
 				<CardActionArea classes={{root: classes.itemSlotAction}} onClick={e => setItemEl(e.currentTarget)}>
@@ -161,6 +177,10 @@ const Hero: FunctionComponent = () => {
 		};
 		req().catch(console.error);
 	}, []);
+
+	const handleUse = (slot: CharacterInventory) => {
+		console.log(getItemType(slot.roll.item));
+	};
 
 	if (!currentHero) {
 		return <Fragment/>;
@@ -238,11 +258,10 @@ const Hero: FunctionComponent = () => {
 					<GridList cols={10} cellHeight={128}>
 						{[...Array(10).keys()].map(value => {
 							if (value <= items.length - 1) {
-								console.log("I'm in your bag! " + value);
 								return <GridListTile key={value}>
 									<InventorySlot
 										slot={items[value]}
-										onUse={s => console.log(s)}
+										onUse={handleUse}
 									/>
 								</GridListTile>
 							} else {

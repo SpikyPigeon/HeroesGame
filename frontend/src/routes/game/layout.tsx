@@ -51,8 +51,9 @@ const useStyles = makeStyles((theme: Theme) =>
 			maxWidth: "18rem",
 			height: "20rem",
 			width: "18rem",
-			overflow: "auto",
+			overflowY: "auto",
 			padding: 8,
+			overflowWrap: "break-word",
 		},
 		chatParagraph: {
 			marginBottom: 8,
@@ -144,7 +145,7 @@ const GameChat: FunctionComponent = () => {
 				}/>
 				<CardContent classes={{root: classes.chatContent}}>
 					{messages.map((value, index) => (<Typography
-						variant="body2" paragraph key={index} classes={{paragraph: classes.chatParagraph}}
+						variant="body2" key={index} classes={{paragraph: classes.chatParagraph}}
 					>
 						<strong>{value.characterName}</strong> : {value.content}
 					</Typography>))}

@@ -14,7 +14,7 @@ export interface ChatStore {
 	clearMessages: Action<ChatStore>;
 	addMessage: Action<ChatStore, ChatResponsePayload>;
 
-	connect: Thunk<ChatStore>;
+	connect: Thunk<ChatStore, void, any, AppStore>;
 	disconnect: Thunk<ChatStore>;
 	send: Thunk<ChatStore, string>;
 	onMove: ThunkOn<ChatStore, any, AppStore>;
@@ -36,12 +36,24 @@ export const chatStore: ChatStore = {
 		state.messages = [...state.messages, payload];
 	}),
 
-	connect: thunk(state => {
+	connect: thunk((state, payload, {getStoreState}) => {
 		state.disconnect();
 		const socket = io("/chat");
 		state.setSocket(socket);
 
 		socket.on("connect", () => {
+			const token = localStorage.getItem("userJWT");
+			const store = getStoreState();
+			if (store.character.character && token) {
+				const char = store.character.character;
+				const data: ChatMovePayload = {
+					token,
+					world: char.square.world.id,
+					x: char.square.x,
+					y: char.square.y,
+				};
+				socket.emit("move-to", data);
+			}
 			socket.on("message-added", (payload: ChatResponsePayload) => {
 				state.addMessage(payload);
 			});

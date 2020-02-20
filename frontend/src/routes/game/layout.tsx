@@ -1,4 +1,4 @@
-import {createElement, forwardRef, Fragment, FunctionComponent, MouseEvent, useState} from "react";
+import {createElement, forwardRef, Fragment, FunctionComponent, MouseEvent, useEffect, useState} from "react";
 import {ChatSharp, CloseSharp, PersonSharp} from "@material-ui/icons";
 import {useLinkProps} from "react-navi";
 import {
@@ -22,6 +22,8 @@ import {
 } from "@material-ui/core";
 
 import {useStoreActions, useStoreState} from "../../store";
+import {PlayerCharacter} from "heroes-common";
+import {useUnmount} from "react-use";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -97,30 +99,42 @@ const AppMenuLink = forwardRef<any, AppMenuLinkProps>((props, ref) => {
 	</MenuItem>;
 });
 
-interface ChatMessage {
-	sender: string;
-	content: string;
-}
-
 const GameChat: FunctionComponent = () => {
 	const classes = useStyles();
 	const [chatVisible, setChatVisible] = useState(false);
+	const [prevChar, setPrevChar] = useState<PlayerCharacter | null>(null);
+	const [content, setContent] = useState("");
+	const currentChar = useStoreState(state => state.character.character);
+	const messages = useStoreState(state => state.chat.messages);
+	const sendMessage = useStoreActions(state => state.chat.send);
+	const chatConnect = useStoreActions(state => state.chat.connect);
+	const chatDisconnect = useStoreActions(state => state.chat.disconnect);
 
-	const messages: ChatMessage[] = [
-		{sender: "Stormist", content: "I'm level 98! What about you?"},
-		{sender: "SpikyPigeon", content: "I'm struggling with that freaking boss..."},
-		{sender: "Stormist", content: "Yeah... He's a bitch"},
-		{sender: "System", content: "Hello World!"},
-	];
+	useEffect(() => {
+		if (currentChar) {
+			if (!prevChar || prevChar.id !== currentChar.id) {
+				setPrevChar(currentChar);
+				chatConnect();
+			}
+		} else {
+			chatDisconnect();
+		}
+	}, [currentChar]);
 
-	return <Fragment><Zoom in={!chatVisible}>
-		<Fab
-			className={classes.chat} color="primary" centerRipple
-			onClick={() => setChatVisible(true)}
-		>
-			<ChatSharp/>
-		</Fab>
-	</Zoom>
+	useUnmount(() => {
+		setPrevChar(null);
+		chatDisconnect();
+	});
+
+	return <Fragment>
+		<Zoom in={!chatVisible}>
+			<Fab
+				className={classes.chat} color="primary" centerRipple
+				onClick={() => setChatVisible(true)}
+			>
+				<ChatSharp/>
+			</Fab>
+		</Zoom>
 		<Zoom in={chatVisible}>
 			<Card raised classes={{root: classes.chat}}>
 				<CardHeader title="Chat" action={
@@ -129,16 +143,25 @@ const GameChat: FunctionComponent = () => {
 					</IconButton>
 				}/>
 				<CardContent classes={{root: classes.chatContent}}>
-					{messages.map((value, index) => <Typography
+					{messages.map((value, index) => (<Typography
 						variant="body2" paragraph key={index} classes={{paragraph: classes.chatParagraph}}
 					>
-						<strong>{value.sender}</strong> : {value.content}
-					</Typography>)}
+						<strong>{value.characterName}</strong> : {value.content}
+					</Typography>))}
 				</CardContent>
-				<CardActions>
-					<TextField variant="filled" size="small" fullWidth name="chatText" label="Message"/>
-					<Button color="primary">Send</Button>
-				</CardActions>
+				<form onSubmit={e => {
+					e.preventDefault();
+					sendMessage(content);
+					setContent("");
+				}}>
+					<CardActions>
+						<TextField
+							variant="filled" size="small" fullWidth name="chatText" label="Message"
+							value={content} onChange={e => setContent(e.target.value)}
+						/>
+						<Button type="submit" color="primary">Send</Button>
+					</CardActions>
+				</form>
 			</Card>
 		</Zoom>
 	</Fragment>;

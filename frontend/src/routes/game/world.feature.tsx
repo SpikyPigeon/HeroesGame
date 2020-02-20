@@ -1,5 +1,5 @@
 import {createElement, Fragment, FunctionComponent, useState} from "react";
-import {Card, CardActionArea, CardContent, CardHeader, CardMedia, Grid, Typography} from "@material-ui/core";
+import {Card, CardContent, CardHeader} from "@material-ui/core";
 
 import {Structure} from "heroes-common";
 

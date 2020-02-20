@@ -2,8 +2,8 @@ import {action, Action, thunk, Thunk, thunkOn, ThunkOn} from "easy-peasy";
 import io from "socket.io-client";
 
 import {ChatMessagePayload, ChatMovePayload, ChatResponsePayload} from "heroes-common/src";
-import Socket = SocketIOClient.Socket;
 import {AppStore} from "./index";
+import Socket = SocketIOClient.Socket;
 
 export interface ChatStore {
 	socket: Socket | null;

@@ -90,7 +90,7 @@ export const characterStore: CharacterStore = {
 		}
 	}),
 
-	findInventory: thunk(async (state, payload) =>{
+	findInventory: thunk(async (state, payload) => {
 		return await CharacterService.findInventory(payload);
 	}),
 };

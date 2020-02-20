@@ -17,7 +17,7 @@ export class AuthService {
 	async verifyToken(token: string): Promise<AuthPayload> {
 		try {
 			return await this.jwt.verifyAsync<AuthPayload>(token);
-		} catch(e) {
+		} catch (e) {
 			throw new Error(e);
 		}
 	}

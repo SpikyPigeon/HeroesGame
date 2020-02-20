@@ -73,5 +73,4 @@ export class SquareController {
 		return await this.squares.setImage(worldId, x, y, newImage);
 	}
 
-
 }

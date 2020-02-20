@@ -7,10 +7,12 @@ import {
 	OnGatewayDisconnect,
 	SubscribeMessage,
 	WebSocketGateway,
-	WebSocketServer, WsException, WsResponse
+	WebSocketServer,
+	WsException,
+	WsResponse
 } from "@nestjs/websockets";
 
-import {ChatMovePayload, ChatMessagePayload, ChatResponsePayload} from "heroes-common";
+import {ChatMessagePayload, ChatMovePayload, ChatResponsePayload} from "heroes-common";
 import {SocketService} from "./socket.service";
 
 @WebSocketGateway({namespace: "chat"})
@@ -48,7 +50,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			});
 
 			client.join(`W${payload.world}X${payload.x}Y${payload.y}`);
-		} catch(e) {
+		} catch (e) {
 			throw new WsException(e);
 		}
 	}
@@ -68,7 +70,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			this.server
 				.in(`W${char.square.world.id}X${char.square.x}Y${char.square.y}`)
 				.emit("message-added", data);
-		} catch(e) {
+		} catch (e) {
 			throw new WsException(e);
 		}
 	}
@@ -82,7 +84,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				event: "echo",
 				data: `ECHO => ${payload.content}`,
 			};
-		} catch(e) {
+		} catch (e) {
 			throw new WsException(e);
 		}
 	}

@@ -22,7 +22,9 @@ export class ItemCategoryStart1580237734027 implements MigrationInterface {
 (17, 'Dagger', 'Items that can be equipped on a Character to deal slashing damage', 6),
 (18, 'Mace', 'Items that can be equipped on a Character to deal slashing damage', 6),
 (19, 'Spear', 'Items that can be equipped on a Character to deal slashing damage', 6),
-(20, 'Bow', 'Items that can be equipped on a Character to deal slashing damage', 6);`);
+(20, 'Bow', 'Items that can be equipped on a Character to deal slashing damage', 6),
+(21, 'Glove', 'Items that can be equipped on a Character to deal bludgeoning damage', 6),
+(22, 'Food', 'Items that can be eaten for sustenance and other beneficial effects, such as living.', 1);`);
     }
 
     public async down(runner: QueryRunner): Promise<any> {

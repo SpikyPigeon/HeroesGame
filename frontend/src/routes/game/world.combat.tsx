@@ -11,13 +11,14 @@ import {
 	Grid,
 	LinearProgress,
 	makeStyles,
-	Theme
+	Theme,
+	Tooltip
 } from "@material-ui/core";
 
 import {useStoreActions, useStoreState} from "../../store";
 import {config, Encounter, Monster} from "heroes-common";
 
-type MonsterFight = Monster & { health: number };
+type MonsterFight = Monster & { health: number; minGold: number; maxGold: number; };
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -40,33 +41,35 @@ const MonsterCard: FunctionComponent<MonsterCardProps> = ({index, monster, onFig
 	const {monster: cfg} = config;
 	const maxHealth = cfg.calculate.health(monster.vitality);
 
-	return <Card raised={raised} square>
-		<CardActionArea
-			onMouseEnter={() => setRaised(true)}
-			onMouseLeave={() => setRaised(false)}
-			onClick={() => onFight(index)}
-		>
-			<CardHeader title={monster.name}
-			            titleTypographyProps={{
-				            align: "center",
-				            variant: "subtitle1",
-				            noWrap: true,
-			            }}
-			            subheader={
-				            <LinearProgress
-					            variant="determinate"
-					            value={monster.health * 100 / maxHealth}
-					            classes={{bar: classes.healthBar}}
-				            />
-			            }
-			/>
-			<CardMedia
-				component="img"
-				image={`/assets/monsters/${monster.picture}`}
-				height={128}
-			/>
-		</CardActionArea>
-	</Card>;
+	return <Tooltip title={`Level : ${monster.level}`} placement="top" arrow>
+		<Card raised={raised} square>
+			<CardActionArea
+				onMouseEnter={() => setRaised(true)}
+				onMouseLeave={() => setRaised(false)}
+				onClick={() => onFight(index)}
+			>
+				<CardHeader title={monster.name}
+				            titleTypographyProps={{
+					            align: "center",
+					            variant: "subtitle1",
+					            noWrap: true,
+				            }}
+				            subheader={
+					            <LinearProgress
+						            variant="determinate"
+						            value={monster.health * 100 / maxHealth}
+						            classes={{bar: classes.healthBar}}
+					            />
+				            }
+				/>
+				<CardMedia
+					component="img"
+					image={`/assets/monsters/${monster.picture}`}
+					height={128}
+				/>
+			</CardActionArea>
+		</Card>
+	</Tooltip>;
 };
 
 interface WorldActionProps {
@@ -88,6 +91,8 @@ export const WorldAction: FunctionComponent<WorldActionProps> = ({encounters}) =
 				if (!m && monster.generate.hasSpawned(value.spawnChance)) {
 					m = {
 						health: monster.calculate.health(value.monster.vitality),
+						minGold: value.minGold,
+						maxGold: value.maxGold,
 						...value.monster,
 					};
 				}
@@ -109,12 +114,14 @@ export const WorldAction: FunctionComponent<WorldActionProps> = ({encounters}) =
 			const monCrit = config.monster.generate.isCritical;
 			const monDog = config.monster.generate.isDodge;
 			const monExp = config.monster.calculate.exp(monster.level, character.level);
+			const monGold = config.monster.generate.goldDrop(monster.minGold, monster.maxGold);
 
 			if (!monDog(monster.dexterity)) {
 				monster.health -= charAtk(character.strength, 0, 0, charCrit(character.dexterity, 0));
 				if (monster.health <= 0) {
 					updateChar({
 						experience: character.experience + monExp,
+						gold: character.gold + monGold,
 					});
 					monstersMod.removeAt(index);
 				} else if (!charDog(character.dexterity, 0)) {

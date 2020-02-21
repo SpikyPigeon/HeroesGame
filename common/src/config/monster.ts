@@ -17,6 +17,10 @@ export const monsterConfig = {
 			const dmg = Math.floor(Math.random() * (max - min + 1)) + min;
 			return isCritical ? dmg * 2 : dmg;
 		},
+
+		goldDrop(min: number, max: number): number {
+			return Math.floor(Math.random() * (max - min + 1)) + min;
+		},
 	},
 	calculate: {
 		exp(monsterLvl: number, playerLvl: number): number {

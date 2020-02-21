@@ -137,6 +137,7 @@ export const characterStore: CharacterStore = {
 			if (payload.roll.item.heal > 0) {
 				const maxHp = config.character.stats.calculate.health(char.vitality, 0);
 				const oldHp = char.currentHealth;
+				let qtyUsed: number = 0;
 				if (oldHp === maxHp) {
 					addSnack({
 						message: "Your health is already maxed!",
@@ -154,6 +155,7 @@ export const characterStore: CharacterStore = {
 							variant: "success"
 						}
 					});
+					qtyUsed++;
 				} else {
 					state.update({
 						currentHealth: oldHp + payload.roll.item.heal,
@@ -164,8 +166,9 @@ export const characterStore: CharacterStore = {
 							variant: "success"
 						}
 					});
+					qtyUsed++;
 				}
-				state.updateInventory({id: payload.id, quantity: payload.quantity - 1}).then(value => {
+				state.updateInventory({id: payload.id, quantity: payload.quantity - qtyUsed}).then(value => {
 					if(value.quantity <= 0){
 						state.deleteItem(value).catch(console.error);
 					}

@@ -29,11 +29,26 @@ export class EncounterService implements OnModuleInit {
 	}
 
 	async findAllDrops(): Promise<EncounterDropEntity[]> {
-		return await this.drops.find({relations: ["item"]});
+		return await this.drops.find({
+			relations: [
+				"item",
+				"item.category",
+				"item.category.parent",
+				"item.category.parent.parent",
+			],
+		});
 	}
 
 	async findOneDrop(id: number): Promise<EncounterDropEntity> {
-		return await this.drops.findOneOrFail({where: {id}, relations: ["item"]});
+		return await this.drops.findOneOrFail({
+			where: {id},
+			relations: [
+				"item",
+				"item.category",
+				"item.category.parent",
+				"item.category.parent.parent",
+			],
+		});
 	}
 
 	async createDrop(data: CreateDropInfo): Promise<EncounterDropEntity> {
@@ -52,28 +67,25 @@ export class EncounterService implements OnModuleInit {
 	}
 
 	async findAllEncounters(): Promise<EncounterEntity[]> {
-		return await this.encounters.find({
-			relations: ["square", "monster", "square.world", "monster.type", "drops", "drops.item"],
-		});
+		return await this.createQuery().getMany();
 	}
 
 	async findAllAtLocation(worldId: number, x: number, y: number): Promise<Array<EncounterEntity>> {
-		return await this.encounters.createQueryBuilder("enc")
-			.leftJoinAndSelect("enc.square", "sq")
-			.leftJoinAndSelect("sq.world", "world")
-			.leftJoinAndSelect("enc.monster", "monster")
-			.leftJoinAndSelect("monster.type", "monType")
-			.leftJoinAndSelect("enc.drops", "drops")
-			.leftJoinAndSelect("drops.item", "item")
-			.where("world.id = :worldId AND sq.x = :x AND sq.y = :y", {worldId, x, y})
+		return await this.createQuery()
+			.where("world.id = :worldId AND square.x = :x AND square.y = :y", {worldId, x, y})
 			.getMany();
 	}
 
 	async findOneEncounter(id: number): Promise<EncounterEntity> {
-		return await this.encounters.findOneOrFail({
-			relations: ["square", "monster", "square.world", "monster.type", "drops", "drops.item"],
-			where: {id},
-		});
+		const enc = await this.createQuery()
+			.where("enc.id = :id", {id})
+			.getOne();
+
+		if (enc) {
+			return enc;
+		} else {
+			throw new Error(`Encouter #${id} not found`);
+		}
 	}
 
 	async createEncounter(data: EncounterInfo): Promise<EncounterEntity> {
@@ -98,5 +110,18 @@ export class EncounterService implements OnModuleInit {
 			encounter.monster = await this.monsters.findOneMonster(newEncounter.monsterId);
 		}
 		return await this.encounters.save(encounter);
+	}
+
+	private createQuery() {
+		return this.encounters.createQueryBuilder("enc")
+			.leftJoinAndSelect("enc.square", "square")
+			.leftJoinAndSelect("square.world", "world")
+			.leftJoinAndSelect("enc.monster", "mon")
+			.leftJoinAndSelect("mon.type", "monType")
+			.leftJoinAndSelect("enc.drops", "drop")
+			.leftJoinAndSelect("drop.item", "item")
+			.leftJoinAndSelect("item.category", "cat")
+			.leftJoinAndSelect("cat.parent", "parent1")
+			.leftJoinAndSelect("parent1.parent", "parent2");
 	}
 }

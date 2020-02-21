@@ -96,7 +96,6 @@ export const chatStore: ChatStore = {
 	onMove: thunkOn(
 		(actions, storeActions) => storeActions.character.moveTo,
 		(actions, payload, {getState}) => {
-			console.log("store.character.moveTo fired");
 			const token = localStorage.getItem("userJWT");
 			const socket = getState().socket;
 			if (socket && token) {

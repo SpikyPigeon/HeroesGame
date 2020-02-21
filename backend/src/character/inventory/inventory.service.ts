@@ -43,7 +43,21 @@ export class InventoryService implements OnModuleInit {
 	}
 
 	async findOne(id: string): Promise<InventoryEntity> {
-		return await this.inventories.findOneOrFail(id, {relations: ["owner", "roll", "roll.item", "item.category"]});
+		//return await this.inventories.findOneOrFail(id, {relations: ["owner", "roll", "roll.item", "item.category"]});
+		const slot = await this.inventories.createQueryBuilder("inventory")
+			.leftJoinAndSelect("inventory.owner", "owner")
+			.leftJoinAndSelect("inventory.roll", "roll")
+			.leftJoinAndSelect("roll.item", "item")
+			.leftJoinAndSelect("item.category", "category")
+			.leftJoinAndSelect("category.parent", "parent1")
+			.leftJoinAndSelect("parent1.parent", "parent2")
+			.where("inventory.id = :id", {id})
+			.getOne();
+		if(slot){
+			return slot;
+		}else{
+			throw new Error("Item not found");
+		}
 	}
 
 	async update(id: string, quantity: number): Promise<InventoryEntity> {

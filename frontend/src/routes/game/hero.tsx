@@ -17,7 +17,23 @@ import {
 import {useStoreActions, useStoreState} from "../../store";
 import {useLinkProps, useNavigation} from "react-navi";
 import {useList} from "react-use";
-import {CharacterInventory, ItemRoll} from "heroes-common/src";
+import {CharacterInventory, Item, ItemRoll} from "heroes-common/src";
+
+enum ItemType {
+	Consumable,
+	Equipment,
+	Other,
+}
+
+function getItemType(item: Item): ItemType {
+	if (item.category.parent?.name === "Consumable" || item.category.name === "Consumable") {
+		return ItemType.Consumable;
+	}
+	if (item.category.name === "Equipment" || item.category.parent?.name === "Equipment" || item.category.parent?.parent?.name === "Equipment") {
+		return ItemType.Equipment;
+	}
+	return ItemType.Other;
+}
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -78,16 +94,24 @@ const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = props => {
 };
 
 interface InventorySlotProps {
-	roll?: ItemRoll;
-	quantity?: number;
+	slot?: CharacterInventory;
+	onUse?: (slot: CharacterInventory) => void;
 }
 
-const InventorySlot: FunctionComponent<InventorySlotProps> = ({roll, quantity}) => {
+const InventorySlot: FunctionComponent<InventorySlotProps> = ({slot, onUse}) => {
 	const classes = useStyles();
 	const [itemEl, setItemEl] = useState<null | HTMLElement>(null);
 	const handleItemClose = () => setItemEl(null);
+	const handleUse = () => {
+		if (onUse && slot) {
+			onUse(slot);
+			console.log(slot);
+		}
 
-	if (roll && quantity) {
+		handleItemClose();
+	};
+
+	if (slot) {
 		return <Fragment>
 			<Card variant="outlined" classes={{root: classes.itemSlotCard}}>
 				<Menu
@@ -96,12 +120,10 @@ const InventorySlot: FunctionComponent<InventorySlotProps> = ({roll, quantity}) 
 					open={Boolean(itemEl)}
 					onClose={handleItemClose}
 				>
-					{(roll.item.category.id == 5 || roll.item.category.parent?.id == 5) &&
-					<AppMenuLink text="Equip" href="/game/hero" onClick={handleItemClose}/>}
-					{roll.item.category.id == 2 &&
-					<AppMenuLink text="Inbibe" href="/game/hero" onClick={handleItemClose}/>}
-					{roll.item.category.id == 22 &&
-					<AppMenuLink text="Eat" href="/game/hero" onClick={handleItemClose}/>}
+					{getItemType(slot.roll.item) == ItemType.Equipment &&
+					<AppMenuLink text="Equip" href="/game/hero" onClick={handleUse}/>}
+					{getItemType(slot.roll.item) == ItemType.Consumable &&
+					<AppMenuLink text="Use" href="/game/hero" onClick={handleUse}/>}
 					<AppMenuLink text="Discard" href="/game/hero" onClick={handleItemClose}/>
 				</Menu>
 				<CardActionArea classes={{root: classes.itemSlotAction}} onClick={e => setItemEl(e.currentTarget)}>
@@ -113,11 +135,11 @@ const InventorySlot: FunctionComponent<InventorySlotProps> = ({roll, quantity}) 
 							}}
 							color='primary'
 							invisible={false}
-							badgeContent={quantity}
+							badgeContent={slot.quantity}
 						>
 							<CardMedia
 								component="img"
-								image={`/assets/items/${roll.item.image}`}
+								image={`/assets/items/${slot.roll.item.image}`}
 								height={128}
 							/>
 						</Badge>
@@ -155,6 +177,10 @@ const Hero: FunctionComponent = () => {
 		};
 		req().catch(console.error);
 	}, []);
+
+	const handleUse = (slot: CharacterInventory) => {
+		console.log(getItemType(slot.roll.item));
+	};
 
 	if (!currentHero) {
 		return <Fragment/>;
@@ -224,7 +250,7 @@ const Hero: FunctionComponent = () => {
 				</CardContent>
 			</Card>
 		</Grid>
-		
+
 		<Grid item lg={9}>
 			<Card>
 				<CardHeader title="Inventory"/>
@@ -232,11 +258,10 @@ const Hero: FunctionComponent = () => {
 					<GridList cols={10} cellHeight={128}>
 						{[...Array(10).keys()].map(value => {
 							if (value <= items.length - 1) {
-								console.log("I'm in your bag! " + value);
 								return <GridListTile key={value}>
 									<InventorySlot
-										roll={items[value].roll}
-										quantity={items[value].quantity}
+										slot={items[value]}
+										onUse={handleUse}
 									/>
 								</GridListTile>
 							} else {

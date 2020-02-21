@@ -36,7 +36,8 @@ export class InventoryService implements OnModuleInit {
 			.leftJoinAndSelect("inventory.roll", "roll")
 			.leftJoinAndSelect("roll.item", "item")
 			.leftJoinAndSelect("item.category", "category")
-			.leftJoinAndSelect("category.parent", "parent")
+			.leftJoinAndSelect("category.parent", "parent1")
+			.leftJoinAndSelect("parent1.parent", "parent2")
 			.where("owner.id = :ownerId", {ownerId})
 			.getMany();
 	}

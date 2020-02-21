@@ -1,4 +1,4 @@
-import {createElement, forwardRef, Fragment, FunctionComponent, MouseEvent, useEffect, useState} from "react";
+import {createElement, Fragment, FunctionComponent, useState} from "react";
 import {
 	Badge,
 	Card,
@@ -17,9 +17,9 @@ import {
 	Typography
 } from "@material-ui/core";
 import {store, useStoreActions, useStoreState} from "../../store";
-import {useLinkProps, useNavigation} from "react-navi";
-import {useList, useMount} from "react-use";
-import {CharacterEquipment, CharacterInventory, getItemType, ItemType} from "heroes-common/src";
+import {useNavigation} from "react-navi";
+import {useMount} from "react-use";
+import {CharacterInventory, getItemType, ItemType} from "heroes-common/src";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -40,31 +40,7 @@ interface EquipmentSlotProps {
 	onEquip?: (slot: CharacterEquipment) => void;
 }
 
-interface AppMenuLinkProps {
-	text: string;
-	href: string;
-	onClick: () => void;
-}
-
-const AppMenuLink = forwardRef<any, AppMenuLinkProps>((props, ref) => {
-	const {text, href} = props;
-	const {onClick, ...linkProps} = useLinkProps({href});
-
-	return <MenuItem
-		ref={ref}
-		component="a"
-		onClick={(e: MouseEvent<HTMLAnchorElement>) => {
-			props.onClick();
-			onClick(e);
-		}}
-		{...linkProps}
-	>
-		{text}
-	</MenuItem>;
-});
-
 const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = ({name, slot, onEquip}) => {
-	//const {name} = props;
 	const classes = useStyles();
 	const [raised, setRaised] = useState(false);
 
@@ -77,7 +53,7 @@ const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = ({name, slot, onEqu
 					onMouseLeave={() => setRaised(false)}
 				>
 					<CardContent>
-						<Typography>{slot?.leftHandSlot.item.name}</Typography>
+						<Typography>{slot.leftHandSlot.item.name}</Typography>
 					</CardContent>
 				</CardActionArea>
 			</Card>
@@ -122,21 +98,37 @@ const InventorySlot: FunctionComponent<InventorySlotProps> = ({slot, onUse}) => 
 
 	if (slot) {
 		return <Fragment>
+			<Menu
+				keepMounted
+				anchorOrigin={{
+					vertical: "top",
+					horizontal: "center",
+				}}
+				transformOrigin={{
+					vertical: "top",
+					horizontal: "center",
+				}}
+				anchorEl={itemEl}
+				open={Boolean(itemEl)}
+				onClose={handleItemClose}
+			>
+				{
+					getItemType(slot.roll.item) == ItemType.Equipment &&
+					<MenuItem onClick={handleUse}>Equip</MenuItem>
+				}
+				{
+					getItemType(slot.roll.item) == ItemType.Consumable &&
+					<MenuItem onClick={handleUse}>Use</MenuItem>
+				}
+				<MenuItem onClick={handleItemClose}>Discard One</MenuItem>
+				<MenuItem onClick={handleItemClose}>Discard All</MenuItem>
+			</Menu>
+
 			<Card variant="outlined" classes={{root: classes.itemSlotCard}}>
-				<Menu
-					keepMounted
-					anchorEl={itemEl}
-					open={Boolean(itemEl)}
-					onClose={handleItemClose}
+				<CardActionArea
+					classes={{root: classes.itemSlotAction}}
+					onClick={e => setItemEl(e.currentTarget.parentElement)}
 				>
-					{getItemType(slot.roll.item) == ItemType.Equipment &&
-					<AppMenuLink text="Equip" href="/game/hero" onClick={handleUse}/>}
-					{getItemType(slot.roll.item) == ItemType.Consumable &&
-					<AppMenuLink text="Use" href="/game/hero" onClick={handleUse}/>}
-					<AppMenuLink text="Discard One" href="/game/hero" onClick={handleItemClose}/>
-					<AppMenuLink text="Discard All" href="/game/hero" onClick={handleItemClose}/>
-				</Menu>
-				<CardActionArea classes={{root: classes.itemSlotAction}} onClick={e => setItemEl(e.currentTarget)}>
 					<CardContent>
 						<Badge
 							anchorOrigin={{
@@ -144,7 +136,7 @@ const InventorySlot: FunctionComponent<InventorySlotProps> = ({slot, onUse}) => 
 								horizontal: 'right',
 							}}
 							color='primary'
-							invisible={getItemType(slot.roll.item) == ItemType.Equipment}
+							invisible={slot.quantity <= 1}
 							badgeContent={slot.quantity}
 						>
 							<CardMedia

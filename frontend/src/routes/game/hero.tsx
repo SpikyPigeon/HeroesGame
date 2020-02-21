@@ -1,4 +1,4 @@
-import {createElement, forwardRef, Fragment, FunctionComponent, MouseEvent, useEffect, useState} from "react";
+import {createElement, forwardRef, Fragment, FunctionComponent, MouseEvent, useState} from "react";
 import {
 	Badge,
 	Card,
@@ -18,7 +18,7 @@ import {
 } from "@material-ui/core";
 import {store, useStoreActions, useStoreState} from "../../store";
 import {useLinkProps, useNavigation} from "react-navi";
-import {useList, useMount} from "react-use";
+import {useMount} from "react-use";
 import {CharacterInventory, getItemType, ItemType} from "heroes-common/src";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -104,21 +104,33 @@ const InventorySlot: FunctionComponent<InventorySlotProps> = ({slot, onUse}) => 
 
 	if (slot) {
 		return <Fragment>
+			<Menu
+				keepMounted
+				anchorOrigin={{
+					vertical: "top",
+					horizontal: "center",
+				}}
+				transformOrigin={{
+					vertical: "top",
+					horizontal: "center",
+				}}
+				anchorEl={itemEl}
+				open={Boolean(itemEl)}
+				onClose={handleItemClose}
+			>
+				{getItemType(slot.roll.item) == ItemType.Equipment &&
+				<AppMenuLink text="Equip" href="/game/hero" onClick={handleUse}/>}
+				{getItemType(slot.roll.item) == ItemType.Consumable &&
+				<AppMenuLink text="Use" href="/game/hero" onClick={handleUse}/>}
+				<AppMenuLink text="Discard One" href="/game/hero" onClick={handleItemClose}/>
+				<AppMenuLink text="Discard All" href="/game/hero" onClick={handleItemClose}/>
+			</Menu>
+
 			<Card variant="outlined" classes={{root: classes.itemSlotCard}}>
-				<Menu
-					keepMounted
-					anchorEl={itemEl}
-					open={Boolean(itemEl)}
-					onClose={handleItemClose}
+				<CardActionArea
+					classes={{root: classes.itemSlotAction}}
+					onClick={e => setItemEl(e.currentTarget.parentElement)}
 				>
-					{getItemType(slot.roll.item) == ItemType.Equipment &&
-					<AppMenuLink text="Equip" href="/game/hero" onClick={handleUse}/>}
-					{getItemType(slot.roll.item) == ItemType.Consumable &&
-					<AppMenuLink text="Use" href="/game/hero" onClick={handleUse}/>}
-					<AppMenuLink text="Discard One" href="/game/hero" onClick={handleItemClose}/>
-					<AppMenuLink text="Discard All" href="/game/hero" onClick={handleItemClose}/>
-				</Menu>
-				<CardActionArea classes={{root: classes.itemSlotAction}} onClick={e => setItemEl(e.currentTarget)}>
 					<CardContent>
 						<Badge
 							anchorOrigin={{

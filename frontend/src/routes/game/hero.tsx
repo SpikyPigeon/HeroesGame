@@ -19,7 +19,7 @@ import {
 import {store, useStoreActions, useStoreState} from "../../store";
 import {useLinkProps, useNavigation} from "react-navi";
 import {useList, useMount} from "react-use";
-import {CharacterInventory, getItemType, ItemType} from "heroes-common/src";
+import {CharacterEquipment, CharacterInventory, getItemType, ItemType} from "heroes-common/src";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -36,6 +36,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface EquipmentSlotProps {
 	name: string;
+	slot?: CharacterEquipment;
+	onEquip?: (slot: CharacterEquipment) => void;
 }
 
 interface AppMenuLinkProps {
@@ -61,22 +63,38 @@ const AppMenuLink = forwardRef<any, AppMenuLinkProps>((props, ref) => {
 	</MenuItem>;
 });
 
-const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = props => {
-	const {name} = props;
+const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = ({name, slot, onEquip}) => {
+	//const {name} = props;
 	const classes = useStyles();
 	const [raised, setRaised] = useState(false);
 
-	return <Card raised={raised} classes={{root: classes.itemSlotCard}}>
-		<CardActionArea
-			classes={{root: classes.itemSlotAction}}
-			onMouseEnter={() => setRaised(true)}
-			onMouseLeave={() => setRaised(false)}
-		>
-			<CardContent>
-				<Typography>{name}</Typography>
-			</CardContent>
-		</CardActionArea>
-	</Card>
+	if (slot) {
+		return <Fragment>
+			<Card raised={raised} classes={{root: classes.itemSlotCard}}>
+				<CardActionArea
+					classes={{root: classes.itemSlotAction}}
+					onMouseEnter={() => setRaised(true)}
+					onMouseLeave={() => setRaised(false)}
+				>
+					<CardContent>
+						<Typography>{slot?.leftHandSlot.item.name}</Typography>
+					</CardContent>
+				</CardActionArea>
+			</Card>
+		</Fragment>;
+	} else {
+		return <Card raised={raised} classes={{root: classes.itemSlotCard}}>
+			<CardActionArea
+				classes={{root: classes.itemSlotAction}}
+				onMouseEnter={() => setRaised(true)}
+				onMouseLeave={() => setRaised(false)}
+			>
+				<CardContent>
+					<Typography>{name}</Typography>
+				</CardContent>
+			</CardActionArea>
+		</Card>;
+	}
 };
 
 interface InventorySlotProps {
@@ -86,7 +104,7 @@ interface InventorySlotProps {
 
 const InventorySlot: FunctionComponent<InventorySlotProps> = ({slot, onUse}) => {
 	const classes = useStyles();
-	const discard = useStoreActions(state => state.character.deleteItem)
+	const discard = useStoreActions(state => state.character.deleteItem);
 	const [itemEl, setItemEl] = useState<null | HTMLElement>(null);
 	const handleItemClose = () => setItemEl(null);
 	const handleUse = () => {
@@ -100,7 +118,7 @@ const InventorySlot: FunctionComponent<InventorySlotProps> = ({slot, onUse}) => 
 		if (slot) {
 
 		}
-	}
+	};
 
 	if (slot) {
 		return <Fragment>
@@ -226,7 +244,9 @@ const Hero: FunctionComponent = () => {
 
 							<Grid container item lg={2} direction="column" spacing={2}>
 								<Grid item>
-									<EquipmentSlot name="Left Hand"/>
+									<EquipmentSlot
+										name="Left Hand"
+									/>
 								</Grid>
 								<Grid item>
 									<EquipmentSlot name="Right Hand"/>

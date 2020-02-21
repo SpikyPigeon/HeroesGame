@@ -6,14 +6,16 @@ import {
 	ItemType,
 	MoveCharacterInfo,
 	PlayerCharacter,
-	UpdateCharacterInfo
+	UpdateCharacterInfo,
+	CharacterInventory
 } from "heroes-common";
+
 import {CharacterService} from "./context";
-import {CharacterInventory} from "heroes-common/src";
 import {AppStore} from "./index";
 
 export interface CharacterStore {
 	character: PlayerCharacter | null;
+	inventory: Array<CharacterInventory>;
 
 	listAvatars: Thunk<CharacterStore, void, any, {}, Promise<Array<Avatar>>>;
 	getAvatar: Thunk<CharacterStore, number, any, {}, Promise<Avatar>>;
@@ -25,7 +27,7 @@ export interface CharacterStore {
 	create: Thunk<CharacterStore, CharacterInfo>;
 	moveTo: Thunk<CharacterStore, MoveCharacterInfo>;
 
-	findInventory: Thunk<CharacterStore, string, any, {}, Promise<Array<CharacterInventory>>>;
+	setInventory: Action<CharacterStore, Array<CharacterInventory>>;
 	updateInventory: Thunk<CharacterStore, { id: string; quantity: number; }, any, {}, Promise<CharacterInventory>>;
 	deleteItem: Thunk<CharacterStore, CharacterInventory>;
 
@@ -34,6 +36,7 @@ export interface CharacterStore {
 
 export const characterStore: CharacterStore = {
 	character: null,
+	inventory: [],
 
 	listAvatars: thunk(async () => {
 		return await CharacterService.listAllAvatars();
@@ -67,10 +70,15 @@ export const characterStore: CharacterStore = {
 		}
 	}),
 
-	getMine: thunk(async state => {
+	getMine: thunk(async (state, payload, {getState}) => {
 		const token = localStorage.getItem("userJWT");
 		if (token) {
 			state.setCharacter(await CharacterService.findMine(token));
+
+			const char = getState().character;
+			if (char) {
+				state.setInventory(await CharacterService.findInventory(char.id));
+			}
 		} else {
 			throw new Error("Not logged in!");
 		}
@@ -103,14 +111,17 @@ export const characterStore: CharacterStore = {
 		}
 	}),
 
-	findInventory: thunk(async (state, payload) => {
-		return await CharacterService.findInventory(payload);
+	setInventory: action((state, payload) => {
+		state.inventory = [...payload];
 	}),
 
 	updateInventory: thunk(async (state, payload) => {
 		const token = localStorage.getItem("userJWT");
 		if (token) {
-			return await CharacterService.updateInventory(token, payload.id, payload.quantity);
+			const slot = await CharacterService.updateInventory(token, payload.id, payload.quantity);
+
+			await state.getMine();
+			return slot;
 		} else {
 			throw new Error("Not logged in!");
 		}
@@ -122,6 +133,8 @@ export const characterStore: CharacterStore = {
 			if(!await CharacterService.deleteInventory(token, payload.id)){
 				throw new Error("Could not delete item");
 			}
+
+			await state.getMine();
 		}
 		else{
 			throw new Error("Not logged in!");

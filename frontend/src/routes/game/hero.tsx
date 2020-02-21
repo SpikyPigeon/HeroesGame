@@ -40,8 +40,7 @@ interface EquipmentSlotProps {
 	onEquip?: (slot: CharacterEquipment) => void;
 }
 
-const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = props => {
-	const {name} = props;
+const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = ({name, slot, onEquip}) => {
 	const classes = useStyles();
 	const [raised, setRaised] = useState(false);
 
@@ -54,7 +53,7 @@ const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = props => {
 					onMouseLeave={() => setRaised(false)}
 				>
 					<CardContent>
-						<Typography>{slot?.leftHandSlot.item.name}</Typography>
+						<Typography>{slot.leftHandSlot.item.name}</Typography>
 					</CardContent>
 				</CardActionArea>
 			</Card>

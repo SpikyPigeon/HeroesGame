@@ -132,7 +132,7 @@ const InventorySlot: FunctionComponent<InventorySlotProps> = ({slot, onUse}) => 
 							<CardMedia
 								component="img"
 								image={`/assets/items/${slot.roll.item.image}`}
-								height={128}
+								height={94}
 							/>
 						</Badge>
 					</CardContent>

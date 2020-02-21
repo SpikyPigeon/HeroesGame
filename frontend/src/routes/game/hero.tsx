@@ -147,13 +147,12 @@ const InventorySlot: FunctionComponent<InventorySlotProps> = ({slot, onUse}) => 
 const Hero: FunctionComponent = () => {
 	const classes = useStyles();
 	const currentHero = useStoreState(state => state.character.character);
+	const items = useStoreState(state => state.character.inventory);
 	const loadHero = useStoreActions(state => state.character.getMine);
-	const loadItems = useStoreActions(state => state.character.findInventory);
 	const addSnack = useStoreActions(state => state.notification.enqueue);
 	const updateHero = useStoreActions(state => state.character.update);
 	const consumeItem = useStoreActions(state => state.character.consumeItem);
 	const nav = useNavigation();
-	const [items, itemMod] = useList<CharacterInventory>([]);
 
 	useMount(() => {
 		if (!currentHero) {
@@ -169,15 +168,6 @@ const Hero: FunctionComponent = () => {
 		}
 	});
 
-	useEffect(() => {
-		if (currentHero) {
-			loadItems(currentHero.id).then(value => {
-				itemMod.clear();
-				itemMod.push(...value);
-			}).catch(console.error);
-		}
-	}, [currentHero]);
-
 	const handleUse = (slot: CharacterInventory) => {
 		if (currentHero) {
 			const it = getItemType(slot.roll.item);
@@ -188,10 +178,6 @@ const Hero: FunctionComponent = () => {
 				case ItemType.Equipment:
 
 			}
-			loadItems(currentHero.id).then(value => {
-				itemMod.clear();
-				itemMod.push(...value);
-			}).catch(console.error);
 		}
 	};
 

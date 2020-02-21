@@ -39,11 +39,11 @@ export class InventoryService implements OnModuleInit {
 			.leftJoinAndSelect("category.parent", "parent1")
 			.leftJoinAndSelect("parent1.parent", "parent2")
 			.where("owner.id = :ownerId", {ownerId})
+			.orderBy("item.id", "ASC")
 			.getMany();
 	}
 
 	async findOne(id: string): Promise<InventoryEntity> {
-		//return await this.inventories.findOneOrFail(id, {relations: ["owner", "roll", "roll.item", "item.category"]});
 		const slot = await this.inventories.createQueryBuilder("inventory")
 			.leftJoinAndSelect("inventory.owner", "owner")
 			.leftJoinAndSelect("inventory.roll", "roll")

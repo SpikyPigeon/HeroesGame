@@ -36,6 +36,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface EquipmentSlotProps {
 	name: string;
+	slot?: CharacterEquipment;
+	onEquip?: (slot: CharacterEquipment) => void;
 }
 
 const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = props => {
@@ -43,17 +45,33 @@ const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = props => {
 	const classes = useStyles();
 	const [raised, setRaised] = useState(false);
 
-	return <Card raised={raised} classes={{root: classes.itemSlotCard}}>
-		<CardActionArea
-			classes={{root: classes.itemSlotAction}}
-			onMouseEnter={() => setRaised(true)}
-			onMouseLeave={() => setRaised(false)}
-		>
-			<CardContent>
-				<Typography>{name}</Typography>
-			</CardContent>
-		</CardActionArea>
-	</Card>
+	if (slot) {
+		return <Fragment>
+			<Card raised={raised} classes={{root: classes.itemSlotCard}}>
+				<CardActionArea
+					classes={{root: classes.itemSlotAction}}
+					onMouseEnter={() => setRaised(true)}
+					onMouseLeave={() => setRaised(false)}
+				>
+					<CardContent>
+						<Typography>{slot?.leftHandSlot.item.name}</Typography>
+					</CardContent>
+				</CardActionArea>
+			</Card>
+		</Fragment>;
+	} else {
+		return <Card raised={raised} classes={{root: classes.itemSlotCard}}>
+			<CardActionArea
+				classes={{root: classes.itemSlotAction}}
+				onMouseEnter={() => setRaised(true)}
+				onMouseLeave={() => setRaised(false)}
+			>
+				<CardContent>
+					<Typography>{name}</Typography>
+				</CardContent>
+			</CardActionArea>
+		</Card>;
+	}
 };
 
 interface InventorySlotProps {
@@ -219,7 +237,9 @@ const Hero: FunctionComponent = () => {
 
 							<Grid container item lg={2} direction="column" spacing={2}>
 								<Grid item>
-									<EquipmentSlot name="Left Hand"/>
+									<EquipmentSlot
+										name="Left Hand"
+									/>
 								</Grid>
 								<Grid item>
 									<EquipmentSlot name="Right Hand"/>

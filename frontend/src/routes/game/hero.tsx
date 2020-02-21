@@ -10,14 +10,16 @@ import {
 	Grid,
 	GridList,
 	GridListTile,
-	makeStyles, Menu, MenuItem,
+	makeStyles,
+	Menu,
+	MenuItem,
 	Theme,
 	Typography
 } from "@material-ui/core";
 import {store, useStoreActions, useStoreState} from "../../store";
 import {useLinkProps, useNavigation} from "react-navi";
 import {useList, useMount} from "react-use";
-import {CharacterInventory, config, getItemType, Item, ItemRoll, ItemType} from "heroes-common/src";
+import {CharacterInventory, getItemType, ItemType} from "heroes-common/src";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -149,6 +151,7 @@ const Hero: FunctionComponent = () => {
 	const loadItems = useStoreActions(state => state.character.findInventory);
 	const addSnack = useStoreActions(state => state.notification.enqueue);
 	const updateHero = useStoreActions(state => state.character.update);
+	const consumeItem = useStoreActions(state => state.character.consumeItem);
 	const nav = useNavigation();
 	const [items, itemMod] = useList<CharacterInventory>([]);
 
@@ -180,39 +183,15 @@ const Hero: FunctionComponent = () => {
 			const it = getItemType(slot.roll.item);
 			switch (it) {
 				case ItemType.Consumable:
-					if (slot.roll.item.heal > 0) {
-						const maxHp = config.character.stats.calculate.health(currentHero.vitality, 0);
-						const oldHp = currentHero.currentHealth;
-						if (oldHp === maxHp) {
-							addSnack({
-								message: "Your health is already maxed!",
-								options: {
-									variant: "warning"
-								}
-							})
-						} else if ((maxHp - oldHp) < slot.roll.item.heal) {
-							updateHero({
-								currentHealth: maxHp,
-							});
-							addSnack({
-								message: "You gained " + (maxHp - oldHp) + " health points. Your health is fully restored!",
-								options: {
-									variant: "success"
-								}
-							});
-						} else {
-							updateHero({
-								currentHealth: oldHp + slot.roll.item.heal,
-							});
-							addSnack({
-								message: "You gained " + (slot.roll.item.heal) + " health points. " + (currentHero.currentHealth === maxHp && "Your health is fully restored!"),
-								options: {
-									variant: "success"
-								}
-							});
-						}
-					}
+					consumeItem(slot);
+					break;
+				case ItemType.Equipment:
+
 			}
+			loadItems(currentHero.id).then(value => {
+				itemMod.clear();
+				itemMod.push(...value);
+			}).catch(console.error);
 		}
 	};
 

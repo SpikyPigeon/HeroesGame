@@ -88,4 +88,13 @@ export class CharacterService {
 		});
 		return response.data;
 	}
+
+	static async deleteInventory(token: string, id: string): Promise<boolean>{
+		const response = await Context.delete(`/character/inventory/${id}`, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
+		return response.status === 200;
+	}
 }

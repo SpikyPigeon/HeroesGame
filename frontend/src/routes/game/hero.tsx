@@ -1,4 +1,4 @@
-import {createElement, forwardRef, Fragment, FunctionComponent, MouseEvent, useState} from "react";
+import {createElement, Fragment, FunctionComponent, useState} from "react";
 import {
 	Badge,
 	Card,
@@ -17,7 +17,7 @@ import {
 	Typography
 } from "@material-ui/core";
 import {store, useStoreActions, useStoreState} from "../../store";
-import {useLinkProps, useNavigation} from "react-navi";
+import {useNavigation} from "react-navi";
 import {useMount} from "react-use";
 import {CharacterInventory, getItemType, ItemType} from "heroes-common/src";
 
@@ -37,29 +37,6 @@ const useStyles = makeStyles((theme: Theme) =>
 interface EquipmentSlotProps {
 	name: string;
 }
-
-interface AppMenuLinkProps {
-	text: string;
-	href: string;
-	onClick: () => void;
-}
-
-const AppMenuLink = forwardRef<any, AppMenuLinkProps>((props, ref) => {
-	const {text, href} = props;
-	const {onClick, ...linkProps} = useLinkProps({href});
-
-	return <MenuItem
-		ref={ref}
-		component="a"
-		onClick={(e: MouseEvent<HTMLAnchorElement>) => {
-			props.onClick();
-			onClick(e);
-		}}
-		{...linkProps}
-	>
-		{text}
-	</MenuItem>;
-});
 
 const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = props => {
 	const {name} = props;
@@ -86,7 +63,7 @@ interface InventorySlotProps {
 
 const InventorySlot: FunctionComponent<InventorySlotProps> = ({slot, onUse}) => {
 	const classes = useStyles();
-	const discard = useStoreActions(state => state.character.deleteItem)
+	const discard = useStoreActions(state => state.character.deleteItem);
 	const [itemEl, setItemEl] = useState<null | HTMLElement>(null);
 	const handleItemClose = () => setItemEl(null);
 	const handleUse = () => {
@@ -100,7 +77,7 @@ const InventorySlot: FunctionComponent<InventorySlotProps> = ({slot, onUse}) => 
 		if (slot) {
 
 		}
-	}
+	};
 
 	if (slot) {
 		return <Fragment>
@@ -118,12 +95,16 @@ const InventorySlot: FunctionComponent<InventorySlotProps> = ({slot, onUse}) => 
 				open={Boolean(itemEl)}
 				onClose={handleItemClose}
 			>
-				{getItemType(slot.roll.item) == ItemType.Equipment &&
-				<AppMenuLink text="Equip" href="/game/hero" onClick={handleUse}/>}
-				{getItemType(slot.roll.item) == ItemType.Consumable &&
-				<AppMenuLink text="Use" href="/game/hero" onClick={handleUse}/>}
-				<AppMenuLink text="Discard One" href="/game/hero" onClick={handleItemClose}/>
-				<AppMenuLink text="Discard All" href="/game/hero" onClick={handleItemClose}/>
+				{
+					getItemType(slot.roll.item) == ItemType.Equipment &&
+					<MenuItem onClick={handleUse}>Equip</MenuItem>
+				}
+				{
+					getItemType(slot.roll.item) == ItemType.Consumable &&
+					<MenuItem onClick={handleUse}>Use</MenuItem>
+				}
+				<MenuItem onClick={handleItemClose}>Discard One</MenuItem>
+				<MenuItem onClick={handleItemClose}>Discard All</MenuItem>
 			</Menu>
 
 			<Card variant="outlined" classes={{root: classes.itemSlotCard}}>
@@ -138,7 +119,7 @@ const InventorySlot: FunctionComponent<InventorySlotProps> = ({slot, onUse}) => 
 								horizontal: 'right',
 							}}
 							color='primary'
-							invisible={getItemType(slot.roll.item) == ItemType.Equipment}
+							invisible={slot.quantity <= 1}
 							badgeContent={slot.quantity}
 						>
 							<CardMedia

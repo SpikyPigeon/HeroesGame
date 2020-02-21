@@ -18,7 +18,7 @@ import {
 import {useStoreActions, useStoreState} from "../../store";
 import {config, Encounter, Monster} from "heroes-common";
 
-type MonsterFight = Monster & { health: number };
+type MonsterFight = Monster & { health: number; minGold: number; maxGold: number; };
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -91,6 +91,8 @@ export const WorldAction: FunctionComponent<WorldActionProps> = ({encounters}) =
 				if (!m && monster.generate.hasSpawned(value.spawnChance)) {
 					m = {
 						health: monster.calculate.health(value.monster.vitality),
+						minGold: value.minGold,
+						maxGold: value.maxGold,
 						...value.monster,
 					};
 				}
@@ -112,12 +114,14 @@ export const WorldAction: FunctionComponent<WorldActionProps> = ({encounters}) =
 			const monCrit = config.monster.generate.isCritical;
 			const monDog = config.monster.generate.isDodge;
 			const monExp = config.monster.calculate.exp(monster.level, character.level);
+			const monGold = config.monster.generate.goldDrop(monster.minGold, monster.maxGold);
 
 			if (!monDog(monster.dexterity)) {
 				monster.health -= charAtk(character.strength, 0, 0, charCrit(character.dexterity, 0));
 				if (monster.health <= 0) {
 					updateChar({
 						experience: character.experience + monExp,
+						gold: character.gold + monGold,
 					});
 					monstersMod.removeAt(index);
 				} else if (!charDog(character.dexterity, 0)) {

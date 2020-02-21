@@ -179,7 +179,14 @@ const Hero: FunctionComponent = () => {
 	}, []);
 
 	const handleUse = (slot: CharacterInventory) => {
-		console.log(getItemType(slot.roll.item));
+		//console.log(getItemType(slot.roll.item));
+		const it = getItemType(slot.roll.item);
+		switch (it) {
+			case ItemType.Consumable:
+				if(slot.roll.item.heal){
+					
+				}
+		}
 	};
 
 	if (!currentHero) {

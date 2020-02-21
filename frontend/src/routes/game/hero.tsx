@@ -14,9 +14,9 @@ import {
 	Theme,
 	Typography
 } from "@material-ui/core";
-import {useStoreActions, useStoreState} from "../../store";
+import {store, useStoreActions, useStoreState} from "../../store";
 import {useLinkProps, useNavigation} from "react-navi";
-import {useList} from "react-use";
+import {useList, useMount} from "react-use";
 import {CharacterInventory, Item, ItemRoll} from "heroes-common/src";
 
 enum ItemType {
@@ -166,17 +166,21 @@ const Hero: FunctionComponent = () => {
 	const nav = useNavigation();
 	const [items, itemMod] = useList<CharacterInventory>([]);
 
-	useEffect(() => {
-		const req = async () => {
-			await loadHero();
-			if (!currentHero) {
-				await nav.navigate("/");
-			} else {
-				itemMod.push(...await loadItems(currentHero.id));
-			}
-		};
-		req().catch(console.error);
-	}, []);
+	useMount(() => {
+		if (!currentHero) {
+			loadHero().then(() => {
+				const hero = store.getState().character.character;
+				if (!hero) {
+					nav.navigate("/hero", {replace: true}).catch(console.error);
+				} else {
+					loadItems(hero.id).then(value => itemMod.push(...value)).catch(console.error);
+				}
+			}).catch((e: any) => {
+				console.error(e);
+				nav.navigate("/", {replace: true}).catch(console.error);
+			})
+		}
+	});
 
 	const handleUse = (slot: CharacterInventory) => {
 		//console.log(getItemType(slot.roll.item));

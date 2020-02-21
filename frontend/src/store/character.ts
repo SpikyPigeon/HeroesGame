@@ -163,7 +163,7 @@ export const characterStore: CharacterStore = {
 						currentHealth: maxHp,
 					});
 					addSnack({
-						message: "You gained " + (maxHp - oldHp) + " health points. Your health is fully restored!",
+						message: `You gained ${maxHp - oldHp} health points. Your health is fully restored!`,
 						options: {
 							variant: "success"
 						}
@@ -174,7 +174,7 @@ export const characterStore: CharacterStore = {
 						currentHealth: oldHp + payload.roll.item.heal,
 					});
 					addSnack({
-						message: "You gained " + (payload.roll.item.heal) + " health points." + (char.currentHealth === maxHp ? " Your health is fully restored!":""),
+						message: `You gained ${payload.roll.item.heal} health points.${char.currentHealth === maxHp ? " Your health is fully restored!" : ""}`,
 						options: {
 							variant: "success"
 						}

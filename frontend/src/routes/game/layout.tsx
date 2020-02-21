@@ -1,6 +1,6 @@
 import {createElement, forwardRef, Fragment, FunctionComponent, MouseEvent, useEffect, useState} from "react";
 import {ChatSharp, CloseSharp, PersonSharp} from "@material-ui/icons";
-import {useLinkProps} from "react-navi";
+import {useLinkProps, useNavigation} from "react-navi";
 import {
 	AppBar,
 	Button,
@@ -21,9 +21,9 @@ import {
 	Zoom
 } from "@material-ui/core";
 
-import {useStoreActions, useStoreState} from "../../store";
+import {store, useStoreActions, useStoreState} from "../../store";
 import {PlayerCharacter} from "heroes-common";
-import {useUnmount} from "react-use";
+import {useMount, useUnmount} from "react-use";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -175,13 +175,28 @@ const GameLayout: FunctionComponent = props => {
 	const classes = useStyles();
 	const [socialEl, setSocialEl] = useState<null | HTMLElement>(null);
 	const [profileEl, setProfileEl] = useState<null | HTMLElement>(null);
+	const nav = useNavigation();
 
 	const logout = useStoreActions(state => state.user.logout);
 	const character = useStoreState(state => state.character.character);
+	const loadUser = useStoreActions(state => state.user.getCurrent);
 	const user = useStoreState(state => state.user.user);
 
 	const handleSocialClose = () => setSocialEl(null);
 	const handleProfileClose = () => setProfileEl(null);
+
+	useMount(() => {
+		if (!user) {
+			loadUser().then(() => {
+				if (!store.getState().user.user) {
+					nav.navigate("/", {replace: true}).catch(console.error);
+				}
+			}).catch((e: any) => {
+				console.error(e);
+				nav.navigate("/", {replace: true}).catch(console.error);
+			});
+		}
+	});
 
 	if (!user) {
 		return null;

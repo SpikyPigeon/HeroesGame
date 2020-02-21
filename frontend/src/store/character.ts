@@ -18,6 +18,8 @@ export interface CharacterStore {
 
 	findInventory: Thunk<CharacterStore, string, any, {}, Promise<Array<CharacterInventory>>>;
 	updateInventory: Thunk<CharacterStore, { id: string; quantity: number; }, any, {}, Promise<CharacterInventory>>;
+
+	consumeItem: Thunk<CharacterStore, CharacterInventory>;
 }
 
 export const characterStore: CharacterStore = {
@@ -102,5 +104,9 @@ export const characterStore: CharacterStore = {
 		} else {
 			throw new Error("Not logged in!");
 		}
+	}),
+
+	consumeItem: thunk((state, payload, {getState}) => {
+
 	}),
 };

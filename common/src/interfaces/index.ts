@@ -19,6 +19,7 @@ export * from "./non-player-character";
 export * from "./structure";
 export * from "./shop-sells";
 export * from "./shop";
+export * from "./item-type";
 
 export * from "./character-info";
 export * from "./update-character-info";

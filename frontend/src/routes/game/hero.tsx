@@ -17,23 +17,7 @@ import {
 import {store, useStoreActions, useStoreState} from "../../store";
 import {useLinkProps, useNavigation} from "react-navi";
 import {useList, useMount} from "react-use";
-import {CharacterInventory, Item, ItemRoll} from "heroes-common/src";
-
-enum ItemType {
-	Consumable,
-	Equipment,
-	Other,
-}
-
-function getItemType(item: Item): ItemType {
-	if (item.category.parent?.name === "Consumable" || item.category.name === "Consumable") {
-		return ItemType.Consumable;
-	}
-	if (item.category.name === "Equipment" || item.category.parent?.name === "Equipment" || item.category.parent?.parent?.name === "Equipment") {
-		return ItemType.Equipment;
-	}
-	return ItemType.Other;
-}
+import {CharacterInventory, config, getItemType, Item, ItemRoll, ItemType} from "heroes-common/src";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -163,6 +147,8 @@ const Hero: FunctionComponent = () => {
 	const currentHero = useStoreState(state => state.character.character);
 	const loadHero = useStoreActions(state => state.character.getMine);
 	const loadItems = useStoreActions(state => state.character.findInventory);
+	const addSnack = useStoreActions(state => state.notification.enqueue);
+	const updateHero = useStoreActions(state => state.character.update);
 	const nav = useNavigation();
 	const [items, itemMod] = useList<CharacterInventory>([]);
 
@@ -172,8 +158,6 @@ const Hero: FunctionComponent = () => {
 				const hero = store.getState().character.character;
 				if (!hero) {
 					nav.navigate("/hero", {replace: true}).catch(console.error);
-				} else {
-					loadItems(hero.id).then(value => itemMod.push(...value)).catch(console.error);
 				}
 			}).catch((e: any) => {
 				console.error(e);
@@ -182,14 +166,53 @@ const Hero: FunctionComponent = () => {
 		}
 	});
 
+	useEffect(() => {
+		if (currentHero) {
+			loadItems(currentHero.id).then(value => {
+				itemMod.clear();
+				itemMod.push(...value);
+			}).catch(console.error);
+		}
+	}, [currentHero]);
+
 	const handleUse = (slot: CharacterInventory) => {
-		//console.log(getItemType(slot.roll.item));
-		const it = getItemType(slot.roll.item);
-		switch (it) {
-			case ItemType.Consumable:
-				if(slot.roll.item.heal){
-					
-				}
+		if (currentHero) {
+			const it = getItemType(slot.roll.item);
+			switch (it) {
+				case ItemType.Consumable:
+					if (slot.roll.item.heal > 0) {
+						const maxHp = config.character.stats.calculate.health(currentHero.vitality, 0);
+						const oldHp = currentHero.currentHealth;
+						if (oldHp === maxHp) {
+							addSnack({
+								message: "Your health is already maxed!",
+								options: {
+									variant: "warning"
+								}
+							})
+						} else if ((maxHp - oldHp) < slot.roll.item.heal) {
+							updateHero({
+								currentHealth: maxHp,
+							});
+							addSnack({
+								message: "You gained " + (maxHp - oldHp) + " health points. Your health is fully restored!",
+								options: {
+									variant: "success"
+								}
+							});
+						} else {
+							updateHero({
+								currentHealth: oldHp + slot.roll.item.heal,
+							});
+							addSnack({
+								message: "You gained " + (slot.roll.item.heal) + " health points. " + (currentHero.currentHealth === maxHp && "Your health is fully restored!"),
+								options: {
+									variant: "success"
+								}
+							});
+						}
+					}
+			}
 		}
 	};
 

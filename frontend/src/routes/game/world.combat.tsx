@@ -11,7 +11,8 @@ import {
 	Grid,
 	LinearProgress,
 	makeStyles,
-	Theme
+	Theme,
+	Tooltip
 } from "@material-ui/core";
 
 import {useStoreActions, useStoreState} from "../../store";
@@ -40,33 +41,35 @@ const MonsterCard: FunctionComponent<MonsterCardProps> = ({index, monster, onFig
 	const {monster: cfg} = config;
 	const maxHealth = cfg.calculate.health(monster.vitality);
 
-	return <Card raised={raised} square>
-		<CardActionArea
-			onMouseEnter={() => setRaised(true)}
-			onMouseLeave={() => setRaised(false)}
-			onClick={() => onFight(index)}
-		>
-			<CardHeader title={monster.name}
-			            titleTypographyProps={{
-				            align: "center",
-				            variant: "subtitle1",
-				            noWrap: true,
-			            }}
-			            subheader={
-				            <LinearProgress
-					            variant="determinate"
-					            value={monster.health * 100 / maxHealth}
-					            classes={{bar: classes.healthBar}}
-				            />
-			            }
-			/>
-			<CardMedia
-				component="img"
-				image={`/assets/monsters/${monster.picture}`}
-				height={128}
-			/>
-		</CardActionArea>
-	</Card>;
+	return <Tooltip title={`Level : ${monster.level}`} placement="top" arrow>
+		<Card raised={raised} square>
+			<CardActionArea
+				onMouseEnter={() => setRaised(true)}
+				onMouseLeave={() => setRaised(false)}
+				onClick={() => onFight(index)}
+			>
+				<CardHeader title={monster.name}
+				            titleTypographyProps={{
+					            align: "center",
+					            variant: "subtitle1",
+					            noWrap: true,
+				            }}
+				            subheader={
+					            <LinearProgress
+						            variant="determinate"
+						            value={monster.health * 100 / maxHealth}
+						            classes={{bar: classes.healthBar}}
+					            />
+				            }
+				/>
+				<CardMedia
+					component="img"
+					image={`/assets/monsters/${monster.picture}`}
+					height={128}
+				/>
+			</CardActionArea>
+		</Card>
+	</Tooltip>;
 };
 
 interface WorldActionProps {

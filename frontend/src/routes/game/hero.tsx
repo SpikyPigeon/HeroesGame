@@ -19,7 +19,7 @@ import {
 import {store, useStoreActions, useStoreState} from "../../store";
 import {useNavigation} from "react-navi";
 import {useMount} from "react-use";
-import {CharacterInventory, getItemType, ItemType} from "heroes-common/src";
+import {CharacterEquipment, CharacterInventory, getItemType, ItemType} from "heroes-common/src";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({

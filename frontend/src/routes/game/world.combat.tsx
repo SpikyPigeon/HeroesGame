@@ -16,9 +16,9 @@ import {
 } from "@material-ui/core";
 
 import {useStoreActions, useStoreState} from "../../store";
-import {config, Encounter, Monster} from "heroes-common";
+import {config, Encounter, EncounterDrop, Item, Monster} from "heroes-common";
 
-type MonsterFight = Monster & { health: number; minGold: number; maxGold: number; };
+type MonsterFight = Monster & { health: number; minGold: number; maxGold: number; drops: Array<EncounterDrop>; };
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -74,9 +74,10 @@ const MonsterCard: FunctionComponent<MonsterCardProps> = ({index, monster, onFig
 
 interface WorldActionProps {
 	encounters: Array<Encounter>;
+	itemDroped: (item: Item, quantity: number) => void;
 }
 
-export const WorldAction: FunctionComponent<WorldActionProps> = ({encounters}) => {
+export const WorldAction: FunctionComponent<WorldActionProps> = ({encounters, itemDroped}) => {
 	const updateChar = useStoreActions(state => state.character.update);
 	const character = useStoreState(state => state.character.character);
 	const [monsters, monstersMod] = useList<MonsterFight>([]);
@@ -93,6 +94,7 @@ export const WorldAction: FunctionComponent<WorldActionProps> = ({encounters}) =
 						health: monster.calculate.health(value.monster.vitality),
 						minGold: value.minGold,
 						maxGold: value.maxGold,
+						drops: value.drops,
 						...value.monster,
 					};
 				}
@@ -115,6 +117,7 @@ export const WorldAction: FunctionComponent<WorldActionProps> = ({encounters}) =
 			const monDog = config.monster.generate.isDodge;
 			const monExp = config.monster.calculate.exp(monster.level, character.level);
 			const monGold = config.monster.generate.goldDrop(monster.minGold, monster.maxGold);
+			const monItems = config.monster.generate.itemDrops;
 
 			if (!monDog(monster.dexterity)) {
 				monster.health -= charAtk(character.strength, 0, 0, charCrit(character.dexterity, 0));
@@ -124,6 +127,7 @@ export const WorldAction: FunctionComponent<WorldActionProps> = ({encounters}) =
 						gold: character.gold + monGold,
 					});
 					monstersMod.removeAt(index);
+					monItems(monster.drops).forEach(value => itemDroped(value.item, value.quantity));
 				} else if (!charDog(character.dexterity, 0)) {
 					updateChar({
 						currentHealth: character.currentHealth - monAtk(monster.strength, monCrit(monster.dexterity)),

@@ -25,7 +25,7 @@ import {
 	Typography
 } from "@material-ui/core";
 
-import {config, Encounter, PlayerCharacter, Structure} from "heroes-common";
+import {config, Encounter, PlayerCharacter, Structure, Item} from "heroes-common";
 import {LocationInfo, store, useStoreActions, useStoreState} from "../../store";
 import {FeatureCard} from "./world.feature";
 import {WorldAction} from "./world.combat";
@@ -231,6 +231,10 @@ const LevelUpDIalog: FunctionComponent<MyDialogProps & { character: PlayerCharac
 	</Dialog>;
 };
 
+interface ItemDrop {
+	[itemId: number]: { item: Item; quantity: number };
+}
+
 const World: FunctionComponent = () => {
 	const classes = useStyles();
 	const nav = useNavigation();
@@ -249,6 +253,7 @@ const World: FunctionComponent = () => {
 	const [structures, setStructures] = useState<Array<Structure>>([]);
 	const [location, setLocation] = useState<LocationInfo | null>(null);
 	const [playing, setPlaying] = useState(false);
+	const [itemDropped, setItemDropped] = useState<ItemDrop>({});
 
 	const loadChar = useStoreActions(state => state.character.getMine);
 	const updateChar = useStoreActions(state => state.character.update);
@@ -357,7 +362,28 @@ const World: FunctionComponent = () => {
 			<Grid container item lg={9} spacing={1}>
 				<Grid item lg={9}>
 					<FeatureCard structures={structures}/>
-					<WorldAction encounters={encounters}/>
+					<WorldAction
+						encounters={encounters}
+						itemDroped={(item, quantity) => {
+							if (item.id in itemDropped) {
+								setItemDropped(prev => ({
+									...itemDropped,
+									[item.id]: {
+										item: prev[item.id].item,
+										quantity: prev[item.id].quantity + quantity,
+									}
+								}));
+							} else {
+								setItemDropped(prev => ({
+									...itemDropped,
+									[item.id]: {
+										item,
+										quantity,
+									}
+								}));
+							}
+						}}
+					/>
 				</Grid>
 				<Grid item lg={3}>
 					<Card raised={raised.status} style={{marginBottom: "0.6rem"}}>
@@ -455,6 +481,12 @@ const World: FunctionComponent = () => {
 							</CardContent>
 						</CardActionArea>
 					</Card>
+					{Object.keys(itemDropped).map(value => {
+						const index = parseInt(value);
+						return <Typography key={index}>
+							{itemDropped[index].quantity} x {itemDropped[index].item.name}
+						</Typography>;
+					})}
 				</Grid>
 			</Grid>
 		</Grid>

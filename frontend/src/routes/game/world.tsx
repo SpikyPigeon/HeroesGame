@@ -25,7 +25,7 @@ import {
 	Typography
 } from "@material-ui/core";
 
-import {config, Encounter, PlayerCharacter, Structure, Item} from "heroes-common";
+import {config, Encounter, Item, PlayerCharacter, Structure} from "heroes-common";
 import {LocationInfo, store, useStoreActions, useStoreState} from "../../store";
 import {FeatureCard} from "./world.feature";
 import {WorldAction} from "./world.combat";
@@ -231,6 +231,42 @@ const LevelUpDIalog: FunctionComponent<MyDialogProps & { character: PlayerCharac
 	</Dialog>;
 };
 
+interface ItemPickCardProps {
+	item: Item;
+	quantity: number;
+	onPickup: (item: Item, quantity: number) => void;
+}
+
+const ItemPickupCard: FunctionComponent<ItemPickCardProps> = ({item, quantity, onPickup}) => {
+	const [raised, setRaised] = useState(false);
+	const classes = useStyles();
+
+	const handlePickup = () => {
+		onPickup(item, quantity);
+	};
+
+	return <Card raised={raised} style={{marginBottom: "0.6rem"}}>
+		<CardActionArea
+			style={{display: "flex"}}
+			onMouseEnter={() => setRaised(true)}
+			onMouseLeave={() => setRaised(false)}
+			onClick={handlePickup}
+		>
+			<CardContent classes={{root: classes.infoCard}} style={{flex: "1 0 auto"}}>
+				<Typography paragraph className={classes.infoText}>
+					{quantity} X {item.name}
+				</Typography>
+			</CardContent>
+			<CardMedia
+				component="img"
+				height={32}
+				style={{width: 32}}
+				image={`/assets/items/${item.image}`}
+			/>
+		</CardActionArea>
+	</Card>;
+};
+
 interface ItemDrop {
 	[itemId: number]: { item: Item; quantity: number };
 }
@@ -336,6 +372,7 @@ const World: FunctionComponent = () => {
 
 	useEffect(() => {
 		loadContent();
+		setItemDropped({});
 	}, [location]);
 
 	if (!currentChar) {
@@ -456,7 +493,7 @@ const World: FunctionComponent = () => {
 							</CardContent>
 						</CardActionArea>
 					</Card>
-					<Card raised={raised.players}>
+					<Card raised={raised.players} style={{marginBottom: "0.6rem"}}>
 						<CardActionArea
 							onMouseEnter={() => setRaised({
 								location: false,
@@ -481,12 +518,19 @@ const World: FunctionComponent = () => {
 							</CardContent>
 						</CardActionArea>
 					</Card>
-					{Object.keys(itemDropped).map(value => {
-						const index = parseInt(value);
-						return <Typography key={index}>
-							{itemDropped[index].quantity} x {itemDropped[index].item.name}
-						</Typography>;
-					})}
+					<div style={{height: "auto", overflowY: "auto"}}>
+						{Object.keys(itemDropped).map(value => {
+							const index = parseInt(value);
+							return <ItemPickupCard
+								key={index}
+								item={itemDropped[index].item}
+								quantity={itemDropped[index].quantity}
+								onPickup={((item, quantity) => {
+									console.log(`Pickup ${quantity} X ${item.name}`);
+								})}
+							/>;
+						})}
+					</div>
 				</Grid>
 			</Grid>
 		</Grid>

@@ -1,3 +1,5 @@
+import {EncounterDrop, Item} from "../interfaces";
+
 export const monsterConfig = {
 	generate: {
 		hasSpawned(chance: number): boolean {
@@ -21,6 +23,19 @@ export const monsterConfig = {
 		goldDrop(min: number, max: number): number {
 			return Math.floor(Math.random() * (max - min + 1)) + min;
 		},
+
+		itemDrops(drops: Array<EncounterDrop>): Array<{item: Item; quantity: number}> {
+			let items: Array<{item: Item; quantity: number}> = [];
+			drops.forEach(value => {
+				if (Math.random() <= value.dropChance) {
+					items = [...items, {
+						item: value.item,
+						quantity: Math.floor(Math.random() * (value.maxQuantity - value.minQuantity + 1)) + value.minQuantity,
+					}];
+				}
+			});
+			return items;
+		}
 	},
 	calculate: {
 		exp(monsterLvl: number, playerLvl: number): number {

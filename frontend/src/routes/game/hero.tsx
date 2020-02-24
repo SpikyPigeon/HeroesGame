@@ -40,18 +40,18 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const HtmlTooltip = withStyles((theme: Theme) => ({
 	tooltip: {
-		backgroundColor: (props: {rarity: ItemRarity}) => {
+		backgroundColor: (props: { rarity: ItemRarity }) => {
 			switch (props.rarity) {
 				case "common":
 					return "#f5f5f9";
 				case "uncommon":
-					return "#ff0000";
+					return "#b1e2d3";
 				case "rare":
-					return "#00ff00";
+					return "#ffe887";
 				case "legendary":
-					return "#0000ff";
+					return "#ffa181";
 				case "unique":
-					return "#ffff00";
+					return "#ceffc3";
 			}
 		},
 		color: "rgba(0, 0, 0, 0.87)",
@@ -71,7 +71,9 @@ const ItemInspect: FunctionComponent<ItemInspectProps> = ({iRoll}) => {
 			<u>{iRoll.item.name}</u>
 			<small><em> {iRoll.item.category.parent?.name} - {iRoll.item.category.name}</em></small>
 		</Typography>
-		<small>{iRoll.item.description}</small><Divider/>
+
+		<small>{iRoll.item.description}</small>
+		<Divider/>
 		<ul>
 			{iRoll.item.heal > 0 && <li>
 				<Typography variant="caption">
@@ -242,7 +244,9 @@ const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = ({name, slot, eqTyp
 						onMouseLeave={() => setRaised(false)}
 					>
 						<HtmlTooltip
-							title={"boop"}
+							title={
+								<ItemInspect iRoll={eqItem}/>
+							}
 						>
 							<CardContent>
 								<CardMedia

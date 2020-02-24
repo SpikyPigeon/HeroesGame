@@ -22,7 +22,7 @@ import {
 import {store, useStoreActions, useStoreState} from "../../store";
 import {useNavigation} from "react-navi";
 import {useMount} from "react-use";
-import {CharacterEquipment, CharacterInventory, getItemType, Item, ItemRoll, ItemType} from "heroes-common/src";
+import {CharacterEquipment, CharacterInventory, getItemType, Item, ItemRoll, ItemType, ItemRarity} from "heroes-common";
 import {EquipmentType} from "heroes-common/src/interfaces/equipment-type";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -40,11 +40,24 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const HtmlTooltip = withStyles((theme: Theme) => ({
 	tooltip: {
-		backgroundColor: '#f5f5f9',
-		color: 'rgba(0, 0, 0, 0.87)',
+		backgroundColor: (props: {rarity: ItemRarity}) => {
+			switch (props.rarity) {
+				case "common":
+					return "#f5f5f9";
+				case "uncommon":
+					return "#ff0000";
+				case "rare":
+					return "#00ff00";
+				case "legendary":
+					return "#0000ff";
+				case "unique":
+					return "#ffff00";
+			}
+		},
+		color: "rgba(0, 0, 0, 0.87)",
 		maxWidth: 440,
 		fontSize: theme.typography.pxToRem(12),
-		border: '1px solid #dadde9',
+		border: "1px solid #dadde9",
 	},
 }))(Tooltip);
 
@@ -302,6 +315,7 @@ const InventorySlot: FunctionComponent<InventorySlotProps> = ({slot, onUse}) => 
 					onClick={e => setItemEl(e.currentTarget.parentElement)}
 				>
 					<HtmlTooltip
+						rarity={slot?.roll.item.rarity}
 						title={
 							<ItemInspect iRoll={slot.roll}/>
 						}

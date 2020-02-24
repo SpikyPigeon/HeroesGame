@@ -22,10 +22,10 @@ export class InventoryService implements OnModuleInit {
 		this.rolls = this.refs.get(RollService, {strict: false});
 	}
 
-	async create(rollId: string, ownerId: string, quantity: number): Promise<InventoryEntity> {
+	async create(userId: string, rollId: string, quantity: number): Promise<InventoryEntity> {
 		return await this.inventories.save(this.inventories.create({
+			owner: await this.characters.findMine(userId),
 			roll: await this.rolls.findOne(rollId),
-			owner: await this.characters.findMine(ownerId),
 			quantity: quantity
 		}));
 	}

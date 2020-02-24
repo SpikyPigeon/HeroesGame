@@ -1,9 +1,10 @@
 import {ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiTags} from "@nestjs/swagger";
-import {Body, Controller, Delete, Get, Logger, Param, Post, Put, UseGuards} from "@nestjs/common";
+import {Body, Controller, Delete, Get, Logger, Param, Post, Put, UseGuards, Request} from "@nestjs/common";
 import {AuthGuard} from "@nestjs/passport";
 import {InventoryService} from "./inventory.service";
 import {InventoryEntity} from "./inventory.entity";
 import {CreateInventoryDto} from "./inventory.dto";
+import {UserEntity} from "../../user";
 
 @ApiTags("user")
 @Controller("inventory")
@@ -18,9 +19,9 @@ export class InventoryController {
 	@UseGuards(AuthGuard("jwt"))
 	@ApiBody({type: CreateInventoryDto})
 	@Post()
-	async create(@Body() data: CreateInventoryDto): Promise<InventoryEntity> {
+	async create(@Request() req: any, @Body() data: CreateInventoryDto): Promise<InventoryEntity> {
 		this.logger.log(`create`);
-		return await this.inventories.create(data.roll, data.owner, data.quantity);
+		return await this.inventories.create((req.user as UserEntity).id, data.roll, data.quantity);
 	}
 
 	@ApiOkResponse({type: InventoryEntity, isArray: true})

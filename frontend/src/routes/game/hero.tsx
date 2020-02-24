@@ -80,7 +80,7 @@ interface InventorySlotProps {
 
 const InventorySlot: FunctionComponent<InventorySlotProps> = ({slot, onUse}) => {
 	const classes = useStyles();
-	const discard = useStoreActions(state => state.character.deleteItem);
+	const discard = useStoreActions(state => state.character.deleteInventory);
 	const [itemEl, setItemEl] = useState<null | HTMLElement>(null);
 	const handleItemClose = () => setItemEl(null);
 	const handleUse = () => {

@@ -1,13 +1,14 @@
 import {action, Action, thunk, Thunk} from "easy-peasy";
 import {
 	Avatar,
-	CharacterInfo, config,
+	CharacterInfo,
+	CharacterInventory,
+	config,
 	getItemType,
 	ItemType,
 	MoveCharacterInfo,
 	PlayerCharacter,
-	UpdateCharacterInfo,
-	CharacterInventory
+	UpdateCharacterInfo
 } from "heroes-common";
 
 import {CharacterService} from "./context";
@@ -29,7 +30,7 @@ export interface CharacterStore {
 
 	setInventory: Action<CharacterStore, Array<CharacterInventory>>;
 	updateInventory: Thunk<CharacterStore, { id: string; quantity: number; }, any, {}, Promise<CharacterInventory>>;
-	deleteItem: Thunk<CharacterStore, CharacterInventory>;
+	deleteInventory: Thunk<CharacterStore, CharacterInventory>;
 
 	consumeItem: Thunk<CharacterStore, CharacterInventory, any, AppStore>;
 }
@@ -127,16 +128,15 @@ export const characterStore: CharacterStore = {
 		}
 	}),
 
-	deleteItem: thunk(async (state, payload) => {
+	deleteInventory: thunk(async (state, payload) => {
 		const token = localStorage.getItem("userJWT");
-		if(token){
-			if(!await CharacterService.deleteInventory(token, payload.id)){
+		if (token) {
+			if (!await CharacterService.deleteInventory(token, payload.id)) {
 				throw new Error("Could not delete item");
 			}
 
 			await state.getMine();
-		}
-		else{
+		} else {
 			throw new Error("Not logged in!");
 		}
 	}),
@@ -146,7 +146,7 @@ export const characterStore: CharacterStore = {
 		const char = getState().character;
 		const it = getItemType(payload.roll.item);
 
-		if(char && it === ItemType.Consumable){
+		if (char && it === ItemType.Consumable) {
 			if (payload.roll.item.heal > 0) {
 				const maxHp = config.character.stats.calculate.health(char.vitality, 0);
 				const oldHp = char.currentHealth;
@@ -182,7 +182,7 @@ export const characterStore: CharacterStore = {
 					qtyUsed++;
 				}
 				state.updateInventory({id: payload.id, quantity: payload.quantity - qtyUsed}).then(value => {
-					if(value.quantity <= 0){
+					if (value.quantity <= 0) {
 						state.deleteItem(value).catch(console.error);
 					}
 				}).catch(console.error);

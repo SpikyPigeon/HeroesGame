@@ -37,6 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
 interface EquipmentSlotProps {
 	name: string;
 	slot?: CharacterEquipment;
+	
 	onEquip?: (slot: CharacterEquipment) => void;
 }
 
@@ -45,6 +46,7 @@ const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = ({name, slot, onEqu
 	const [raised, setRaised] = useState(false);
 
 	if (slot) {
+		console.log("This guys is holding something!");
 		return <Fragment>
 			<Card raised={raised} classes={{root: classes.itemSlotCard}}>
 				<CardActionArea
@@ -53,12 +55,13 @@ const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = ({name, slot, onEqu
 					onMouseLeave={() => setRaised(false)}
 				>
 					<CardContent>
-						<Typography>{slot.leftHandSlot.item.name}</Typography>
+						<Typography>{slot.rightHandSlot.item.name}</Typography>
 					</CardContent>
 				</CardActionArea>
 			</Card>
 		</Fragment>;
 	} else {
+		console.log("This guy has nothing!");
 		return <Card raised={raised} classes={{root: classes.itemSlotCard}}>
 			<CardActionArea
 				classes={{root: classes.itemSlotAction}}
@@ -165,6 +168,7 @@ const Hero: FunctionComponent = () => {
 	const currentHero = useStoreState(state => state.character.character);
 	const items = useStoreState(state => state.character.inventory);
 	const loadHero = useStoreActions(state => state.character.getMine);
+	//const equipment = useStoreActions(state => state.character.)
 	const addSnack = useStoreActions(state => state.notification.enqueue);
 	const updateHero = useStoreActions(state => state.character.update);
 	const consumeItem = useStoreActions(state => state.character.consumeItem);
@@ -241,7 +245,10 @@ const Hero: FunctionComponent = () => {
 									/>
 								</Grid>
 								<Grid item>
-									<EquipmentSlot name="Right Hand"/>
+									<EquipmentSlot
+										name="Right Hand"
+										slot={currentHero.equipment}
+									/>
 								</Grid>
 								<Grid item>
 									<EquipmentSlot name="Ring 1"/>

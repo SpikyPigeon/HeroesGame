@@ -1,8 +1,8 @@
 import {ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiTags} from "@nestjs/swagger";
-import {Controller, Get, Logger, Param, Post, UseGuards} from "@nestjs/common";
+import {Controller, Delete, Get, Logger, Param, Post, UseGuards} from "@nestjs/common";
+import {AuthGuard} from "@nestjs/passport";
 import {RollService} from "./roll.service";
 import {RollEntity} from "./roll.entity";
-import {AuthGuard} from "@nestjs/passport";
 
 @ApiTags("item")
 @Controller("/roll")
@@ -35,5 +35,14 @@ export class RollController {
 	async create(@Param("item") item: number): Promise<RollEntity> {
 		this.logger.log(`create => ${item}`);
 		return await this.rolls.create(item);
+	}
+
+	@ApiBearerAuth()
+	@ApiOkResponse({type: RollEntity})
+	@UseGuards(AuthGuard("jwt"))
+	@Delete(":id")
+	async delete(@Param("id") id: string) {
+		this.logger.log(`delete => ${id}`);
+		await this.rolls.delete(id);
 	}
 }

@@ -33,4 +33,8 @@ export class RollService {
 
 		return await this.rolls.save(roll);
 	}
+
+	async delete(id: string) {
+		await this.rolls.delete(id);
+	}
 }

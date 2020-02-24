@@ -3,6 +3,7 @@ export * from "./player-character";
 export * from "./character-slap";
 export * from "./character-equipment";
 export * from "./character-inventory";
+export * from "./create-inventory-info";
 export * from "./square";
 export * from "./user";
 export * from "./user-message";

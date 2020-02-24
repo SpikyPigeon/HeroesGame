@@ -32,7 +32,7 @@ export interface CharacterStore {
 	setInventory: Action<CharacterStore, Array<CharacterInventory>>;
 	updateInventory: Thunk<CharacterStore, { id: string; quantity: number; }, any, {}, Promise<CharacterInventory>>;
 	deleteInventory: Thunk<CharacterStore, CharacterInventory>;
-	pickupItem: Thunk<CharacterStore, { item: Item, quantity: number }, any, AppStore>;
+	pickupItem: Thunk<CharacterStore, { item: Item, quantity: number }, any, AppStore, Promise<number>>;
 
 	consumeItem: Thunk<CharacterStore, CharacterInventory, any, AppStore>;
 }
@@ -153,6 +153,7 @@ export const characterStore: CharacterStore = {
 			if (slot) {
 				if (slot.quantity + quantity > stackLimit) {
 					await CharacterService.updateInventory(token, slot.id, stackLimit);
+					let picked: number = stackLimit - quantity;
 
 					if (inventory.length === 10) {
 						addSnack({
@@ -163,6 +164,7 @@ export const characterStore: CharacterStore = {
 						});
 					} else {
 						const roll = await CharacterService.createItemRoll(token, item);
+						picked += quantity - (stackLimit - slot.quantity);
 						await CharacterService.createInventory(token, {
 							roll: roll.id,
 							quantity: quantity - (stackLimit - slot.quantity),
@@ -170,9 +172,11 @@ export const characterStore: CharacterStore = {
 					}
 
 					await state.getMine();
+					return picked;
 				} else {
 					await CharacterService.updateInventory(token, slot.id, quantity);
 					await state.getMine();
+					return quantity;
 				}
 			} else {
 				if (inventory.length === 10) {
@@ -182,6 +186,7 @@ export const characterStore: CharacterStore = {
 							variant: "error",
 						},
 					});
+					return 0;
 				} else {
 					const roll = await CharacterService.createItemRoll(token, item);
 					await CharacterService.createInventory(token, {
@@ -190,6 +195,7 @@ export const characterStore: CharacterStore = {
 					});
 
 					await state.getMine();
+					return quantity;
 				}
 			}
 		} else {

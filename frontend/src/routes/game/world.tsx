@@ -1,8 +1,8 @@
 import {createElement, Fragment, FunctionComponent, useEffect, useState} from "react";
 import {blue, green, red} from "@material-ui/core/colors";
 import {AddSharp, RemoveSharp} from "@material-ui/icons";
+import {useMap, useMount} from "react-use";
 import {useNavigation} from "react-navi";
-import {useMount} from "react-use";
 import {
 	Button,
 	ButtonGroup,
@@ -289,7 +289,7 @@ const World: FunctionComponent = () => {
 	const [structures, setStructures] = useState<Array<Structure>>([]);
 	const [location, setLocation] = useState<LocationInfo | null>(null);
 	const [playing, setPlaying] = useState(false);
-	const [itemDropped, setItemDropped] = useState<ItemDrop>({});
+	const [itemDropped, {remove: removeDrop, set: setDrop, reset: resetDrops}] = useMap<ItemDrop>({});
 
 	const loadChar = useStoreActions(state => state.character.getMine);
 	const updateChar = useStoreActions(state => state.character.update);
@@ -299,6 +299,9 @@ const World: FunctionComponent = () => {
 	const currentWorld = useStoreState(state => state.world.current);
 	const currentChar = useStoreState(state => state.character.character);
 	const addSnack = useStoreActions(state => state.notification.enqueue);
+	const inventory = useStoreState(state => state.character.inventory);
+	const updateInventory = useStoreActions(state => state.character.updateInventory);
+	const pickupItem = useStoreActions(state => state.character.pickupItem);
 
 	const {character: charConfig} = config;
 
@@ -372,7 +375,7 @@ const World: FunctionComponent = () => {
 
 	useEffect(() => {
 		loadContent();
-		setItemDropped({});
+		resetDrops();
 	}, [location]);
 
 	if (!currentChar) {
@@ -403,21 +406,12 @@ const World: FunctionComponent = () => {
 						encounters={encounters}
 						itemDroped={(item, quantity) => {
 							if (item.id in itemDropped) {
-								setItemDropped(prev => ({
-									...itemDropped,
-									[item.id]: {
-										item: prev[item.id].item,
-										quantity: prev[item.id].quantity + quantity,
-									}
-								}));
+								setDrop(item.id, {
+									item: itemDropped[item.id].item,
+									quantity: itemDropped[item.id].quantity + quantity,
+								});
 							} else {
-								setItemDropped(prev => ({
-									...itemDropped,
-									[item.id]: {
-										item,
-										quantity,
-									}
-								}));
+								setDrop(item.id, {item, quantity});
 							}
 						}}
 					/>
@@ -526,7 +520,16 @@ const World: FunctionComponent = () => {
 								item={itemDropped[index].item}
 								quantity={itemDropped[index].quantity}
 								onPickup={((item, quantity) => {
-									console.log(`Pickup ${quantity} X ${item.name}`);
+									pickupItem({item, quantity}).then((picked: number) => {
+										if (picked === quantity) {
+											removeDrop(item.id);
+										} else {
+											setDrop(item.id, {
+												item,
+												quantity: quantity - picked,
+											});
+										}
+									}).catch(console.error);
 								})}
 							/>;
 						})}

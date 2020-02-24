@@ -1,6 +1,7 @@
 import {Square} from "./square";
 import {Avatar} from "./avatar";
 import {User} from "./user";
+import {CharacterEquipment} from "./character-equipment";
 
 export interface PlayerCharacter {
 	id: string;
@@ -23,4 +24,5 @@ export interface PlayerCharacter {
 	isActive: boolean;
 	createdAt: Date;
 	updatedAt: Date;
+	equipment: CharacterEquipment;
 }

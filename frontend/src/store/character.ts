@@ -5,6 +5,7 @@ import {
 	CharacterInventory,
 	config,
 	getItemType,
+	Item,
 	ItemType,
 	MoveCharacterInfo,
 	PlayerCharacter,
@@ -31,6 +32,7 @@ export interface CharacterStore {
 	setInventory: Action<CharacterStore, Array<CharacterInventory>>;
 	updateInventory: Thunk<CharacterStore, { id: string; quantity: number; }, any, {}, Promise<CharacterInventory>>;
 	deleteInventory: Thunk<CharacterStore, CharacterInventory>;
+	pickupItem: Thunk<CharacterStore, { item: Item, quantity: number }>;
 
 	consumeItem: Thunk<CharacterStore, CharacterInventory, any, AppStore>;
 }
@@ -141,6 +143,40 @@ export const characterStore: CharacterStore = {
 		}
 	}),
 
+	pickupItem: thunk(async (state, {item, quantity}, {getState}) => {
+		const token = localStorage.getItem("userJWT");
+		if (token) {
+			const {id: itemId, stackLimit} = item;
+			const inventory = getState().inventory;
+			const slot = inventory.find(value => value.roll.item.id === itemId && value.quantity < stackLimit);
+			if (slot) {
+				if (slot.quantity + quantity > stackLimit) {
+					const roll = await CharacterService.createItemRoll(token, item);
+					await CharacterService.updateInventory(token, slot.id, stackLimit);
+					await CharacterService.createInventory(token, {
+						roll: roll.id,
+						quantity: quantity - (stackLimit - slot.quantity),
+					});
+
+					await state.getMine();
+				} else {
+					await CharacterService.updateInventory(token, slot.id, quantity);
+					await state.getMine();
+				}
+			} else {
+				const roll = await CharacterService.createItemRoll(token, item);
+				await CharacterService.createInventory(token, {
+					roll: roll.id,
+					quantity: quantity,
+				});
+
+				await state.getMine();
+			}
+		} else {
+			throw new Error("Not logged in!");
+		}
+	}),
+
 	consumeItem: thunk((state, payload, {getState, getStoreActions}) => {
 		const addSnack = getStoreActions().notification.enqueue;
 		const char = getState().character;
@@ -183,7 +219,7 @@ export const characterStore: CharacterStore = {
 				}
 				state.updateInventory({id: payload.id, quantity: payload.quantity - qtyUsed}).then(value => {
 					if (value.quantity <= 0) {
-						state.deleteItem(value).catch(console.error);
+						state.deleteInventory(value).catch(console.error);
 					}
 				}).catch(console.error);
 			}

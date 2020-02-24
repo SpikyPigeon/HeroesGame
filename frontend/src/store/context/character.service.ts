@@ -3,6 +3,9 @@ import {
 	Avatar,
 	CharacterInfo,
 	CharacterInventory,
+	CreateInventoryInfo,
+	Item,
+	ItemRoll,
 	MoveCharacterInfo,
 	PlayerCharacter,
 	UpdateCharacterInfo
@@ -80,7 +83,7 @@ export class CharacterService {
 		return response.data;
 	}
 
-	static async updateInventory(token: string, id: string, quantity: number): Promise<CharacterInventory>{
+	static async updateInventory(token: string, id: string, quantity: number): Promise<CharacterInventory> {
 		const response = await Context.put<CharacterInventory>(`/character/inventory/${id}/${quantity}`, null, {
 			headers: {
 				Authorization: `Bearer ${token}`,
@@ -89,8 +92,35 @@ export class CharacterService {
 		return response.data;
 	}
 
-	static async deleteInventory(token: string, id: string): Promise<boolean>{
+	static async deleteInventory(token: string, id: string): Promise<boolean> {
 		const response = await Context.delete(`/character/inventory/${id}`, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
+		return response.status === 200;
+	}
+
+	static async createInventory(token: string, data: CreateInventoryInfo): Promise<CharacterInventory> {
+		const response = await Context.post<CharacterInventory>("/character/inventory", data, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
+		return response.data;
+	}
+
+	static async createItemRoll(token: string, item: Item): Promise<ItemRoll> {
+		const response = await Context.post<ItemRoll>(`item/roll/${item.id}`, null, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
+		return response.data;
+	}
+
+	static async deleteItemRoll(token: string, roll: ItemRoll): Promise<Boolean> {
+		const response = await Context.delete(`item/roll/${roll.id}`, {
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},

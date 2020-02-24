@@ -27,7 +27,7 @@ export interface CharacterStore {
 	getMine: Thunk<CharacterStore>;
 	userHasChar: Thunk<CharacterStore, void, any, {}, Promise<boolean>>;
 	create: Thunk<CharacterStore, CharacterInfo>;
-	moveTo: Thunk<CharacterStore, MoveCharacterInfo>;
+	moveTo: Thunk<CharacterStore, MoveCharacterInfo, any, AppStore>;
 
 	setInventory: Action<CharacterStore, Array<CharacterInventory>>;
 	updateInventory: Thunk<CharacterStore, { id: string; quantity: number; }, any, {}, Promise<CharacterInventory>>;
@@ -105,10 +105,11 @@ export const characterStore: CharacterStore = {
 		}
 	}),
 
-	moveTo: thunk(async (state, payload) => {
+	moveTo: thunk(async (state, payload, {getStoreActions}) => {
 		const token = localStorage.getItem("userJWT");
 		if (token) {
 			state.setCharacter(await CharacterService.moveTo(token, payload));
+			getStoreActions().world.clearDrops();
 		} else {
 			throw new Error("Not logged in!");
 		}
@@ -138,6 +139,10 @@ export const characterStore: CharacterStore = {
 			}
 
 			await state.getMine();
+
+			if (!await CharacterService.deleteItemRoll(token, payload.roll)) {
+				throw new Error("Could not delete item roll");
+			}
 		} else {
 			throw new Error("Not logged in!");
 		}
@@ -189,13 +194,20 @@ export const characterStore: CharacterStore = {
 					return 0;
 				} else {
 					const roll = await CharacterService.createItemRoll(token, item);
+					let picked: number = 0;
+					if (quantity <= stackLimit) {
+						picked = quantity;
+					} else {
+						picked = stackLimit;
+					}
+
 					await CharacterService.createInventory(token, {
 						roll: roll.id,
-						quantity: quantity,
+						quantity: picked,
 					});
 
 					await state.getMine();
-					return quantity;
+					return picked;
 				}
 			}
 		} else {

@@ -1,8 +1,8 @@
 import {createElement, Fragment, FunctionComponent, useEffect, useState} from "react";
 import {blue, green, red} from "@material-ui/core/colors";
 import {AddSharp, RemoveSharp} from "@material-ui/icons";
-import {useMap, useMount} from "react-use";
 import {useNavigation} from "react-navi";
+import {useMount} from "react-use";
 import {
 	Button,
 	ButtonGroup,
@@ -267,10 +267,6 @@ const ItemPickupCard: FunctionComponent<ItemPickCardProps> = ({item, quantity, o
 	</Card>;
 };
 
-interface ItemDrop {
-	[itemId: number]: { item: Item; quantity: number };
-}
-
 const World: FunctionComponent = () => {
 	const classes = useStyles();
 	const nav = useNavigation();
@@ -289,7 +285,6 @@ const World: FunctionComponent = () => {
 	const [structures, setStructures] = useState<Array<Structure>>([]);
 	const [location, setLocation] = useState<LocationInfo | null>(null);
 	const [playing, setPlaying] = useState(false);
-	const [itemDropped, {remove: removeDrop, set: setDrop, reset: resetDrops}] = useMap<ItemDrop>({});
 
 	const loadChar = useStoreActions(state => state.character.getMine);
 	const updateChar = useStoreActions(state => state.character.update);
@@ -302,6 +297,10 @@ const World: FunctionComponent = () => {
 	const inventory = useStoreState(state => state.character.inventory);
 	const updateInventory = useStoreActions(state => state.character.updateInventory);
 	const pickupItem = useStoreActions(state => state.character.pickupItem);
+
+	const itemDropped = useStoreState(state => state.world.droppedItems);
+	const removeDrop = useStoreActions(state => state.world.removeDrop);
+	const setDrop = useStoreActions(state => state.world.setDrop);
 
 	const {character: charConfig} = config;
 
@@ -375,7 +374,6 @@ const World: FunctionComponent = () => {
 
 	useEffect(() => {
 		loadContent();
-		resetDrops();
 	}, [location]);
 
 	if (!currentChar) {
@@ -406,12 +404,12 @@ const World: FunctionComponent = () => {
 						encounters={encounters}
 						itemDroped={(item, quantity) => {
 							if (item.id in itemDropped) {
-								setDrop(item.id, {
+								setDrop({
 									item: itemDropped[item.id].item,
 									quantity: itemDropped[item.id].quantity + quantity,
 								});
 							} else {
-								setDrop(item.id, {item, quantity});
+								setDrop({item, quantity});
 							}
 						}}
 					/>
@@ -524,7 +522,7 @@ const World: FunctionComponent = () => {
 										if (picked === quantity) {
 											removeDrop(item.id);
 										} else {
-											setDrop(item.id, {
+											setDrop({
 												item,
 												quantity: quantity - picked,
 											});

@@ -32,7 +32,7 @@ export interface CharacterStore {
 	setInventory: Action<CharacterStore, Array<CharacterInventory>>;
 	updateInventory: Thunk<CharacterStore, { id: string; quantity: number; }, any, {}, Promise<CharacterInventory>>;
 	deleteInventory: Thunk<CharacterStore, CharacterInventory>;
-	pickupItem: Thunk<CharacterStore, { item: Item, quantity: number }>;
+	pickupItem: Thunk<CharacterStore, { item: Item, quantity: number }, any, AppStore>;
 
 	consumeItem: Thunk<CharacterStore, CharacterInventory, any, AppStore>;
 }
@@ -143,7 +143,8 @@ export const characterStore: CharacterStore = {
 		}
 	}),
 
-	pickupItem: thunk(async (state, {item, quantity}, {getState}) => {
+	pickupItem: thunk(async (state, {item, quantity}, {getState, getStoreActions}) => {
+		const addSnack = getStoreActions().notification.enqueue;
 		const token = localStorage.getItem("userJWT");
 		if (token) {
 			const {id: itemId, stackLimit} = item;
@@ -151,12 +152,22 @@ export const characterStore: CharacterStore = {
 			const slot = inventory.find(value => value.roll.item.id === itemId && value.quantity < stackLimit);
 			if (slot) {
 				if (slot.quantity + quantity > stackLimit) {
-					const roll = await CharacterService.createItemRoll(token, item);
 					await CharacterService.updateInventory(token, slot.id, stackLimit);
-					await CharacterService.createInventory(token, {
-						roll: roll.id,
-						quantity: quantity - (stackLimit - slot.quantity),
-					});
+
+					if (inventory.length === 10) {
+						addSnack({
+							message: "Inventory is full!",
+							options: {
+								variant: "error",
+							},
+						});
+					} else {
+						const roll = await CharacterService.createItemRoll(token, item);
+						await CharacterService.createInventory(token, {
+							roll: roll.id,
+							quantity: quantity - (stackLimit - slot.quantity),
+						});
+					}
 
 					await state.getMine();
 				} else {
@@ -164,13 +175,22 @@ export const characterStore: CharacterStore = {
 					await state.getMine();
 				}
 			} else {
-				const roll = await CharacterService.createItemRoll(token, item);
-				await CharacterService.createInventory(token, {
-					roll: roll.id,
-					quantity: quantity,
-				});
+				if (inventory.length === 10) {
+					addSnack({
+						message: "Inventory is full!",
+						options: {
+							variant: "error",
+						},
+					});
+				} else {
+					const roll = await CharacterService.createItemRoll(token, item);
+					await CharacterService.createInventory(token, {
+						roll: roll.id,
+						quantity: quantity,
+					});
 
-				await state.getMine();
+					await state.getMine();
+				}
 			}
 		} else {
 			throw new Error("Not logged in!");

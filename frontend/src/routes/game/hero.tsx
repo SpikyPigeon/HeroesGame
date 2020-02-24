@@ -130,7 +130,11 @@ const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = ({name, slot, eqTyp
 						onMouseLeave={() => setRaised(false)}
 					>
 						<CardContent>
-							<Typography>{eqItem.name}</Typography>
+							<CardMedia
+								component="img"
+								image={`/assets/items/${eqItem.image}`}
+								height={94}
+							/>
 						</CardContent>
 					</CardActionArea>
 				</Card>

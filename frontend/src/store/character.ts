@@ -138,6 +138,10 @@ export const characterStore: CharacterStore = {
 			}
 
 			await state.getMine();
+
+			if (!await CharacterService.deleteItemRoll(token, payload.roll)) {
+				throw new Error("Could not delete item roll");
+			}
 		} else {
 			throw new Error("Not logged in!");
 		}

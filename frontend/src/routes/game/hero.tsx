@@ -58,7 +58,6 @@ const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = ({name, slot, eqTyp
 	</Card>;
 
 	if (slot) {
-		//console.log("This guys is holding something!");
 		let eqItem : Item | null = null;
 
 		switch (eqType){
@@ -121,7 +120,6 @@ const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = ({name, slot, eqTyp
 				break;
 		}
 		if(eqItem){
-			//console.log("There's something in " + name);
 			return <Fragment>
 				<Card raised={raised} classes={{root: classes.itemSlotCard}}>
 					<CardActionArea
@@ -140,11 +138,9 @@ const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = ({name, slot, eqTyp
 				</Card>
 			</Fragment>;
 		} else {
-			//console.log("There's nothing in " + name);
 			return failedCard;
 		}
 	} else {
-		//console.log("There's nothing in " + name);
 		return failedCard;
 	}
 };

@@ -1,5 +1,5 @@
 import {action, Action, thunk, Thunk} from "easy-peasy";
-import {Square, SquareContent, World} from "heroes-common";
+import {Item, Square, SquareContent, World} from "heroes-common";
 import {WorldService} from "./context";
 import {LocationInfo} from "./index";
 
@@ -9,6 +9,11 @@ export interface WorldData {
 }
 
 export interface WorldStore {
+	droppedItems: {[itemId: number]: {item: Item; quantity: number}};
+	setDrop: Action<WorldStore, {item: Item, quantity: number}>;
+	removeDrop: Action<WorldStore, number>;
+	clearDrops: Action<WorldStore>;
+
 	current: WorldData | null;
 	setCurrent: Action<WorldStore, WorldData | null>;
 
@@ -17,6 +22,27 @@ export interface WorldStore {
 }
 
 export const worldStore: WorldStore = {
+	droppedItems: {},
+
+	setDrop: action((state, payload) => {
+		state.droppedItems = {
+			...state.droppedItems,
+			[payload.item.id]: {
+				item: payload.item,
+				quantity: payload.quantity,
+			},
+		};
+	}),
+
+	removeDrop: action((state, payload) => {
+		const {[payload]: omit, ...rest} = state.droppedItems;
+		state.droppedItems = rest;
+	}),
+
+	clearDrops: action(state => {
+		state.droppedItems = {};
+	}),
+
 	current: null,
 
 	setCurrent: action((state, payload) => {

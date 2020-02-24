@@ -169,7 +169,7 @@ export const characterStore: CharacterStore = {
 						});
 					} else {
 						const roll = await CharacterService.createItemRoll(token, item);
-						picked += quantity - (stackLimit - slot.quantity);
+						picked = quantity - (stackLimit - slot.quantity);
 						await CharacterService.createInventory(token, {
 							roll: roll.id,
 							quantity: quantity - (stackLimit - slot.quantity),
@@ -179,7 +179,7 @@ export const characterStore: CharacterStore = {
 					await state.getMine();
 					return picked;
 				} else {
-					await CharacterService.updateInventory(token, slot.id, quantity);
+					await CharacterService.updateInventory(token, slot.id, slot.quantity + quantity);
 					await state.getMine();
 					return quantity;
 				}

@@ -37,6 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
 interface EquipmentSlotProps {
 	name: string;
 	slot?: CharacterEquipment;
+	
 	onEquip?: (slot: CharacterEquipment) => void;
 }
 
@@ -246,7 +247,7 @@ const Hero: FunctionComponent = () => {
 								<Grid item>
 									<EquipmentSlot
 										name="Right Hand"
-
+										slot={currentHero.equipment}
 									/>
 								</Grid>
 								<Grid item>

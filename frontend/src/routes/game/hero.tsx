@@ -19,7 +19,7 @@ import {
 import {store, useStoreActions, useStoreState} from "../../store";
 import {useNavigation} from "react-navi";
 import {useMount} from "react-use";
-import {CharacterEquipment, CharacterInventory, getItemType, ItemType} from "heroes-common/src";
+import {CharacterEquipment, CharacterInventory, getItemType, Item, ItemType} from "heroes-common/src";
 import {EquipmentType} from "heroes-common/src/interfaces/equipment-type";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -58,93 +58,68 @@ const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = ({name, slot, eqTyp
 	</Card>;
 
 	if (slot) {
-		//console.log("This guys is holding something!");
-		let nameOfEquipment: string = "";
+		let eqItem : Item | null = null;
 
 		switch (eqType){
 			case "Head":
 				if(slot.headSlot){
-					nameOfEquipment = slot.headSlot.item.name;
-				} else {
-					nameOfEquipment = "";
+					eqItem = slot.headSlot.item;
 				}
 				break;
 			case "Chest":
 				if(slot.chestSlot){
-					nameOfEquipment = slot.chestSlot.item.name;
-				}else {
-					nameOfEquipment = "";
+					eqItem = slot.chestSlot.item;
 				}
 				break;
 			case "Belt":
 				if(slot.beltSlot){
-					nameOfEquipment = slot.beltSlot.item.name;
-				}else {
-					nameOfEquipment = "";
+					eqItem = slot.beltSlot.item;
 				}
 				break;
 			case "Boot":
 				if(slot.bootSlot){
-					nameOfEquipment = slot.bootSlot.item.name;
-				}else {
-					nameOfEquipment = "";
+					eqItem = slot.bootSlot.item;
 				}
 				break;
 			case "Left Hand":
 				if(slot.leftHandSlot){
-					nameOfEquipment = slot.leftHandSlot.item.name;
-				}else {
-					nameOfEquipment = "";
+					eqItem = slot.leftHandSlot.item;
 				}
 				break;
 			case "Right Hand":
 				if(slot.rightHandSlot){
-					nameOfEquipment = slot.rightHandSlot.item.name;
-				}else {
-					nameOfEquipment = "";
+					eqItem = slot.rightHandSlot.item;
 				}
 				break;
 			case "Ring 1":
 				if(slot.ring1Slot){
-					nameOfEquipment = slot.ring1Slot.item.name;
-				}else {
-					nameOfEquipment = "";
+					eqItem = slot.ring1Slot.item;
 				}
 				break;
 			case "Ring 2":
 				if(slot.ring2Slot){
-					nameOfEquipment = slot.ring2Slot.item.name;
-				}else {
-					nameOfEquipment = "";
+					eqItem = slot.ring2Slot.item;
 				}
 				break;
 			case "Neck":
 				if(slot.neckSlot){
-					nameOfEquipment = slot.neckSlot.item.name;
-				}else {
-					nameOfEquipment = "";
+					eqItem = slot.neckSlot.item;
 				}
 				break;
 			case "Bag":
 				if(slot.bagSlot){
-					nameOfEquipment = slot.bagSlot.item.name;
-				}else {
-					nameOfEquipment = "";
+					eqItem = slot.bagSlot.item;
 				}
 				break;
 			case "Artifact":
 				if(slot.artifactSlot){
-					nameOfEquipment = slot.artifactSlot.item.name;
-				}else {
-					nameOfEquipment = "";
+					eqItem = slot.artifactSlot.item;
 				}
 				break;
 			default:
-				nameOfEquipment = "";
 				break;
 		}
-		if(nameOfEquipment != ""){
-			//console.log("There's something in " + name);
+		if(eqItem){
 			return <Fragment>
 				<Card raised={raised} classes={{root: classes.itemSlotCard}}>
 					<CardActionArea
@@ -153,17 +128,19 @@ const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = ({name, slot, eqTyp
 						onMouseLeave={() => setRaised(false)}
 					>
 						<CardContent>
-							<Typography>{nameOfEquipment}</Typography>
+							<CardMedia
+								component="img"
+								image={`/assets/items/${eqItem.image}`}
+								height={94}
+							/>
 						</CardContent>
 					</CardActionArea>
 				</Card>
 			</Fragment>;
 		} else {
-			//console.log("There's nothing in " + name);
 			return failedCard;
 		}
 	} else {
-		//console.log("There's nothing in " + name);
 		return failedCard;
 	}
 };

@@ -158,68 +158,69 @@ const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = ({name, slot, eqTyp
 	</Card>;
 
 	if (slot) {
-		let eqItem: Item | null = null;
+		let eqItem: ItemRoll | null = null;
 
 		switch (eqType) {
 			case "Head":
 				if (slot.headSlot) {
-					eqItem = slot.headSlot.item;
+					eqItem = slot.headSlot;
 				}
 				break;
 			case "Chest":
 				if (slot.chestSlot) {
-					eqItem = slot.chestSlot.item;
+					eqItem = slot.chestSlot;
 				}
 				break;
 			case "Belt":
 				if (slot.beltSlot) {
-					eqItem = slot.beltSlot.item;
+					eqItem = slot.beltSlot;
 				}
 				break;
 			case "Boot":
 				if (slot.bootSlot) {
-					eqItem = slot.bootSlot.item;
+					eqItem = slot.bootSlot;
 				}
 				break;
 			case "Left Hand":
 				if (slot.leftHandSlot) {
-					eqItem = slot.leftHandSlot.item;
+					eqItem = slot.leftHandSlot;
 				}
 				break;
 			case "Right Hand":
 				if (slot.rightHandSlot) {
-					eqItem = slot.rightHandSlot.item;
+					eqItem = slot.rightHandSlot;
 				}
 				break;
 			case "Ring 1":
 				if (slot.ring1Slot) {
-					eqItem = slot.ring1Slot.item;
+					eqItem = slot.ring1Slot;
 				}
 				break;
 			case "Ring 2":
 				if (slot.ring2Slot) {
-					eqItem = slot.ring2Slot.item;
+					eqItem = slot.ring2Slot;
 				}
 				break;
 			case "Neck":
 				if (slot.neckSlot) {
-					eqItem = slot.neckSlot.item;
+					eqItem = slot.neckSlot;
 				}
 				break;
 			case "Bag":
 				if (slot.bagSlot) {
-					eqItem = slot.bagSlot.item;
+					eqItem = slot.bagSlot;
 				}
 				break;
 			case "Artifact":
 				if (slot.artifactSlot) {
-					eqItem = slot.artifactSlot.item;
+					eqItem = slot.artifactSlot;
 				}
 				break;
 			default:
 				break;
 		}
-		if (eqItem) {
+		if (eqItem?.item) {
+			console.log(eqItem);
 			return <Fragment>
 				<Card raised={raised} classes={{root: classes.itemSlotCard}}>
 					<CardActionArea
@@ -227,13 +228,17 @@ const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = ({name, slot, eqTyp
 						onMouseEnter={() => setRaised(true)}
 						onMouseLeave={() => setRaised(false)}
 					>
-						<CardContent>
-							<CardMedia
-								component="img"
-								image={`/assets/items/${eqItem.image}`}
-								height={94}
-							/>
-						</CardContent>
+						<HtmlTooltip
+							title={"boop"}
+						>
+							<CardContent>
+								<CardMedia
+									component="img"
+									image={`/assets/items/${eqItem.item.image}`}
+									height={94}
+								/>
+							</CardContent>
+						</HtmlTooltip>
 					</CardActionArea>
 				</Card>
 			</Fragment>;

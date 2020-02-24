@@ -53,9 +53,9 @@ export class InventoryService implements OnModuleInit {
 			.leftJoinAndSelect("parent1.parent", "parent2")
 			.where("inventory.id = :id", {id})
 			.getOne();
-		if(slot){
+		if (slot) {
 			return slot;
-		}else{
+		} else {
 			throw new Error("Item not found");
 		}
 	}

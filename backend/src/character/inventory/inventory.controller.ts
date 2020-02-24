@@ -1,5 +1,5 @@
 import {ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiTags} from "@nestjs/swagger";
-import {Body, Controller, Delete, Get, Logger, Param, Post, Put, UseGuards, Request} from "@nestjs/common";
+import {Body, Controller, Delete, Get, Logger, Param, Post, Put, Request, UseGuards} from "@nestjs/common";
 import {AuthGuard} from "@nestjs/passport";
 import {InventoryService} from "./inventory.service";
 import {InventoryEntity} from "./inventory.entity";

@@ -193,13 +193,20 @@ export const characterStore: CharacterStore = {
 					return 0;
 				} else {
 					const roll = await CharacterService.createItemRoll(token, item);
+					let picked: number = 0;
+					if (quantity <= stackLimit) {
+						picked = quantity;
+					} else {
+						picked = stackLimit;
+					}
+
 					await CharacterService.createInventory(token, {
 						roll: roll.id,
-						quantity: quantity,
+						quantity: picked,
 					});
 
 					await state.getMine();
-					return quantity;
+					return picked;
 				}
 			}
 		} else {

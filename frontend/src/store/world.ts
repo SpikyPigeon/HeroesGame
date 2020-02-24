@@ -9,8 +9,8 @@ export interface WorldData {
 }
 
 export interface WorldStore {
-	droppedItems: {[itemId: number]: {item: Item; quantity: number}};
-	setDrop: Action<WorldStore, {item: Item, quantity: number}>;
+	droppedItems: { [itemId: number]: { item: Item; quantity: number } };
+	setDrop: Action<WorldStore, { item: Item, quantity: number }>;
 	removeDrop: Action<WorldStore, number>;
 	clearDrops: Action<WorldStore>;
 

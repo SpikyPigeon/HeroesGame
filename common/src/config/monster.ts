@@ -24,8 +24,8 @@ export const monsterConfig = {
 			return Math.floor(Math.random() * (max - min + 1)) + min;
 		},
 
-		itemDrops(drops: Array<EncounterDrop>): Array<{item: Item; quantity: number}> {
-			let items: Array<{item: Item; quantity: number}> = [];
+		itemDrops(drops: Array<EncounterDrop>): Array<{ item: Item; quantity: number }> {
+			let items: Array<{ item: Item; quantity: number }> = [];
 			drops.forEach(value => {
 				if (Math.random() <= value.dropChance) {
 					items = [...items, {

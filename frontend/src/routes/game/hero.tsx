@@ -6,14 +6,16 @@ import {
 	CardContent,
 	CardHeader,
 	CardMedia,
-	createStyles, Divider,
+	createStyles,
+	Divider,
 	Grid,
 	GridList,
 	GridListTile,
 	makeStyles,
 	Menu,
 	MenuItem,
-	Theme, Tooltip,
+	Theme,
+	Tooltip,
 	Typography,
 	withStyles,
 } from "@material-ui/core";
@@ -58,24 +60,80 @@ const ItemInspect: FunctionComponent<ItemInspectProps> = ({iRoll}) => {
 		</Typography>
 		<small>{iRoll.item.description}</small><Divider/>
 		<ul>
-			{iRoll.item.heal ? (<li><Typography variant="caption">{"Heals " + iRoll.item.heal + " Health points."}</Typography></li>):null}
-			{iRoll.item.strengthMod ? (<li><Typography variant="caption">{"Adds " + (iRoll.item.strengthMod * iRoll.strengthMult) + " Strength points."}</Typography></li>):null}
-			{iRoll.item.dexterityMod ? (<li><Typography variant="caption">{"Adds " + (iRoll.item.dexterityMod * iRoll.dexterityMult) + " Dexterity points."}</Typography></li>):null}
-			{iRoll.item.vitalityMod ? (<li><Typography variant="caption">{"Adds " + (iRoll.item.vitalityMod * iRoll.vitalityMult) + " Vitality points."}</Typography></li>):null}
-			{iRoll.item.intellectMod ? (<li><Typography variant="caption">{"Adds " + (iRoll.item.intellectMod * iRoll.intellectMult) + " Intellect points."}</Typography></li>):null}
-			{iRoll.item.criticalChanceMod ? (<li><Typography variant="caption">{"Adds " + (iRoll.item.criticalChanceMod * iRoll.criticalChanceMult) + "% chance of Critical Hit."}</Typography></li>):null}
-			{iRoll.item.criticalDamageMod ? (<li><Typography variant="caption">{"Adds " + (iRoll.item.criticalDamageMod * iRoll.criticalDamageMult) + "% damage on Critical Hits."}</Typography></li>):null}
-			{iRoll.item.dodgeChanceMod ? (<li><Typography variant="caption">{"Adds " + (iRoll.item.dodgeChanceMod * iRoll.dodgeChanceMult) + "% chance of Dodging attacks."}</Typography></li>):null}
-			{iRoll.item.healthMod ? (<li><Typography variant="caption">{"Increases Max Health by " + (iRoll.item.healthMod * iRoll.healthMult) + "%."}</Typography></li>):null}
-			{iRoll.item.manaMod ? (<li><Typography variant="caption">{"Increases Max Mana by " + (iRoll.item.manaMod * iRoll.manaMult) + "%."}</Typography></li>):null}
-			{iRoll.item.damageMod ? (<li><Typography variant="caption">{"Adds " + (iRoll.item.damageMod * iRoll.damageMult) + " points to Damage dealt."}</Typography></li>):null}
-			{iRoll.item.itemDropMod ? (<li><Typography variant="caption">{"Adds " + (iRoll.item.itemDropMod * iRoll.itemDropMult) + "% chance of finding loot."}</Typography></li>):null}
-			{iRoll.item.armorMod ? (<li><Typography variant="caption">{"Removes " + (iRoll.item.armorMod * iRoll.armorMult) + "% of damage taken."}</Typography></li>):null}
-			{iRoll.item.goldDropMod ? (<li><Typography variant="caption">{"Gold rewards increased by " + (iRoll.item.goldDropMod * iRoll.goldDropMult) + "%."}</Typography></li>):null}
+			{iRoll.item.heal > 0 && <li>
+				<Typography variant="caption">
+					{`Heals ${iRoll.item.heal} Health points.`}
+				</Typography>
+			</li>}
+			{iRoll.item.strengthMod > 0 && <li>
+				<Typography variant="caption">
+					{`Adds ${iRoll.item.strengthMod * iRoll.strengthMult} Strength points.`}
+				</Typography>
+			</li>}
+			{iRoll.item.dexterityMod > 0 && <li>
+				<Typography variant="caption">
+					{`Adds ${iRoll.item.dexterityMod * iRoll.dexterityMult} Dexterity points.`}
+				</Typography>
+			</li>}
+			{iRoll.item.vitalityMod > 0 && <li>
+				<Typography variant="caption">
+					{`Adds ${iRoll.item.vitalityMod * iRoll.vitalityMult} Vitality points.`}
+				</Typography>
+			</li>}
+			{iRoll.item.intellectMod > 0 && <li>
+				<Typography variant="caption">
+					{`Adds ${iRoll.item.intellectMod * iRoll.intellectMult} Intellect points.`}
+				</Typography>
+			</li>}
+			{iRoll.item.damageMod > 0 && <li>
+				<Typography variant="caption">
+					{`Adds ${iRoll.item.damageMod * iRoll.damageMult} points to Damage dealt.`}
+				</Typography>
+			</li>}
+			{iRoll.item.armorMod > 0 && <li>
+				<Typography variant="caption">
+					{`Removes ${iRoll.item.armorMod * iRoll.armorMult}% of damage taken.`}
+				</Typography>
+			</li>}
+			{iRoll.item.criticalChanceMod > 0 && <li>
+				<Typography variant="caption">
+					{`Adds ${iRoll.item.criticalChanceMod * iRoll.criticalChanceMult}% chance of Critical Hit.`}
+				</Typography>
+			</li>}
+			{iRoll.item.criticalDamageMod > 0 && <li>
+				<Typography variant="caption">
+					{`Adds ${iRoll.item.criticalDamageMod * iRoll.criticalDamageMult}% damage on Critical Hits.`}
+				</Typography>
+			</li>}
+			{iRoll.item.dodgeChanceMod > 0 && <li>
+				<Typography variant="caption">
+					{`Adds ${iRoll.item.dodgeChanceMod * iRoll.dodgeChanceMult}% chance of Dodging attacks.`}
+				</Typography>
+			</li>}
+			{iRoll.item.healthMod > 0 && <li>
+				<Typography variant="caption">
+					{`Increases Max Health by ${iRoll.item.healthMod * iRoll.healthMult}%.`}
+				</Typography>
+			</li>}
+			{iRoll.item.manaMod > 0 && <li>
+				<Typography variant="caption">
+					{`Increases Max Mana by ${iRoll.item.manaMod * iRoll.manaMult}%.`}
+				</Typography>
+			</li>}
+			{iRoll.item.itemDropMod > 0 && <li>
+				<Typography variant="caption">
+					{`Adds ${iRoll.item.itemDropMod * iRoll.itemDropMult}% chance of finding loot.`}
+				</Typography>
+			</li>}
+			{iRoll.item.goldDropMod > 0 && <li>
+				<Typography variant="caption">
+					{`Gold rewards increased by ${iRoll.item.goldDropMod * iRoll.goldDropMult}%.`}
+				</Typography>
+			</li>}
 		</ul>
-		{iRoll.item.stackLimit > 1 ? (<Fragment><Divider/>{"Stacks up to " + iRoll.item.stackLimit}</Fragment>):null}
+		{iRoll.item.stackLimit > 1 && (<Fragment><Divider/>{`Stacks up to ${iRoll.item.stackLimit}`}</Fragment>)}
 	</Fragment>;
-}
+};
 
 interface EquipmentSlotProps {
 	name: string;

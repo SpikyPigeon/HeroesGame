@@ -14,7 +14,9 @@ You need some programs installed to make things work :
 
 ### PostgreSQL Config
 
-In pgAdmin, you need to create a new user (with login rights) names `heroes` with password `ReactHeroes`. Then create a database named `heroes` owned by the user `heroes`.
+In pgAdmin, you need to create a new user (with login rights) named `heroes` with password `ReactHeroes`. Then create a database named `heroes` owned by the user `heroes`.
+
+You need to execute this request too, before starting the app : `CREATE EXTENSION "pgcrypto";`.
 
 ### Running the App
 
@@ -23,6 +25,7 @@ Once all of them are installed, open a command prompt in the root of the reposit
 ```bash
 yarn #will install all dependencies
 yarn start #will run the server
+yarn migration:run
 ```
 
 The start script run the development version of the backend, which hosts the frontend with Hot Reload, on port 3000.

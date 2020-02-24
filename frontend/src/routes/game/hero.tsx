@@ -20,6 +20,7 @@ import {store, useStoreActions, useStoreState} from "../../store";
 import {useNavigation} from "react-navi";
 import {useMount} from "react-use";
 import {CharacterEquipment, CharacterInventory, getItemType, ItemType} from "heroes-common/src";
+import {EquipmentType} from "heroes-common/src/interfaces/equipment-type";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -37,42 +38,133 @@ const useStyles = makeStyles((theme: Theme) =>
 interface EquipmentSlotProps {
 	name: string;
 	slot?: CharacterEquipment;
-	
+	eqType: EquipmentType;
 	onEquip?: (slot: CharacterEquipment) => void;
 }
 
-const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = ({name, slot, onEquip}) => {
+const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = ({name, slot, eqType, onEquip}) => {
 	const classes = useStyles();
 	const [raised, setRaised] = useState(false);
+	const failedCard = <Card raised={raised} classes={{root: classes.itemSlotCard}}>
+		<CardActionArea
+			classes={{root: classes.itemSlotAction}}
+			onMouseEnter={() => setRaised(true)}
+			onMouseLeave={() => setRaised(false)}
+		>
+			<CardContent>
+				<Typography>{name}</Typography>
+			</CardContent>
+		</CardActionArea>
+	</Card>;
 
 	if (slot) {
-		console.log("This guys is holding something!");
-		return <Fragment>
-			<Card raised={raised} classes={{root: classes.itemSlotCard}}>
-				<CardActionArea
-					classes={{root: classes.itemSlotAction}}
-					onMouseEnter={() => setRaised(true)}
-					onMouseLeave={() => setRaised(false)}
-				>
-					<CardContent>
-						<Typography>{slot.rightHandSlot.item.name}</Typography>
-					</CardContent>
-				</CardActionArea>
-			</Card>
-		</Fragment>;
+		//console.log("This guys is holding something!");
+		let nameOfEquipment: string = "";
+
+		switch (eqType){
+			case "Head":
+				if(slot.headSlot){
+					nameOfEquipment = slot.headSlot.item.name;
+				} else {
+					nameOfEquipment = "";
+				}
+				break;
+			case "Chest":
+				if(slot.chestSlot){
+					nameOfEquipment = slot.chestSlot.item.name;
+				}else {
+					nameOfEquipment = "";
+				}
+				break;
+			case "Belt":
+				if(slot.beltSlot){
+					nameOfEquipment = slot.beltSlot.item.name;
+				}else {
+					nameOfEquipment = "";
+				}
+				break;
+			case "Boot":
+				if(slot.bootSlot){
+					nameOfEquipment = slot.bootSlot.item.name;
+				}else {
+					nameOfEquipment = "";
+				}
+				break;
+			case "Left Hand":
+				if(slot.leftHandSlot){
+					nameOfEquipment = slot.leftHandSlot.item.name;
+				}else {
+					nameOfEquipment = "";
+				}
+				break;
+			case "Right Hand":
+				if(slot.rightHandSlot){
+					nameOfEquipment = slot.rightHandSlot.item.name;
+				}else {
+					nameOfEquipment = "";
+				}
+				break;
+			case "Ring 1":
+				if(slot.ring1Slot){
+					nameOfEquipment = slot.ring1Slot.item.name;
+				}else {
+					nameOfEquipment = "";
+				}
+				break;
+			case "Ring 2":
+				if(slot.ring2Slot){
+					nameOfEquipment = slot.ring2Slot.item.name;
+				}else {
+					nameOfEquipment = "";
+				}
+				break;
+			case "Neck":
+				if(slot.neckSlot){
+					nameOfEquipment = slot.neckSlot.item.name;
+				}else {
+					nameOfEquipment = "";
+				}
+				break;
+			case "Bag":
+				if(slot.bagSlot){
+					nameOfEquipment = slot.bagSlot.item.name;
+				}else {
+					nameOfEquipment = "";
+				}
+				break;
+			case "Artifact":
+				if(slot.artifactSlot){
+					nameOfEquipment = slot.artifactSlot.item.name;
+				}else {
+					nameOfEquipment = "";
+				}
+				break;
+			default:
+				nameOfEquipment = "";
+				break;
+		}
+		if(nameOfEquipment != ""){
+			//console.log("There's something in " + name);
+			return <Fragment>
+				<Card raised={raised} classes={{root: classes.itemSlotCard}}>
+					<CardActionArea
+						classes={{root: classes.itemSlotAction}}
+						onMouseEnter={() => setRaised(true)}
+						onMouseLeave={() => setRaised(false)}
+					>
+						<CardContent>
+							<Typography>{nameOfEquipment}</Typography>
+						</CardContent>
+					</CardActionArea>
+				</Card>
+			</Fragment>;
+		} else {
+			//console.log("There's nothing in " + name);
+			return failedCard;
+		}
 	} else {
-		console.log("This guy has nothing!");
-		return <Card raised={raised} classes={{root: classes.itemSlotCard}}>
-			<CardActionArea
-				classes={{root: classes.itemSlotAction}}
-				onMouseEnter={() => setRaised(true)}
-				onMouseLeave={() => setRaised(false)}
-			>
-				<CardContent>
-					<Typography>{name}</Typography>
-				</CardContent>
-			</CardActionArea>
-		</Card>;
+		//console.log("There's nothing in " + name);
+		return failedCard;
 	}
 };
 
@@ -214,16 +306,32 @@ const Hero: FunctionComponent = () => {
 						<Grid container item direction="row" spacing={2} justify="center">
 							<Grid container item lg={2} direction="column" spacing={2}>
 								<Grid item>
-									<EquipmentSlot name="Head"/>
+									<EquipmentSlot
+										name="Head"
+										slot={currentHero.equipment}
+										eqType="Head"
+									/>
 								</Grid>
 								<Grid item>
-									<EquipmentSlot name="Chest"/>
+									<EquipmentSlot
+										name="Chest"
+										slot={currentHero.equipment}
+										eqType="Chest"
+									/>
 								</Grid>
 								<Grid item>
-									<EquipmentSlot name="Belt"/>
+									<EquipmentSlot
+										name="Belt"
+										slot={currentHero.equipment}
+										eqType="Belt"
+									/>
 								</Grid>
 								<Grid item>
-									<EquipmentSlot name="Boot"/>
+									<EquipmentSlot
+										name="Boot"
+										slot={currentHero.equipment}
+										eqType="Boot"
+									/>
 								</Grid>
 							</Grid>
 
@@ -242,32 +350,55 @@ const Hero: FunctionComponent = () => {
 								<Grid item>
 									<EquipmentSlot
 										name="Left Hand"
+										slot={currentHero.equipment}
+										eqType="Left Hand"
 									/>
 								</Grid>
 								<Grid item>
 									<EquipmentSlot
 										name="Right Hand"
 										slot={currentHero.equipment}
+										eqType="Right Hand"
 									/>
 								</Grid>
 								<Grid item>
-									<EquipmentSlot name="Ring 1"/>
+									<EquipmentSlot
+										name="Ring 1"
+										slot={currentHero.equipment}
+										eqType="Ring 1"
+									/>
 								</Grid>
 								<Grid item>
-									<EquipmentSlot name="Ring 2"/>
+									<EquipmentSlot
+										name="Ring 2"
+										slot={currentHero.equipment}
+										eqType="Ring 2"
+									/>
 								</Grid>
 							</Grid>
 						</Grid>
 
 						<Grid container item lg={12} justify="center" spacing={3}>
 							<Grid item lg={2}>
-								<EquipmentSlot name="Neck"/>
+								<EquipmentSlot
+									name="Neck"
+									slot={currentHero.equipment}
+									eqType="Neck"
+								/>
 							</Grid>
 							<Grid item lg={2}>
-								<EquipmentSlot name="Bag"/>
+								<EquipmentSlot
+									name="Bag"
+									eqType="Bag"
+									slot={currentHero.equipment}
+								/>
 							</Grid>
 							<Grid item lg={2}>
-								<EquipmentSlot name="Artifact"/>
+								<EquipmentSlot
+									name="Artifact"
+									slot={currentHero.equipment}
+									eqType="Artifact"
+								/>
 							</Grid>
 						</Grid>
 					</Grid>

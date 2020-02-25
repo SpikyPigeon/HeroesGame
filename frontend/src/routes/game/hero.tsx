@@ -22,7 +22,7 @@ import {
 import {store, useStoreActions, useStoreState} from "../../store";
 import {useNavigation} from "react-navi";
 import {useMount} from "react-use";
-import {CharacterEquipment, CharacterInventory, getItemType, Item, ItemRoll, ItemType, ItemRarity} from "heroes-common";
+import {CharacterEquipment, CharacterInventory, getItemType, ItemRoll, ItemType, ItemRarity} from "heroes-common";
 import {EquipmentType} from "heroes-common/src/interfaces/equipment-type";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -234,8 +234,8 @@ const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = ({name, slot, eqTyp
 			default:
 				break;
 		}
+
 		if (eqItem?.item) {
-			console.log(eqItem);
 			return <Fragment>
 				<Card raised={raised} classes={{root: classes.itemSlotCard}}>
 					<CardActionArea
@@ -275,7 +275,8 @@ interface InventorySlotProps {
 
 const InventorySlot: FunctionComponent<InventorySlotProps> = ({slot, onUse}) => {
 	const classes = useStyles();
-	const discard = useStoreActions(state => state.character.deleteInventory);
+	const discardAll = useStoreActions(state => state.character.deleteInventory);
+	const discardOne = useStoreActions(state => state.character.updateInventory);
 	const [itemEl, setItemEl] = useState<null | HTMLElement>(null);
 	const handleItemClose = () => setItemEl(null);
 	const handleUse = () => {
@@ -285,10 +286,23 @@ const InventorySlot: FunctionComponent<InventorySlotProps> = ({slot, onUse}) => 
 		}
 		handleItemClose();
 	};
-	const handleDiscard = () => {
-		if (slot) {
 
+	const handleDiscardOne = () => {
+		if (slot) {
+			if (slot.quantity > 1) {
+				discardOne({id: slot.id, quantity: slot.quantity - 1}).catch(console.error);
+			} else {
+				handleDiscardAll();
+			}
 		}
+		handleItemClose();
+	};
+
+	const handleDiscardAll = () => {
+		if (slot) {
+			discardAll(slot);
+		}
+		handleItemClose();
 	};
 
 	if (slot) {
@@ -315,8 +329,18 @@ const InventorySlot: FunctionComponent<InventorySlotProps> = ({slot, onUse}) => 
 					getItemType(slot.roll.item) == ItemType.Consumable &&
 					<MenuItem onClick={handleUse}>Use</MenuItem>
 				}
-				<MenuItem onClick={handleItemClose}>Discard One</MenuItem>
-				<MenuItem onClick={handleItemClose}>Discard All</MenuItem>
+				{
+					slot.quantity > 1 &&
+					<MenuItem onClick={handleDiscardOne}>Discard One</MenuItem>
+				}
+				{
+					slot.quantity > 1 &&
+					<MenuItem onClick={handleDiscardAll}>Discard All</MenuItem>
+				}
+				{
+					slot.quantity === 1 &&
+					<MenuItem onClick={handleDiscardAll}>Discard</MenuItem>
+				}
 			</Menu>
 
 			<Card variant="outlined" classes={{root: classes.itemSlotCard}}>
@@ -512,7 +536,6 @@ const Hero: FunctionComponent = () => {
 				</CardContent>
 			</Card>
 		</Grid>
-
 
 		<Grid item lg={9}>
 			<Card>

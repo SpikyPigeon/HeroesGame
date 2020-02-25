@@ -51,7 +51,7 @@ const HtmlTooltip = withStyles((theme: Theme) => ({
 				case "legendary":
 					return "#ffa181";
 				case "unique":
-					return "#ceffc3";
+					return "#ffd700";
 			}
 		},
 		color: "rgba(0, 0, 0, 0.87)",
@@ -160,6 +160,8 @@ interface EquipmentSlotProps {
 const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = ({name, slot, eqType, onEquip}) => {
 	const classes = useStyles();
 	const [raised, setRaised] = useState(false);
+	const [equipEl, setEquipEl] = useState<null | HTMLElement>(null);
+	const handleEquipClose = () => setEquipEl(null);
 	const failedCard = <Card raised={raised} classes={{root: classes.itemSlotCard}}>
 		<CardActionArea
 			classes={{root: classes.itemSlotAction}}
@@ -237,11 +239,28 @@ const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = ({name, slot, eqTyp
 
 		if (eqItem?.item) {
 			return <Fragment>
+				<Menu
+					keepMounted
+					anchorOrigin={{
+						vertical: "top",
+						horizontal: "center",
+					}}
+					transformOrigin={{
+						vertical: "top",
+						horizontal: "center",
+					}}
+					anchorEl={equipEl}
+					open={Boolean(equipEl)}
+					onClose={handleEquipClose}
+				>
+					<MenuItem onClick={handleEquipClose}>Unequip</MenuItem>
+				</Menu>
 				<Card raised={raised} classes={{root: classes.itemSlotCard}}>
 					<CardActionArea
 						classes={{root: classes.itemSlotAction}}
 						onMouseEnter={() => setRaised(true)}
 						onMouseLeave={() => setRaised(false)}
+						onClick={e => setEquipEl(e.currentTarget.parentElement)}
 					>
 						<HtmlTooltip
 							rarity={eqItem.item.rarity}
@@ -304,6 +323,8 @@ const InventorySlot: FunctionComponent<InventorySlotProps> = ({slot, onUse}) => 
 		}
 		handleItemClose();
 	};
+
+	
 
 	if (slot) {
 		return <Fragment>

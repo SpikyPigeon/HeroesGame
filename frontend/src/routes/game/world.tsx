@@ -380,6 +380,8 @@ const World: FunctionComponent = () => {
 		return null;
 	}
 
+	const dStats = charConfig.stats.calculate.derivedStats(currentChar);
+
 	return <Fragment>
 		<Grid container alignItems="center" justify="center" spacing={2}>
 			<Grid item lg={9}>
@@ -432,21 +434,21 @@ const World: FunctionComponent = () => {
 								<Grid container justify="space-evenly" direction="row">
 									<Grid item lg={2} style={{textAlign: "center"}}>
 										<Tooltip arrow placement="top"
-										         title={`Health : ${currentChar.currentHealth} / ${charConfig.stats.calculate.health(currentChar.vitality, 0)}`}
+										         title={`Health : ${currentChar.currentHealth} / ${charConfig.stats.calculate.health(dStats.vitality, dStats.maxHealth)}`}
 										>
 											<CircularProgress variant="static" thickness={18}
 											                  classes={{circle: classes.healthCircle}}
-											                  value={currentChar.currentHealth * 100 / charConfig.stats.calculate.health(currentChar.vitality, 0)}
+											                  value={currentChar.currentHealth * 100 / charConfig.stats.calculate.health(dStats.vitality, dStats.maxHealth)}
 											/>
 										</Tooltip>
 									</Grid>
 									<Grid item lg={2} style={{textAlign: "center"}}>
 										<Tooltip arrow placement="top"
-										         title={`Mana : ${currentChar.currentMana} / ${charConfig.stats.calculate.mana(currentChar.intellect, 0)}`}
+										         title={`Mana : ${currentChar.currentMana} / ${charConfig.stats.calculate.mana(dStats.intellect, dStats.maxMana)}`}
 										>
 											<CircularProgress variant="static" thickness={18}
 											                  classes={{circle: classes.manaCircle}}
-											                  value={currentChar.currentMana * 100 / charConfig.stats.calculate.mana(currentChar.intellect, 0)}
+											                  value={currentChar.currentMana * 100 / charConfig.stats.calculate.mana(dStats.intellect, dStats.maxMana)}
 											/>
 										</Tooltip>
 									</Grid>
@@ -552,7 +554,7 @@ const World: FunctionComponent = () => {
 		             onClose={() => {
 			             loadContent();
 			             updateChar({
-				             currentHealth: charConfig.stats.calculate.health(currentChar.vitality, 0),
+				             currentHealth: charConfig.stats.calculate.health(dStats.vitality, dStats.maxHealth),
 				             experience: currentChar.experience - Math.ceil(currentChar.experience * 0.1),
 			             });
 			             setOpen({

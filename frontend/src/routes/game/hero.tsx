@@ -22,8 +22,8 @@ import {
 import {store, useStoreActions, useStoreState} from "../../store";
 import {useNavigation} from "react-navi";
 import {useMount} from "react-use";
-import {CharacterEquipment, CharacterInventory, getItemType, Item, ItemRoll, ItemType, ItemRarity} from "heroes-common";
-import {EquipmentType} from "heroes-common/src/interfaces/equipment-type";
+import {CharacterEquipment, CharacterInventory, getItemType, ItemRarity, ItemRoll, ItemType} from "heroes-common";
+import {EquipmentSlotType} from "heroes-common/src/interfaces/equipment-type";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -51,7 +51,7 @@ const HtmlTooltip = withStyles((theme: Theme) => ({
 				case "legendary":
 					return "#ffa181";
 				case "unique":
-					return "#ceffc3";
+					return "#ffd700";
 			}
 		},
 		color: "rgba(0, 0, 0, 0.87)",
@@ -153,13 +153,15 @@ const ItemInspect: FunctionComponent<ItemInspectProps> = ({iRoll}) => {
 interface EquipmentSlotProps {
 	name: string;
 	slot?: CharacterEquipment;
-	eqType: EquipmentType;
+	eqType: EquipmentSlotType;
 	onEquip?: (slot: CharacterEquipment) => void;
 }
 
 const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = ({name, slot, eqType, onEquip}) => {
 	const classes = useStyles();
 	const [raised, setRaised] = useState(false);
+	const [equipEl, setEquipEl] = useState<null | HTMLElement>(null);
+	const handleEquipClose = () => setEquipEl(null);
 	const failedCard = <Card raised={raised} classes={{root: classes.itemSlotCard}}>
 		<CardActionArea
 			classes={{root: classes.itemSlotAction}}
@@ -234,16 +236,34 @@ const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = ({name, slot, eqTyp
 			default:
 				break;
 		}
+
 		if (eqItem?.item) {
-			console.log(eqItem);
 			return <Fragment>
+				<Menu
+					keepMounted
+					anchorOrigin={{
+						vertical: "top",
+						horizontal: "center",
+					}}
+					transformOrigin={{
+						vertical: "top",
+						horizontal: "center",
+					}}
+					anchorEl={equipEl}
+					open={Boolean(equipEl)}
+					onClose={handleEquipClose}
+				>
+					<MenuItem onClick={handleEquipClose}>Unequip</MenuItem>
+				</Menu>
 				<Card raised={raised} classes={{root: classes.itemSlotCard}}>
 					<CardActionArea
 						classes={{root: classes.itemSlotAction}}
 						onMouseEnter={() => setRaised(true)}
 						onMouseLeave={() => setRaised(false)}
+						onClick={e => setEquipEl(e.currentTarget.parentElement)}
 					>
 						<HtmlTooltip
+							rarity={eqItem.item.rarity}
 							title={
 								<ItemInspect iRoll={eqItem}/>
 							}
@@ -274,7 +294,8 @@ interface InventorySlotProps {
 
 const InventorySlot: FunctionComponent<InventorySlotProps> = ({slot, onUse}) => {
 	const classes = useStyles();
-	const discard = useStoreActions(state => state.character.deleteInventory);
+	const discardAll = useStoreActions(state => state.character.deleteInventory);
+	const discardOne = useStoreActions(state => state.character.updateInventory);
 	const [itemEl, setItemEl] = useState<null | HTMLElement>(null);
 	const handleItemClose = () => setItemEl(null);
 	const handleUse = () => {
@@ -284,8 +305,27 @@ const InventorySlot: FunctionComponent<InventorySlotProps> = ({slot, onUse}) => 
 		}
 		handleItemClose();
 	};
-	const handleDiscard = () => {
+
+	const handleDiscardOne = () => {
 		if (slot) {
+			if (slot.quantity > 1) {
+				discardOne({id: slot.id, quantity: slot.quantity - 1}).catch(console.error);
+			} else {
+				handleDiscardAll();
+			}
+		}
+		handleItemClose();
+	};
+
+	const handleDiscardAll = () => {
+		if (slot) {
+			discardAll(slot);
+		}
+		handleItemClose();
+	};
+
+	const handleEquipping = () => {
+		if(slot && getItemType(slot.roll.item) === ItemType.Equipment) {
 
 		}
 	};
@@ -314,8 +354,18 @@ const InventorySlot: FunctionComponent<InventorySlotProps> = ({slot, onUse}) => 
 					getItemType(slot.roll.item) == ItemType.Consumable &&
 					<MenuItem onClick={handleUse}>Use</MenuItem>
 				}
-				<MenuItem onClick={handleItemClose}>Discard One</MenuItem>
-				<MenuItem onClick={handleItemClose}>Discard All</MenuItem>
+				{
+					slot.quantity > 1 &&
+					<MenuItem onClick={handleDiscardOne}>Discard One</MenuItem>
+				}
+				{
+					slot.quantity > 1 &&
+					<MenuItem onClick={handleDiscardAll}>Discard All</MenuItem>
+				}
+				{
+					slot.quantity === 1 &&
+					<MenuItem onClick={handleDiscardAll}>Discard</MenuItem>
+				}
 			</Menu>
 
 			<Card variant="outlined" classes={{root: classes.itemSlotCard}}>
@@ -511,7 +561,6 @@ const Hero: FunctionComponent = () => {
 				</CardContent>
 			</Card>
 		</Grid>
-
 
 		<Grid item lg={9}>
 			<Card>

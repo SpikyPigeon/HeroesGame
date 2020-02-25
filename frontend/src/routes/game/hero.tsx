@@ -244,6 +244,7 @@ const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = ({name, slot, eqTyp
 						onMouseLeave={() => setRaised(false)}
 					>
 						<HtmlTooltip
+							rarity={eqItem.item.rarity}
 							title={
 								<ItemInspect iRoll={eqItem}/>
 							}

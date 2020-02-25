@@ -22,8 +22,8 @@ import {
 import {store, useStoreActions, useStoreState} from "../../store";
 import {useNavigation} from "react-navi";
 import {useMount} from "react-use";
-import {CharacterEquipment, CharacterInventory, getItemType, ItemRoll, ItemType, ItemRarity} from "heroes-common";
-import {EquipmentType} from "heroes-common/src/interfaces/equipment-type";
+import {CharacterEquipment, CharacterInventory, getItemType, ItemRarity, ItemRoll, ItemType} from "heroes-common";
+import {EquipmentSlotType} from "heroes-common/src/interfaces/equipment-type";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -153,7 +153,7 @@ const ItemInspect: FunctionComponent<ItemInspectProps> = ({iRoll}) => {
 interface EquipmentSlotProps {
 	name: string;
 	slot?: CharacterEquipment;
-	eqType: EquipmentType;
+	eqType: EquipmentSlotType;
 	onEquip?: (slot: CharacterEquipment) => void;
 }
 
@@ -324,7 +324,11 @@ const InventorySlot: FunctionComponent<InventorySlotProps> = ({slot, onUse}) => 
 		handleItemClose();
 	};
 
-	
+	const handleEquipping = () => {
+		if(slot && getItemType(slot.roll.item) === ItemType.Equipment) {
+
+		}
+	};
 
 	if (slot) {
 		return <Fragment>

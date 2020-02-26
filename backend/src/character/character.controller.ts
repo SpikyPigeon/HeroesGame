@@ -1,7 +1,7 @@
 import {ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiTags} from "@nestjs/swagger";
 import {Body, Controller, Get, Logger, Param, Post, Put, Request, UseGuards} from "@nestjs/common";
 import {AuthGuard} from "@nestjs/passport";
-import {CharacterInfoDto, MoveCharacterInfoDto, UpdateCharacterInfoDto} from "./character.dto";
+import {CharacterInfoDto, MoveCharacterInfoDto, UpdateCharacterInfoDto, UpdateEquipmentDto} from "./character.dto";
 import {CharacterService} from "./character.service";
 import {CharacterEntity} from "./character.entity";
 import {AvatarService} from "./avatar.service";
@@ -14,6 +14,16 @@ export class CharacterController {
 	private readonly logger: Logger = new Logger(CharacterController.name);
 
 	constructor(private readonly characters: CharacterService, private readonly avatars: AvatarService) {
+	}
+
+	@ApiBearerAuth()
+	@ApiOkResponse({type: CharacterEntity})
+	@ApiBody({type: UpdateEquipmentDto})
+	@UseGuards(AuthGuard("jwt"))
+	@Put("equipment")
+	async updateMyEquipment(@Request() req: any, @Body() data: Partial<UpdateEquipmentDto>): Promise<CharacterEntity> {
+		this.logger.log(`updateMyEquipment`);
+		return await this.characters.updateMyEquipment((req.user as UserEntity).id, data);
 	}
 
 	@ApiOkResponse({type: AvatarEntity, isArray: true})

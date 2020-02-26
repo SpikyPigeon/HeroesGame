@@ -4,6 +4,7 @@ import {
 	CharacterInfo,
 	CharacterInventory,
 	config,
+	EquipmentSlotType,
 	getItemType,
 	Item,
 	ItemType,
@@ -35,6 +36,9 @@ export interface CharacterStore {
 	pickupItem: Thunk<CharacterStore, { item: Item, quantity: number }, any, AppStore, Promise<number>>;
 
 	consumeItem: Thunk<CharacterStore, CharacterInventory, any, AppStore>;
+
+	equipItem: Thunk<CharacterStore, CharacterInventory, any, AppStore>;
+	unequipItem: Thunk<CharacterStore, EquipmentSlotType, any, AppStore>;
 }
 
 export const characterStore: CharacterStore = {
@@ -261,6 +265,22 @@ export const characterStore: CharacterStore = {
 					}
 				}).catch(console.error);
 			}
+		}
+	}),
+
+	equipItem: thunk(async (state, payload, {getState, getStoreActions}) => {
+		const token = localStorage.getItem("userJWT");
+		if (token) {
+		} else {
+			throw new Error("Not logged in!");
+		}
+	}),
+
+	unequipItem: thunk(async (state, payload, {getState, getStoreActions}) => {
+		const token = localStorage.getItem("userJWT");
+		if (token) {
+		} else {
+			throw new Error("Not logged in!");
 		}
 	}),
 };

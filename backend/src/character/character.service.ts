@@ -1,17 +1,19 @@
 import {Repository, SelectQueryBuilder} from "typeorm";
 import {Inject, Injectable, OnModuleInit} from "@nestjs/common";
 import {ModuleRef} from "@nestjs/core";
-import {UpdateCharacterInfoDto} from "./character.dto";
+import {UpdateCharacterInfoDto, UpdateEquipmentDto} from "./character.dto";
 import {SquareService, WorldService} from "../world";
 import {CharacterEntity} from "./character.entity";
 import {EquipmentEntity} from "./equipment.entity";
 import {AvatarService} from "./avatar.service";
+import {RollService} from "../item";
 import {UserEntity} from "../user";
 
 @Injectable()
 export class CharacterService implements OnModuleInit {
 	private squares!: SquareService;
 	private worlds!: WorldService;
+	private rolls!: RollService;
 
 	constructor(
 		@Inject("CHARACTER_REPOSITORY")
@@ -26,6 +28,7 @@ export class CharacterService implements OnModuleInit {
 	onModuleInit() {
 		this.squares = this.refs.get(SquareService, {strict: false});
 		this.worlds = this.refs.get(WorldService, {strict: false});
+		this.rolls = this.refs.get(RollService, {strict: false});
 	}
 
 	async findAll(): Promise<Array<CharacterEntity>> {
@@ -123,6 +126,79 @@ export class CharacterService implements OnModuleInit {
 		return await this.equipments.save(this.equipments.create({
 			player: character,
 		}));
+	}
+
+	async updateMyEquipment(userId: string, data: Partial<UpdateEquipmentDto>): Promise<CharacterEntity> {
+		const char = await this.findMine(userId);
+
+		if (data.artifactSlot === null) {
+			char.equipment.artifactSlot = null;
+		} else if (typeof data.artifactSlot === "string") {
+			char.equipment.artifactSlot = await this.rolls.findOne(data.artifactSlot);
+		}
+
+		if (data.bagSlot === null) {
+			char.equipment.bagSlot = null;
+		} else if (typeof data.bagSlot === "string") {
+			char.equipment.bagSlot = await this.rolls.findOne(data.bagSlot);
+		}
+
+		if (data.beltSlot === null) {
+			char.equipment.beltSlot = null;
+		} else if (typeof data.beltSlot === "string") {
+			char.equipment.beltSlot = await this.rolls.findOne(data.beltSlot);
+		}
+
+		if (data.bootSlot === null) {
+			char.equipment.bootSlot = null;
+		} else if (typeof data.bootSlot === "string") {
+			char.equipment.bootSlot = await this.rolls.findOne(data.bootSlot);
+		}
+
+		if (data.chestSlot === null) {
+			char.equipment.chestSlot = null;
+		} else if (typeof data.chestSlot === "string") {
+			char.equipment.chestSlot = await this.rolls.findOne(data.chestSlot);
+		}
+
+		if (data.headSlot === null) {
+			char.equipment.headSlot = null;
+		} else if (typeof data.headSlot === "string") {
+			char.equipment.headSlot = await this.rolls.findOne(data.headSlot);
+		}
+
+		if (data.leftHandSlot === null) {
+			char.equipment.leftHandSlot = null;
+		} else if (typeof data.leftHandSlot === "string") {
+			char.equipment.leftHandSlot = await this.rolls.findOne(data.leftHandSlot);
+		}
+
+		if (data.neckSlot === null) {
+			char.equipment.neckSlot = null;
+		} else if (typeof data.neckSlot === "string") {
+			char.equipment.neckSlot = await this.rolls.findOne(data.neckSlot);
+		}
+
+		if (data.rightHandSlot === null) {
+			char.equipment.rightHandSlot = null;
+		} else if (typeof data.rightHandSlot === "string") {
+			char.equipment.rightHandSlot = await this.rolls.findOne(data.rightHandSlot);
+		}
+
+		if (data.ring1Slot === null) {
+			char.equipment.ring1Slot = null;
+		} else if (typeof data.ring1Slot === "string") {
+			char.equipment.ring1Slot = await this.rolls.findOne(data.ring1Slot);
+		}
+
+		if (data.ring2Slot === null) {
+			char.equipment.ring2Slot = null;
+		} else if (typeof data.ring2Slot === "string") {
+			char.equipment.ring2Slot = await this.rolls.findOne(data.ring2Slot);
+		}
+
+		await this.equipments.save(char.equipment);
+		return char;
 	}
 
 	private createQuery(): SelectQueryBuilder<CharacterEntity> {

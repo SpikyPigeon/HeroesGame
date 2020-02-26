@@ -1,4 +1,6 @@
 import {createElement, Fragment, FunctionComponent, useState} from "react";
+import {useNavigation} from "react-navi";
+import {useMount} from "react-use";
 import {
 	Badge,
 	Card,
@@ -19,11 +21,17 @@ import {
 	Typography,
 	withStyles,
 } from "@material-ui/core";
+
 import {store, useStoreActions, useStoreState} from "../../store";
-import {useNavigation} from "react-navi";
-import {useMount} from "react-use";
-import {CharacterEquipment, CharacterInventory, getItemType, ItemRarity, ItemRoll, ItemType} from "heroes-common";
-import {EquipmentSlotType} from "heroes-common/src/interfaces/equipment-type";
+import {
+	CharacterEquipment,
+	CharacterInventory,
+	EquipmentSlotType,
+	getItemType,
+	ItemRarity,
+	ItemRoll,
+	ItemType
+} from "heroes-common";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({

@@ -19,65 +19,65 @@ export class EquipmentEntity implements CharacterEquipment {
 	@ManyToOne(type => RollEntity, {
 		nullable: true,
 	})
-	headSlot!: RollEntity;
+	headSlot!: RollEntity | null;
 
 	@ApiProperty()
 	@ManyToOne(type => RollEntity, {
 		nullable: true,
 	})
-	chestSlot!: RollEntity;
+	chestSlot!: RollEntity | null;
 
 	@ApiProperty()
 	@ManyToOne(type => RollEntity, {
 		nullable: true,
 	})
-	beltSlot!: RollEntity;
+	beltSlot!: RollEntity | null;
 
 	@ApiProperty()
 	@ManyToOne(type => RollEntity, {
 		nullable: true,
 	})
-	bootSlot!: RollEntity;
+	bootSlot!: RollEntity | null;
 
 	@ApiProperty()
 	@ManyToOne(type => RollEntity, {
 		nullable: true,
 	})
-	leftHandSlot!: RollEntity;
+	leftHandSlot!: RollEntity | null;
 
 	@ApiProperty()
 	@ManyToOne(type => RollEntity, {
 		nullable: true,
 	})
-	rightHandSlot!: RollEntity;
+	rightHandSlot!: RollEntity | null;
 
 	@ApiProperty()
 	@ManyToOne(type => RollEntity, {
 		nullable: true,
 	})
-	ring1Slot!: RollEntity;
+	ring1Slot!: RollEntity | null;
 
 	@ApiProperty()
 	@ManyToOne(type => RollEntity, {
 		nullable: true,
 	})
-	ring2Slot!: RollEntity;
+	ring2Slot!: RollEntity | null;
 
 	@ApiProperty()
 	@ManyToOne(type => RollEntity, {
 		nullable: true,
 	})
-	neckSlot!: RollEntity;
+	neckSlot!: RollEntity | null;
 
 	@ApiProperty()
 	@ManyToOne(type => RollEntity, {
 		nullable: true,
 	})
-	bagSlot!: RollEntity;
+	bagSlot!: RollEntity | null;
 
 	@ApiProperty()
 	@ManyToOne(type => RollEntity, {
 		nullable: true,
 	})
-	artifactSlot!: RollEntity;
+	artifactSlot!: RollEntity | null;
 }

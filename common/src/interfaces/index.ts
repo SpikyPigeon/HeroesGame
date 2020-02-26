@@ -2,6 +2,7 @@ export * from "./bank";
 export * from "./player-character";
 export * from "./character-slap";
 export * from "./character-equipment";
+export * from "./update-character-equipment";
 export * from "./character-inventory";
 export * from "./create-inventory-info";
 export * from "./square";
@@ -22,6 +23,7 @@ export * from "./shop-sells";
 export * from "./shop";
 export * from "./item-type";
 
+export * from "./equipment-type";
 export * from "./character-info";
 export * from "./update-character-info";
 export * from "./character-info";

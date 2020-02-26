@@ -1,5 +1,5 @@
 import {ApiProperty} from "@nestjs/swagger";
-import {CharacterInfo, MoveCharacterInfo, UpdateCharacterInfo} from "heroes-common";
+import {CharacterInfo, MoveCharacterInfo, UpdateCharacterEquipment, UpdateCharacterInfo} from "heroes-common";
 
 export class CharacterInfoDto implements CharacterInfo {
 	@ApiProperty()
@@ -62,4 +62,39 @@ export class UpdateCharacterInfoDto implements UpdateCharacterInfo {
 
 	@ApiProperty()
 	isActive: boolean = true;
+}
+
+export class UpdateEquipmentDto implements UpdateCharacterEquipment {
+	@ApiProperty()
+	artifactSlot: string | null = null;
+
+	@ApiProperty()
+	bagSlot: string | null = null;
+
+	@ApiProperty()
+	beltSlot: string | null = null;
+
+	@ApiProperty()
+	bootSlot: string | null = null;
+
+	@ApiProperty()
+	chestSlot: string | null = null;
+
+	@ApiProperty()
+	headSlot: string | null = null;
+
+	@ApiProperty()
+	leftHandSlot: string | null = null;
+
+	@ApiProperty()
+	neckSlot: string | null = null;
+
+	@ApiProperty()
+	rightHandSlot: string | null = null;
+
+	@ApiProperty()
+	ring1Slot: string | null = null;
+
+	@ApiProperty()
+	ring2Slot: string | null = null;
 }

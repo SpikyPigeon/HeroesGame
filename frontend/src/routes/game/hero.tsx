@@ -170,7 +170,13 @@ const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = ({name, slot, onEqu
 	const classes = useStyles();
 	const [raised, setRaised] = useState(false);
 	const [equipEl, setEquipEl] = useState<null | HTMLElement>(null);
+	const unequipItem = useStoreActions(state => state.character.unequipItem);
 	const handleEquipClose = () => setEquipEl(null);
+
+	const handleUnequip = () => {
+		unequipItem(name);
+		handleEquipClose();
+	};
 
 	const emptySlot = <Card raised={raised} classes={{root: classes.itemSlotCard}}>
 		<CardActionArea
@@ -207,7 +213,7 @@ const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = ({name, slot, onEqu
 					open={Boolean(equipEl)}
 					onClose={handleEquipClose}
 				>
-					<MenuItem onClick={handleEquipClose}>Unequip</MenuItem>
+					<MenuItem onClick={handleUnequip}>Unequip</MenuItem>
 				</Menu>
 				<Card raised={raised} classes={{root: classes.itemSlotCard}}>
 					<CardActionArea
@@ -281,6 +287,7 @@ const InventorySlot: FunctionComponent<InventorySlotProps> = ({slot, onUse}) => 
 		if (slot && getItemType(slot.roll.item) === ItemType.Equipment) {
 			equipItem(slot);
 		}
+		handleItemClose();
 	};
 
 	if (slot) {

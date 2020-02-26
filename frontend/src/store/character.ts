@@ -431,8 +431,105 @@ export const characterStore: CharacterStore = {
 	}),
 
 	unequipItem: thunk(async (state, payload, {getState, getStoreActions}) => {
+		const addSnack = getStoreActions().notification.enqueue;
 		const token = localStorage.getItem("userJWT");
+
 		if (token) {
+			const char = getState().character;
+			const inv = getState().inventory;
+			const eq = payload;
+
+			if (char) {
+				if (inv.length > 9) {
+					addSnack({
+						message: "Your inventory is full! Make some room to unequip.",
+						options: {
+							variant: "warning"
+						}
+					});
+				} else {
+					switch (eq) {
+						case "Head":
+							await CharacterService.createInventory(token, {
+								roll: char.equipment.headSlot?.id ?? "",
+								quantity: 1
+							});
+							await CharacterService.updateEquipment(token, {headSlot: null});
+							break;
+						case "Chest":
+							await CharacterService.createInventory(token, {
+								roll: char.equipment.chestSlot?.id ?? "",
+								quantity: 1
+							});
+							await CharacterService.updateEquipment(token, {chestSlot: null});
+							break;
+						case "Belt":
+							await CharacterService.createInventory(token, {
+								roll: char.equipment.chestSlot?.id ?? "",
+								quantity: 1
+							});
+							await CharacterService.updateEquipment(token, {beltSlot: null});
+							break;
+						case "Boot":
+							await CharacterService.createInventory(token, {
+								roll: char.equipment.bootSlot?.id ?? "",
+								quantity: 1
+							});
+							await CharacterService.updateEquipment(token, {bootSlot: null});
+							break;
+						case "Left Hand":
+							await CharacterService.createInventory(token, {
+								roll: char.equipment.leftHandSlot?.id ?? "",
+								quantity: 1
+							});
+							await CharacterService.updateEquipment(token, {leftHandSlot: null});
+							break;
+						case "Right Hand":
+							await CharacterService.createInventory(token, {
+								roll: char.equipment.rightHandSlot?.id ?? "",
+								quantity: 1
+							});
+							await CharacterService.updateEquipment(token, {rightHandSlot: null});
+							break;
+						case "Ring 1":
+							await CharacterService.createInventory(token, {
+								roll: char.equipment.ring1Slot?.id ?? "",
+								quantity: 1
+							});
+							await CharacterService.updateEquipment(token, {ring1Slot: null});
+							break;
+						case "Ring 2":
+							await CharacterService.createInventory(token, {
+								roll: char.equipment.ring2Slot?.id ?? "",
+								quantity: 1
+							});
+							await CharacterService.updateEquipment(token, {ring2Slot: null});
+							break;
+						case "Neck":
+								await CharacterService.createInventory(token, {
+									roll: char.equipment.neckSlot?.id ?? "",
+									quantity: 1
+								});
+							await CharacterService.updateEquipment(token, {neckSlot: null});
+							break;
+						case "Bag":
+							await CharacterService.createInventory(token, {
+								roll: char.equipment.bagSlot?.id ?? "",
+								quantity: 1
+							});
+							await CharacterService.updateEquipment(token, {bagSlot: null});
+							break;
+						case "Artifact":
+							await CharacterService.createInventory(token, {
+								roll: char.equipment.artifactSlot?.id ?? "",
+								quantity: 1
+							});
+							await CharacterService.updateEquipment(token, {artifactSlot: null});
+							break;
+					}
+				}
+				await state.getMine();
+			}
 		} else {
 			throw new Error("Not logged in!");
 		}

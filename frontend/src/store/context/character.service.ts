@@ -7,7 +7,7 @@ import {
 	Item,
 	ItemRoll,
 	MoveCharacterInfo,
-	PlayerCharacter,
+	PlayerCharacter, UpdateCharacterEquipment,
 	UpdateCharacterInfo
 } from "heroes-common";
 
@@ -128,7 +128,12 @@ export class CharacterService {
 		return response.status === 200;
 	}
 
-	static async updateEquipment(token: string, data: CharacterEquipment) {
-
+	static async updateEquipment(token: string, data: Partial<UpdateCharacterEquipment>) {
+		const response = await Context.put<PlayerCharacter>(`/character/equipment`, data, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
+		return response.data;
 	}
 }

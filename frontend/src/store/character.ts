@@ -5,6 +5,8 @@ import {
 	CharacterInventory,
 	config,
 	EquipmentSlotType,
+	EquipmentType,
+	getEquipmentType,
 	getItemType,
 	Item,
 	ItemType,
@@ -269,8 +271,160 @@ export const characterStore: CharacterStore = {
 	}),
 
 	equipItem: thunk(async (state, payload, {getState, getStoreActions}) => {
+		const addSnack = getStoreActions().notification.enqueue;
 		const token = localStorage.getItem("userJWT");
+
 		if (token) {
+			const eq = payload.roll.id;
+			const char = getState().character;
+			const type = getEquipmentType(payload.roll.item);
+
+			if (type === EquipmentType.Hand) {
+				if (char?.equipment.leftHandSlot === null) {
+					CharacterService.updateEquipment(token, {leftHandSlot: eq}).catch(console.error);
+					if (!await CharacterService.deleteInventory(token, payload.id)) {
+						throw new Error("Could not delete item");
+					}
+				} else if (char?.equipment.rightHandSlot === null) {
+					CharacterService.updateEquipment(token, {rightHandSlot: eq}).catch(console.error);
+					if (!await CharacterService.deleteInventory(token, payload.id)) {
+						throw new Error("Could not delete item");
+					}
+				} else {
+					addSnack({
+						message: `Your hands are full!`,
+						options: {
+							variant: "warning"
+						}
+					});
+				}
+			}
+			if (type === EquipmentType.Ring) {
+				if (char?.equipment.ring1Slot === null) {
+					CharacterService.updateEquipment(token, {ring1Slot: eq}).catch(console.error);
+					if (!await CharacterService.deleteInventory(token, payload.id)) {
+						throw new Error("Could not delete item");
+					}
+				} else if (char?.equipment.ring2Slot === null) {
+					CharacterService.updateEquipment(token, {ring2Slot: eq}).catch(console.error);
+					if (!await CharacterService.deleteInventory(token, payload.id)) {
+						throw new Error("Could not delete item");
+					}
+				} else {
+					addSnack({
+						message: `Your ring slots are full!`,
+						options: {
+							variant: "warning"
+						}
+					});
+				}
+			}
+			if (type === EquipmentType.Chest) {
+				if (char?.equipment.chestSlot === null) {
+					CharacterService.updateEquipment(token, {chestSlot: eq}).catch(console.error);
+					if (!await CharacterService.deleteInventory(token, payload.id)) {
+						throw new Error("Could not delete item");
+					}
+				} else {
+					addSnack({
+						message: `Your chest is already equipped!`,
+						options: {
+							variant: "warning"
+						}
+					});
+				}
+			}
+			if (type === EquipmentType.Neck) {
+				if (char?.equipment.neckSlot === null) {
+					CharacterService.updateEquipment(token, {neckSlot: eq}).catch(console.error);
+					if (!await CharacterService.deleteInventory(token, payload.id)) {
+						throw new Error("Could not delete item");
+					}
+				} else {
+					addSnack({
+						message: `Your neck is already equipped!`,
+						options: {
+							variant: "warning"
+						}
+					});
+				}
+			}
+			if (type === EquipmentType.Belt) {
+				if (char?.equipment.beltSlot === null) {
+					CharacterService.updateEquipment(token, {beltSlot: eq}).catch(console.error);
+					if (!await CharacterService.deleteInventory(token, payload.id)) {
+						throw new Error("Could not delete item");
+					}
+				} else {
+					addSnack({
+						message: `Your belt is already equipped!`,
+						options: {
+							variant: "warning"
+						}
+					});
+				}
+			}
+			if (type === EquipmentType.Boot) {
+				if (char?.equipment.bootSlot === null) {
+					CharacterService.updateEquipment(token, {bootSlot: eq}).catch(console.error);
+					if (!await CharacterService.deleteInventory(token, payload.id)) {
+						throw new Error("Could not delete item");
+					}
+				} else {
+					addSnack({
+						message: `Your feet are already equipped!`,
+						options: {
+							variant: "warning"
+						}
+					});
+				}
+			}
+			if (type === EquipmentType.Head) {
+				if (char?.equipment.headSlot === null) {
+					CharacterService.updateEquipment(token, {headSlot: eq}).catch(console.error);
+					if (!await CharacterService.deleteInventory(token, payload.id)) {
+						throw new Error("Could not delete item");
+					}
+				} else {
+					addSnack({
+						message: `Your head is already equipped!`,
+						options: {
+							variant: "warning"
+						}
+					});
+				}
+			}
+			if (type === EquipmentType.Bag) {
+				if (char?.equipment.bagSlot === null) {
+					CharacterService.updateEquipment(token, {bagSlot: eq}).catch(console.error);
+					if (!await CharacterService.deleteInventory(token, payload.id)) {
+						throw new Error("Could not delete item");
+					}
+				} else {
+					addSnack({
+						message: `You already have a bag equipped!`,
+						options: {
+							variant: "warning"
+						}
+					});
+				}
+			}
+			if (type === EquipmentType.Artifact) {
+				if (char?.equipment.artifactSlot === null) {
+					CharacterService.updateEquipment(token, {artifactSlot: eq}).catch(console.error);
+					if (!await CharacterService.deleteInventory(token, payload.id)) {
+						throw new Error("Could not delete item");
+					}
+				} else {
+					addSnack({
+						message: `You already have an artifact equipped!`,
+						options: {
+							variant: "warning"
+						}
+					});
+				}
+			}
+			await state.getMine();
 		} else {
 			throw new Error("Not logged in!");
 		}

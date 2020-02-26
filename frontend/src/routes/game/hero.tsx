@@ -27,6 +27,8 @@ import {
 	CharacterEquipment,
 	CharacterInventory,
 	EquipmentSlotType,
+	EquipmentType,
+	getEquipmentType,
 	getItemType,
 	ItemRarity,
 	ItemRoll,
@@ -246,6 +248,7 @@ const InventorySlot: FunctionComponent<InventorySlotProps> = ({slot, onUse}) => 
 	const classes = useStyles();
 	const discardAll = useStoreActions(state => state.character.deleteInventory);
 	const discardOne = useStoreActions(state => state.character.updateInventory);
+	const equipItem = useStoreActions(state => state.character.equipItem);
 	const [itemEl, setItemEl] = useState<null | HTMLElement>(null);
 	const handleItemClose = () => setItemEl(null);
 	const handleUse = () => {
@@ -276,7 +279,7 @@ const InventorySlot: FunctionComponent<InventorySlotProps> = ({slot, onUse}) => 
 
 	const handleEquipping = () => {
 		if (slot && getItemType(slot.roll.item) === ItemType.Equipment) {
-
+			equipItem(slot);
 		}
 	};
 
@@ -296,7 +299,7 @@ const InventorySlot: FunctionComponent<InventorySlotProps> = ({slot, onUse}) => 
 				open={Boolean(itemEl)}
 				onClose={handleItemClose}
 			>
-				{getItemType(slot.roll.item) == ItemType.Equipment && <MenuItem onClick={handleUse}>Equip</MenuItem>}
+				{getItemType(slot.roll.item) == ItemType.Equipment && <MenuItem onClick={handleEquipping}>Equip</MenuItem>}
 				{getItemType(slot.roll.item) == ItemType.Consumable && <MenuItem onClick={handleUse}>Use</MenuItem>}
 				{slot.quantity > 1 && <MenuItem onClick={handleDiscardOne}>Discard One</MenuItem>}
 				{slot.quantity > 1 && <MenuItem onClick={handleDiscardAll}>Discard All</MenuItem>}

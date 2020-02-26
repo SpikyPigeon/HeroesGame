@@ -109,6 +109,8 @@ export const WorldAction: FunctionComponent<WorldActionProps> = ({encounters, it
 	const fight = (index: number) => {
 		const monster = monsters[index];
 		if (character) {
+			const dStats = config.character.stats.calculate.derivedStats(character);
+
 			const charAtk = config.character.generate.damage;
 			const charCrit = config.character.generate.isCritical;
 			const charDog = config.character.generate.isDodge;
@@ -120,14 +122,14 @@ export const WorldAction: FunctionComponent<WorldActionProps> = ({encounters, it
 			const monItems = config.monster.generate.itemDrops;
 
 			if (!monDog(monster.dexterity)) {
-				monster.health -= charAtk(character.strength, 0, 0, charCrit(character.dexterity, 0));
+				monster.health -= charAtk(dStats.strength, dStats.damage, dStats.criticalDamage, charCrit(dStats.dexterity, dStats.criticalChance));
 				if (monster.health <= 0) {
 					updateChar({
 						experience: character.experience + monExp,
-						gold: character.gold + monGold,
+						gold: character.gold + (monGold * (1 + dStats.goldDrop / 10)),
 					});
 					monstersMod.removeAt(index);
-					monItems(monster.drops).forEach(value => itemDroped(value.item, value.quantity));
+					monItems(monster.drops, dStats.itemDrop).forEach(value => itemDroped(value.item, value.quantity));
 				} else if (!charDog(character.dexterity, 0)) {
 					updateChar({
 						currentHealth: character.currentHealth - monAtk(monster.strength, monCrit(monster.dexterity)),

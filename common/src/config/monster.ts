@@ -24,10 +24,10 @@ export const monsterConfig = {
 			return Math.floor(Math.random() * (max - min + 1)) + min;
 		},
 
-		itemDrops(drops: Array<EncounterDrop>): Array<{ item: Item; quantity: number }> {
+		itemDrops(drops: Array<EncounterDrop>, dropBonus: number): Array<{ item: Item; quantity: number }> {
 			let items: Array<{ item: Item; quantity: number }> = [];
 			drops.forEach(value => {
-				if (Math.random() <= value.dropChance) {
+				if (Math.random() <= value.dropChance * (1 + dropBonus / 100)) {
 					items = [...items, {
 						item: value.item,
 						quantity: Math.floor(Math.random() * (value.maxQuantity - value.minQuantity + 1)) + value.minQuantity,

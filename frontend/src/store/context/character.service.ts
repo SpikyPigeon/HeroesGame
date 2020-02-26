@@ -1,6 +1,6 @@
 import {Context} from "./index";
 import {
-	Avatar,
+	Avatar, CharacterEquipment,
 	CharacterInfo,
 	CharacterInventory,
 	CreateInventoryInfo,
@@ -126,5 +126,9 @@ export class CharacterService {
 			},
 		});
 		return response.status === 200;
+	}
+
+	static async updateEquipment(token: string, data: CharacterEquipment) {
+
 	}
 }

@@ -13,11 +13,28 @@ export class RollService {
 	}
 
 	async findAll(): Promise<Array<RollEntity>> {
-		return await this.rolls.find({relations: ["item", "item.category"]});
+		return await this.rolls.createQueryBuilder("roll")
+			.leftJoinAndSelect("roll.item", "item")
+			.leftJoinAndSelect("item.category", "cat")
+			.leftJoinAndSelect("cat.parent", "parent1")
+			.leftJoinAndSelect("parent1.parent", "parent2")
+			.getMany();
 	}
 
 	async findOne(id: string): Promise<RollEntity> {
-		return await this.rolls.findOneOrFail(id, {relations: ["item", "item.category"]});
+		const roll = await this.rolls.createQueryBuilder("roll")
+			.leftJoinAndSelect("roll.item", "item")
+			.leftJoinAndSelect("item.category", "cat")
+			.leftJoinAndSelect("cat.parent", "parent1")
+			.leftJoinAndSelect("parent1.parent", "parent2")
+			.where("roll.id = :id", {id})
+			.getOne();
+
+		if (roll) {
+			return roll;
+		} else {
+			throw new Error("Roll was not found");
+		}
 	}
 
 	async create(itemId: number): Promise<RollEntity> {

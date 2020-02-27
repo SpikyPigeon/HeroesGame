@@ -117,7 +117,7 @@ const ItemInspect: FunctionComponent<ItemInspectProps> = ({roll}) => {
 			</li>}
 			{roll.item.armorMod > 0 && <li>
 				<Typography variant="caption">
-					{`Removes ${(roll.item.armorMod * roll.armorMult).toPrecision(4)}% of damage taken.`}
+					{`Removes ${(Math.sqrt(roll.item.armorMod * roll.armorMult) / 25).toPrecision(4)}% of damage taken.`}
 				</Typography>
 			</li>}
 			{roll.item.criticalChanceMod > 0 && <li>

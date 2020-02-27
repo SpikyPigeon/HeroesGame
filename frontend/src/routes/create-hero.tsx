@@ -1,4 +1,4 @@
-import {createElement, Fragment, FunctionComponent, useEffect, useState} from "react";
+import {createElement, FunctionComponent, useEffect, useState} from "react";
 import {AddSharp, RemoveSharp} from "@material-ui/icons";
 import {green} from "@material-ui/core/colors";
 import {useNavigation} from "react-navi";
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
 		card: {
 			position: "relative",
 			height: "100%",
-			backgroundColor: "rgba(255, 255, 255, 0.65)",
+			backgroundColor: "rgba(255, 255, 255, 0.82)",
 			maxHeight: window.innerHeight - theme.spacing(12) * 2,
 		},
 		avatarCard: {
@@ -82,7 +82,7 @@ const CreateHero: FunctionComponent = () => {
 	const getPointsLeft = () => charStats.startPoints - (str - charStats.start) - (dex - charStats.start) - (vit - charStats.start) - (int - charStats.start);
 
 	if (!showPage) {
-		return <Fragment/>;
+		return null;
 	}
 
 	return <Content>
@@ -190,30 +190,34 @@ const CreateHero: FunctionComponent = () => {
 					</Grid>
 					<Grid container item lg={3} direction="column" spacing={4}>
 						<Grid item lg>
-							<Typography align="center" variant="body1" gutterBottom>Damage</Typography>
-							<Typography align="center" variant="h4">
+							<Typography align="center" variant="h6" gutterBottom>Damage</Typography>
+							<Typography align="center" variant="h4" style={{fontWeight: 100}}>
 								{charStats.calculate.damage(str, 0).min} - {charStats.calculate.damage(str, 0).max}
 							</Typography>
 						</Grid>
 						<Grid item lg>
-							<Typography align="center" variant="body1" gutterBottom>Health</Typography>
-							<Typography align="center" variant="h4">{charStats.calculate.health(vit, 0)}</Typography>
+							<Typography align="center" variant="h6" gutterBottom>Health</Typography>
+							<Typography align="center" variant="h4" style={{fontWeight: 100}}>
+								{charStats.calculate.health(vit, 0)}
+							</Typography>
 						</Grid>
 						<Grid item lg>
-							<Typography align="center" variant="body1" gutterBottom>Dodge Chance</Typography>
-							<Typography align="center" variant="h4">
+							<Typography align="center" variant="h6" gutterBottom>Dodge Chance</Typography>
+							<Typography align="center" variant="h4" style={{fontWeight: 100}}>
 								{charStats.calculate.dodgeChance(dex, 0).toPrecision(4)}%
 							</Typography>
 						</Grid>
 						<Grid item lg>
-							<Typography align="center" variant="body1" gutterBottom>Critical Chance</Typography>
-							<Typography align="center" variant="h4">
+							<Typography align="center" variant="h6" gutterBottom>Critical Chance</Typography>
+							<Typography align="center" variant="h4" style={{fontWeight: 100}}>
 								{charStats.calculate.criticalChance(dex, 0).toPrecision(4)}%
 							</Typography>
 						</Grid>
 						<Grid item lg>
-							<Typography align="center" variant="body1" gutterBottom>Mana</Typography>
-							<Typography align="center" variant="h4">{charStats.calculate.mana(int, 0)}</Typography>
+							<Typography align="center" variant="h6" gutterBottom>Mana</Typography>
+							<Typography align="center" variant="h4" style={{fontWeight: 100}}>
+								{charStats.calculate.mana(int, 0)}
+							</Typography>
 						</Grid>
 					</Grid>
 				</Grid>

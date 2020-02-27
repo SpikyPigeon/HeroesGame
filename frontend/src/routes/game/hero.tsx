@@ -55,7 +55,7 @@ const getRarityColor = (rarity: ItemRarity) => {
 		case "rare":
 			return "#ffe887";
 		case "legendary":
-			return "#ffa181";
+			return "#ffb797";
 		case "unique":
 			return "#ffd700";
 	}

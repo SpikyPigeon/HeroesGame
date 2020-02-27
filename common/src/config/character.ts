@@ -31,11 +31,11 @@ export const characterConfig = {
 			},
 
 			health(vitality: number, totalMod: number): number {
-				return vitality * 10 + totalMod;
+				return Math.round(vitality * 10 + totalMod);
 			},
 
 			mana(intellect: number, totalMod: number): number {
-				return intellect * 5 + totalMod;
+				return Math.round(intellect * 5 + totalMod);
 			},
 
 			dodgeChance(dexterity: number, totalMod: number): number {

@@ -27,8 +27,6 @@ import {
 	CharacterEquipment,
 	CharacterInventory,
 	EquipmentSlotType,
-	EquipmentType,
-	getEquipmentType,
 	getItemType,
 	ItemRarity,
 	ItemRoll,
@@ -48,22 +46,24 @@ const useStyles = makeStyles((theme: Theme) =>
 	}),
 );
 
+const getRarityColor = (rarity: ItemRarity) => {
+	switch (rarity) {
+		case "common":
+			return "#f5f5f9";
+		case "uncommon":
+			return "#b1e2d3";
+		case "rare":
+			return "#ffe887";
+		case "legendary":
+			return "#ffa181";
+		case "unique":
+			return "#ffd700";
+	}
+};
+
 const HtmlTooltip = withStyles((theme: Theme) => ({
 	tooltip: {
-		backgroundColor: (props: { rarity: ItemRarity }) => {
-			switch (props.rarity) {
-				case "common":
-					return "#f5f5f9";
-				case "uncommon":
-					return "#b1e2d3";
-				case "rare":
-					return "#ffe887";
-				case "legendary":
-					return "#ffa181";
-				case "unique":
-					return "#ffd700";
-			}
-		},
+		backgroundColor: (props: { rarity: ItemRarity }) => getRarityColor(props.rarity),
 		color: "rgba(0, 0, 0, 0.87)",
 		maxWidth: 440,
 		fontSize: theme.typography.pxToRem(12),
@@ -170,7 +170,7 @@ const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = ({name, slot, onEqu
 	const classes = useStyles();
 	const [raised, setRaised] = useState(false);
 	const [equipEl, setEquipEl] = useState<null | HTMLElement>(null);
-	const unequipItem = useStoreActions(state => state.character.unequipItem);
+	const unequipItem = useStoreActions(state => state.character.unequipItem);
 	const handleEquipClose = () => setEquipEl(null);
 
 	const handleUnequip = () => {
@@ -215,7 +215,11 @@ const EquipmentSlot: FunctionComponent<EquipmentSlotProps> = ({name, slot, onEqu
 				>
 					<MenuItem onClick={handleUnequip}>Unequip</MenuItem>
 				</Menu>
-				<Card raised={raised} classes={{root: classes.itemSlotCard}}>
+				<Card
+					raised={raised}
+					classes={{root: classes.itemSlotCard}}
+					style={{backgroundColor: getRarityColor(eqItem?.item.rarity)}}
+				>
 					<CardActionArea
 						classes={{root: classes.itemSlotAction}}
 						onMouseEnter={() => setRaised(true)}
@@ -306,14 +310,19 @@ const InventorySlot: FunctionComponent<InventorySlotProps> = ({slot, onUse}) => 
 				open={Boolean(itemEl)}
 				onClose={handleItemClose}
 			>
-				{getItemType(slot.roll.item) == ItemType.Equipment && <MenuItem onClick={handleEquipping}>Equip</MenuItem>}
+				{getItemType(slot.roll.item) == ItemType.Equipment &&
+				<MenuItem onClick={handleEquipping}>Equip</MenuItem>}
 				{getItemType(slot.roll.item) == ItemType.Consumable && <MenuItem onClick={handleUse}>Use</MenuItem>}
 				{slot.quantity > 1 && <MenuItem onClick={handleDiscardOne}>Discard One</MenuItem>}
 				{slot.quantity > 1 && <MenuItem onClick={handleDiscardAll}>Discard All</MenuItem>}
 				{slot.quantity === 1 && <MenuItem onClick={handleDiscardAll}>Discard</MenuItem>}
 			</Menu>
 
-			<Card variant="outlined" classes={{root: classes.itemSlotCard}}>
+			<Card
+				variant="outlined"
+				classes={{root: classes.itemSlotCard}}
+				style={{backgroundColor: getRarityColor(slot.roll.item.rarity)}}
+			>
 				<CardActionArea
 					classes={{root: classes.itemSlotAction}}
 					onClick={e => setItemEl(e.currentTarget.parentElement)}

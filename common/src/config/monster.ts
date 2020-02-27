@@ -14,10 +14,11 @@ export const monsterConfig = {
 			return Math.random() <= monsterConfig.calculate.dodgeChance(dexterity) / 100;
 		},
 
-		damage(strength: number, isCritical: boolean): number {
+		damage(strength: number, isCritical: boolean, armor: number): number {
 			const {min, max} = monsterConfig.calculate.damage(strength);
 			const dmg = Math.floor(Math.random() * (max - min + 1)) + min;
-			return isCritical ? dmg * 2 : dmg;
+			const res = dmg * (Math.sqrt(armor) / 25);
+			return Math.round(isCritical ? (dmg - res) * 2 : dmg - res);
 		},
 
 		goldDrop(min: number, max: number): number {

@@ -132,7 +132,7 @@ export const WorldAction: FunctionComponent<WorldActionProps> = ({encounters, it
 					monItems(monster.drops, dStats.itemDrop).forEach(value => itemDroped(value.item, value.quantity));
 				} else if (!charDog(character.dexterity, 0)) {
 					updateChar({
-						currentHealth: character.currentHealth - monAtk(monster.strength, monCrit(monster.dexterity)),
+						currentHealth: character.currentHealth - monAtk(monster.strength, monCrit(monster.dexterity), dStats.armor),
 					});
 				}
 			}

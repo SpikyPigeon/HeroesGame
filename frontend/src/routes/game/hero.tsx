@@ -1,4 +1,5 @@
 import {createElement, Fragment, FunctionComponent, useState} from "react";
+import {blue, green, red} from "@material-ui/core/colors";
 import {useNavigation} from "react-navi";
 import {useMount} from "react-use";
 import {
@@ -7,7 +8,8 @@ import {
 	CardActionArea,
 	CardContent,
 	CardHeader,
-	CardMedia, CircularProgress,
+	CardMedia,
+	CircularProgress,
 	createStyles,
 	Divider,
 	Grid,
@@ -25,14 +27,14 @@ import {
 import {store, useStoreActions, useStoreState} from "../../store";
 import {
 	CharacterEquipment,
-	CharacterInventory, config,
+	CharacterInventory,
+	config,
 	EquipmentSlotType,
 	getItemType,
 	ItemRarity,
 	ItemRoll,
 	ItemType
 } from "heroes-common";
-import {blue, green, red} from "@material-ui/core/colors";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({

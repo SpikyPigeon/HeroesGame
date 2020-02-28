@@ -506,10 +506,10 @@ export const characterStore: CharacterStore = {
 							await CharacterService.updateEquipment(token, {ring2Slot: null});
 							break;
 						case "Neck":
-								await CharacterService.createInventory(token, {
-									roll: char.equipment.neckSlot?.id ?? "",
-									quantity: 1
-								});
+							await CharacterService.createInventory(token, {
+								roll: char.equipment.neckSlot?.id ?? "",
+								quantity: 1
+							});
 							await CharacterService.updateEquipment(token, {neckSlot: null});
 							break;
 						case "Bag":

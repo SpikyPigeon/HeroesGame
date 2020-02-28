@@ -45,7 +45,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 			Object.keys(client.rooms).forEach(value => {
 				if (value.startsWith("W")) {
-					client.leave("value");
+					client.leave(value);
 				}
 			});
 

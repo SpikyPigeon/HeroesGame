@@ -1,4 +1,5 @@
 import {createElement, Fragment, FunctionComponent, useState} from "react";
+import {blue, green, red} from "@material-ui/core/colors";
 import {useNavigation} from "react-navi";
 import {useMount} from "react-use";
 import {
@@ -7,7 +8,8 @@ import {
 	CardActionArea,
 	CardContent,
 	CardHeader,
-	CardMedia, CircularProgress,
+	CardMedia,
+	CircularProgress,
 	createStyles,
 	Divider,
 	Grid,
@@ -25,14 +27,14 @@ import {
 import {store, useStoreActions, useStoreState} from "../../store";
 import {
 	CharacterEquipment,
-	CharacterInventory, config,
+	CharacterInventory,
+	config,
 	EquipmentSlotType,
 	getItemType,
 	ItemRarity,
 	ItemRoll,
 	ItemType
 } from "heroes-common";
-import {blue, green, red} from "@material-ui/core/colors";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -377,7 +379,6 @@ const Hero: FunctionComponent = () => {
 	const currentHero = useStoreState(state => state.character.character);
 	const items = useStoreState(state => state.character.inventory);
 	const loadHero = useStoreActions(state => state.character.getMine);
-	//const equipment = useStoreActions(state => state.character.)
 	const addSnack = useStoreActions(state => state.notification.enqueue);
 	const updateHero = useStoreActions(state => state.character.update);
 	const consumeItem = useStoreActions(state => state.character.consumeItem);
@@ -412,7 +413,7 @@ const Hero: FunctionComponent = () => {
 	};
 
 	if (!currentHero) {
-		return <Fragment/>;
+		return null;
 	}
 
 	const dStats = charConfig.stats.calculate.derivedStats(currentHero);
@@ -421,47 +422,48 @@ const Hero: FunctionComponent = () => {
 		<Grid container justify="center" spacing={2}>
 			<Grid item lg={9}>
 				<Card raised>
-					<CardHeader title="Hero"/>
+					<CardHeader
+						title={currentHero.name}
+						action={
+							<Grid container direction="row" spacing={4}>
+								<Grid item>
+									<Tooltip arrow placement="top"
+									         title={`Health : ${currentHero?.currentHealth} / ${charConfig.stats.calculate.health(dStats.vitality, dStats.maxHealth)}`}
+									>
+										<CircularProgress variant="static" thickness={18}
+										                  classes={{circle: classes.healthCircle}}
+										                  value={currentHero.currentHealth * 100 / charConfig.stats.calculate.health(dStats.vitality, dStats.maxHealth)}
+										/>
+									</Tooltip>
+								</Grid>
+								<Grid item>
+									<Tooltip arrow placement="top"
+									         title={`Mana : ${currentHero.currentMana} / ${charConfig.stats.calculate.mana(dStats.intellect, dStats.maxMana)}`}
+									>
+										<CircularProgress variant="static" thickness={18}
+										                  classes={{circle: classes.manaCircle}}
+										                  value={currentHero.currentMana * 100 / charConfig.stats.calculate.mana(dStats.intellect, dStats.maxMana)}
+										/>
+									</Tooltip>
+								</Grid>
+								<Grid item>
+									<Tooltip arrow placement="top"
+									         title={`Energy : ${currentHero.currentEnergy} / ${200 + 10 * (currentHero.level - 1)}`}
+									>
+										<CircularProgress variant="static" thickness={18}
+										                  classes={{circle: classes.energyCircle}}
+										                  value={currentHero.currentEnergy * 100 / (200 + 10 * (currentHero.level - 1))}
+										/>
+									</Tooltip>
+								</Grid>
+							</Grid>
+						}
+					/>
 					<CardContent style={{padding: 8}}>
 						<Grid container spacing={2}>
 							<Grid container item direction="row" spacing={2} justify="center">
 
 								<Grid container item lg={2} direction="column" spacing={2}>
-									<Grid container item direction="row">
-										<Grid item>
-											<Tooltip arrow placement="top"
-											         title={`Health : ${currentHero?.currentHealth} / ${charConfig.stats.calculate.health(dStats.vitality, dStats.maxHealth)}`}
-											>
-												<CircularProgress variant="static" thickness={18}
-												                  classes={{circle: classes.healthCircle}}
-												                  value={currentHero.currentHealth * 100 / charConfig.stats.calculate.health(dStats.vitality, dStats.maxHealth)}
-												/>
-											</Tooltip>
-										</Grid>
-										<Grid item>
-											<Tooltip arrow placement="top"
-											         title={`Mana : ${currentHero.currentMana} / ${charConfig.stats.calculate.mana(dStats.intellect, dStats.maxMana)}`}
-											>
-												<CircularProgress variant="static" thickness={18}
-												                  classes={{circle: classes.manaCircle}}
-												                  value={currentHero.currentMana * 100 / charConfig.stats.calculate.mana(dStats.intellect, dStats.maxMana)}
-												/>
-											</Tooltip>
-										</Grid>
-										<Grid item>
-											<Tooltip arrow placement="top"
-											         title={`Energy : ${currentHero.currentEnergy} / ${200 + 10 * (currentHero.level - 1)}`}
-											>
-												<CircularProgress variant="static" thickness={18}
-												                  classes={{circle: classes.energyCircle}}
-												                  value={currentHero.currentEnergy * 100 / (200 + 10 * (currentHero.level - 1))}
-												/>
-											</Tooltip>
-										</Grid>
-									</Grid>
-									<Grid container item>
-										
-									</Grid>
 								</Grid>
 
 								<Grid container item lg={2} direction="column" spacing={2}>

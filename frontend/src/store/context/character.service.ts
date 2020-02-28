@@ -1,13 +1,14 @@
 import {Context} from "./index";
 import {
-	Avatar, CharacterEquipment,
+	Avatar,
 	CharacterInfo,
 	CharacterInventory,
 	CreateInventoryInfo,
 	Item,
 	ItemRoll,
 	MoveCharacterInfo,
-	PlayerCharacter, UpdateCharacterEquipment,
+	PlayerCharacter,
+	UpdateCharacterEquipment,
 	UpdateCharacterInfo
 } from "heroes-common";
 

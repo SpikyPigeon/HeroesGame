@@ -417,10 +417,11 @@ const Hero: FunctionComponent = () => {
 	}
 
 	const dStats = charConfig.stats.calculate.derivedStats(currentHero);
+	const charDmg = charConfig.stats.calculate.damage(dStats.strength, dStats.damage);
 
 	return <Fragment>
 		<Grid container justify="center" spacing={2}>
-			<Grid item lg={9}>
+			<Grid item lg={6}>
 				<Card raised>
 					<CardHeader
 						title={currentHero.name}
@@ -461,12 +462,8 @@ const Hero: FunctionComponent = () => {
 					/>
 					<CardContent style={{padding: 8}}>
 						<Grid container spacing={2}>
-							<Grid container item direction="row" spacing={2} justify="center">
-
-								<Grid container item lg={2} direction="column" spacing={2}>
-								</Grid>
-
-								<Grid container item lg={2} direction="column" spacing={2}>
+							<Grid container item lg={12} direction="row" spacing={2} justify="center">
+								<Grid container item lg={2} direction="column" spacing={2} style={{marginRight: 5}}>
 									<Grid item>
 										<EquipmentSlot
 											name="Head"
@@ -532,7 +529,18 @@ const Hero: FunctionComponent = () => {
 								</Grid>
 							</Grid>
 
-							<Grid container item lg={12} justify="center" spacing={3}>
+							<Grid container item lg={12} justify="center" spacing={2} style={{margin: 0}}>
+								<Grid item lg={3}>
+									<Typography component="p" variant="caption" align="right">
+										Strength : {dStats.strength.toPrecision(4)}<br/>
+										Dexterity : {dStats.dexterity.toPrecision(4)}<br/>
+										Vitality : {dStats.vitality.toPrecision(4)}<br/>
+										Intellect : {dStats.intellect.toPrecision(4)}<br/>
+										Max Health : {charConfig.stats.calculate.health(dStats.vitality, dStats.maxHealth)}<br/>
+										Max Mana : {charConfig.stats.calculate.mana(dStats.intellect, dStats.maxMana)}
+									</Typography>
+								</Grid>
+
 								<Grid item lg={2}>
 									<EquipmentSlot
 										name="Neck"
@@ -550,6 +558,16 @@ const Hero: FunctionComponent = () => {
 										name="Artifact"
 										slot={currentHero.equipment}
 									/>
+								</Grid>
+
+								<Grid item lg={3}>
+									<Typography component="p" variant="caption" align="left">
+										Armor : {dStats.armor.toPrecision(4)}<br/>
+										Damage : {charDmg.min.toPrecision(4)} - {charDmg.max.toPrecision(4)}<br/>
+										Dodge Chance : {charConfig.stats.calculate.dodgeChance(dStats.dexterity, dStats.dodgeChange).toPrecision(4)}%<br/>
+										Critical Chance : {charConfig.stats.calculate.criticalChance(dStats.dexterity, dStats.criticalChance).toPrecision(4)}%<br/>
+										Critical Damage : {(1.25 + dStats.criticalDamage / 10).toPrecision(4)}X
+									</Typography>
 								</Grid>
 							</Grid>
 						</Grid>

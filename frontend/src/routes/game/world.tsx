@@ -130,17 +130,26 @@ const LevelUpDIalog: FunctionComponent<MyDialogProps & { character: PlayerCharac
 	const updateChar = useStoreActions(state => state.character.update);
 
 	const onSubmit = () => {
-		updateChar({
-			strength: str,
-			dexterity: dex,
-			vitality: vit,
-			intellect: int,
-			experience: (character?.experience ?? 1000) - 1000,
-			currentHealth: charStats.calculate.health(vit, 0),
-			currentMana: charStats.calculate.mana(int, 0),
-			currentEnergy: 200 + (character?.level ?? 1) * 10,
-			level: (character?.level ?? 1) + 1,
-		});
+		if (character) {
+			const dStats = charStats.calculate.derivedStats({
+				strength: str,
+				dexterity: dex,
+				vitality: vit,
+				intellect: int,
+				...character,
+			});
+			updateChar({
+				strength: str,
+				dexterity: dex,
+				vitality: vit,
+				intellect: int,
+				experience: (character?.experience ?? 1000) - 1000,
+				currentHealth: charStats.calculate.health(dStats.vitality, dStats.maxHealth),
+				currentMana: charStats.calculate.mana(dStats.intellect, dStats.maxMana),
+				currentEnergy: 200 + (character?.level ?? 1) * 10,
+				level: (character?.level ?? 1) + 1,
+			});
+		}
 		onClose();
 	};
 

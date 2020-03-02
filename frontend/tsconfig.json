@@ -10,6 +10,7 @@
 			"dom.iterable",
 			"es6",
 			"scripthost"
-		]
+		],
+		"importHelpers": true
 	}
 }

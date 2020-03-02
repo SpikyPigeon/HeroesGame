@@ -37,30 +37,25 @@ export class ContentPhaseThree1583175981658 implements MigrationInterface {
                                      "monsterId")
             VALUES (18, 0.03, 10000, 20000, 1, 18, 8, 14),
                    (19, 0.1, 200000, 400000, 1, 0, 0, 18);
-            INSERT INTO public."ItemCategory" (id, "parentId", name, description, "createdAt")
-            VALUES (24, 10, 'Cloak', 'Items that... cloak their user.', '2020-02-24 15:52:24.329696'),
-                   (25, 15, 'Shard', 'Unique items found on the Avatars. Grant great power.',
-                    '2020-02-28 13:36:31.740111');
+            INSERT INTO public."ItemCategory" (id, "parentId", name, description)
+            VALUES (24, 10, 'Cloak', 'Items that... cloak their user.'),
+                   (25, 15, 'Shard', 'Unique items found on the Avatars. Grant great power.');
             INSERT INTO public."Item" (id, name, description, rarity, heal, "strengthMod", "dexterityMod",
                                        "vitalityMod", "intellectMod", "criticalChanceMod", "criticalDamageMod",
                                        "dodgeChanceMod", "healthMod", "manaMod", "armorMod", "damageMod", "itemDropMod",
-                                       "goldDropMod", "inventorySpace", special, skill, "createdAt", "updatedAt",
+                                       "goldDropMod", "inventorySpace", special, skill,
                                        "stackLimit", image, "categoryId")
             VALUES (7, 'Amber Cloak',
                     'This cloak of elvish making provides its wearer stealth, wisdom and better mana focus.',
-                    'legendary', 0, 0, 5, 0, 5, 0, 0, 2, 0, 5, 5, 0, 0, 0, 0, null, null, '2020-02-24 15:50:37.463685',
-                    '2020-02-24 15:50:37.463685', 1, 'cloak_golden.png', 13),
+                    'legendary', 0, 0, 5, 0, 5, 0, 0, 2, 0, 5, 5, 0, 0, 0, 0, null, null, 1, 'cloak_golden.png', 13),
                    (9, 'Protective Pendant',
                     'An old necklace with a titanium jewel. Grants damage resistance to its wearer.', 'rare', 0, 0, 0,
-                    0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0, 0, null, null, '2020-02-27 10:10:42.329337',
-                    '2020-02-27 10:10:42.329337', 1, 'amulet_grey.png', 13),
+                    0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0, 0, null, null, 1, 'amulet_grey.png', 13),
                    (10, 'Sword of Sass', 'This sword ain''t messin'' around, boy!', 'unique', 0, 20, 20, 0, 0, 50, 50,
-                    0, 0, 0, 0, 50, 0, 0, 0, null, null, '2020-02-28 09:36:19.959640', '2020-02-28 09:36:19.959640', 1,
-                    'sassy.png', 16),
+                    0, 0, 0, 0, 50, 0, 0, 0, null, null, 1, 'sassy.png', 16),
                    (11, 'Feather of Aggeris',
                     'A single, glowing feather from the gracious Avatar of Air, Aggeris. You can feel the power of the wind when you touch it.',
-                    'unique', 0, 0, 75, 0, 50, 0, 0, 20, 0, 0, 0, 0, 0, 0, 0, null, null, '2020-02-28 13:43:12.215107',
-                    '2020-02-28 13:43:12.215107', 1, 'feather_blue.png', 25);
+                    'unique', 0, 0, 75, 0, 50, 0, 0, 20, 0, 0, 0, 0, 0, 0, 0, null, null, 1, 'feather_blue.png', 25);
             INSERT INTO public."EncounterDrop" ("itemId", "encounterId", "dropChance", "minQuantity", "maxQuantity")
             VALUES (11, 18, 1, 1, 1);
 
@@ -464,6 +459,7 @@ export class ContentPhaseThree1583175981658 implements MigrationInterface {
             UPDATE "Square" SET image = 'river_jungle.png', icon = null WHERE "worldId" = 1 AND x = 8 AND y = 16;
             UPDATE "Square" SET image = 'desert_A.png', icon = null WHERE "worldId" = 1 AND x = 13 AND y = 15;
             UPDATE "Square" SET image = 'plain_A.png', icon = 'camp.png' WHERE "worldId" = 1 AND x = 9 AND y = 7;
+
 			DELETE FROM "Structure" WHERE id = 2;
 			UPDATE "Structure" SET id = 2 WHERE name = 'Clerwood Cave';
 		`);
